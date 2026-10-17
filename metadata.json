@@ -1,6 +1,6 @@
 {
   "name": "StoryDuett",
-  "description": "KI-unterstütztes gemeinsames Geschichtenerzählen, Sprachlernen und Kennenlernen – D0 Technische Vorschau",
+  "description": "StoryDuett – inkrementelle Solo-Geschichten und Sprachlernen mit serverseitiger Gemini-Anbindung (D1)",
   "permissions": [],
   "capabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

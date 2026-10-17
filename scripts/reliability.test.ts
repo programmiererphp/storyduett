@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
+import { gameRequest, ApiError } from '../src/game-api';
 import { fetchJson } from '../src/api';
 process.env.NODE_ENV = 'test';
 const { createApi } = await import('../server');
@@ -39,4 +40,16 @@ test('client aborts a stalled request instead of leaving loading forever', async
     });
     await assert.rejects(fetchJson('/api/health', 25), /timeout/);
   } finally { globalThis.fetch = original; }
+});
+
+test('game client preserves ambiguous HTML gateway failures and distinguishes explicit JSON errors',async()=>{
+ const original=globalThis.fetch;
+ try{
+  globalThis.fetch=async()=>new Response('<html>Gateway</html>',{status:503});
+  await assert.rejects(gameRequest('/api/sessions',{}),e=>e instanceof ApiError&&e.code==='provider_unavailable'&&!e.confirmed);
+  globalThis.fetch=async()=>Response.json({error:'session_budget'},{status:402});
+  await assert.rejects(gameRequest('/api/sessions',{}),e=>e instanceof ApiError&&e.code==='session_budget'&&e.confirmed);
+  globalThis.fetch=async()=>Response.json({state:{version:1}});
+  assert.deepEqual(await gameRequest('/api/sessions',{}),{state:{version:1}});
+ }finally{globalThis.fetch=original;}
 });

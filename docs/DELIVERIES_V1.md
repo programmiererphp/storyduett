@@ -22,3 +22,5 @@ Jede Lieferung beschränkt sich auf wenige Module und ca. max 1–2k zusätzlich
 Stand 2026-10-17: Work hat die eine React/Node-App in AI Studio erstellt, nativen GitHub-Push/Pull in beide Richtungen verifiziert und die laufende technische Vorschau mit Desktop-/Mobilbrowser geprüft. Final geprüfter Code: `7eb1e1c643e9f2eb8817e5d663fcae0f13251b60`. CI, Validator, Typecheck, Build und Produktions-API-/Fehlertests sind grün. Bericht: [SD-D0-REVIEW-01](../reports/reviews/2026-10-17-7eb1e1c.md).
 
 D0 ist nach ausdrücklicher Nutzerfreigabe am 2026-10-17 um 20:37 Europe/Berlin öffentlich unter https://storyduett.ai.studio/ veröffentlicht und dort im Cloud Browser sowie mit anonymen HTTP-Anfragen geprüft. Alle D0-Abnahmekriterien sind erfüllt. [Öffentlicher Abschlussbericht SD-D0-DEPLOY-01](../reports/reviews/2026-10-17-2535345.md). D1 wurde nicht begonnen.
+
+D1-Zwischenbericht: [SD-D1-REVIEW-01](../reports/reviews/2026-10-17-c4521a6.md). Code c4521a6, automatisiert/CI geprüft; echte10-Runden-Abnahme durch Runtime-Keykonfiguration blockiert. D1 bleibt IN PROGRESS, öffentlich weiterhin D0.

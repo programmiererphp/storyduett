@@ -1,0 +1,16 @@
+{
+  "public": {
+    "url": "https://storyduett.ai.studio/",
+    "healthStatus": 200,
+    "delivery": "D0",
+    "catalogCount": 10,
+    "assets": [
+      "/assets/index-mGfLisKd.js"
+    ],
+    "googleKeyPatternHits": 0
+  },
+  "preview": {
+    "url": "https://ais-dev-4xncdtwz7pslafeok6mckl-237548413897.europe-west2.run.app/",
+    "errorType": "JSONDecodeError"
+  }
+}

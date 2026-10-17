@@ -37,3 +37,5 @@ Für weitere Deliveries: vor externen Änderungen Syncstatus prüfen, nach GitHu
 
 ## Öffentliche Bereitstellung abgeschlossen
 2026-10-17: nach ausdrücklicher Freigabe Publish im vorhandenen Projekt `android-app-erstes` ausgeführt. AI Studio meldet Status Ready und https://storyduett.ai.studio/; die öffentliche Seite wurde geöffnet und praktisch getestet. Veröffentlichter Quellstand `2535345` (Code `7eb1e1c`). Keine Codeänderung durch die Veröffentlichung; GitHub meldete danach synchron. Abschlussdokumentation und HTTP-/Screenshotnachweise im Review `2026-10-17-2535345.md`.
+
+D1-Zwischenbericht: [SD-D1-REVIEW-01](../reports/reviews/2026-10-17-c4521a6.md). Code c4521a6, automatisiert/CI geprüft; echte10-Runden-Abnahme durch Runtime-Keykonfiguration blockiert. D1 bleibt IN PROGRESS, öffentlich weiterhin D0.

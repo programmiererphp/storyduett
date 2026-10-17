@@ -5,7 +5,7 @@ Stand 2026-10-17. Zuständigkeit für Implementierung, Browser-Bedienung und Feh
 |---|---|---|---|
 | P0 | DONE | Konzept / Architektur / Contracts / initiale Repository-Checks sichern | Dateien auf `main`, `node scripts/validate.mjs` |
 | D0 | DONE | Work verbindet bestehendes GitHub-Repo mit AI Studio, erzeugt minimales React/Node-Gerüst, arbeitet aus Repo | Repo-Sync beide Richtungen, Build/CI grün, https://storyduett.ai.studio/, Bericht SD-D0-DEPLOY-01 |
-| D1 | TODO | Solo-Flow über C01–C04: Start, Auswahl/Freitext, Kommentar, Integration, neue Frage | 10-Runden-E2E, Fehlerfälle, mobile Ansicht |
+| D1 | IN PROGRESS | Solo-Flow über C01–C04: Start, Auswahl/Freitext, Kommentar, Integration, neue Frage | 10-Runden-E2E, Fehlerfälle, mobile Ansicht |
 | D2 | TODO | C05–C07: Replay/Branches, Story-Bibliothek, Use-Case-Mini-CMS mit 4 Prompts | Refresh/Wiederaufnahme, Promptversionen, Rechte |
 | D3a | TODO | C08: TTS und Audio-Caching | zwei Stimmen, wiederholte Abspielung ohne neuen Request |
 | D3b | TODO | C09/C14: harte Caps und geschützte API-Debug-Konsole | Token-/Kostenlogs, per-feature/blocking, Rollenprüfung |
@@ -50,3 +50,6 @@ Stand 2026-10-17. Zuständigkeit für Implementierung, Browser-Bedienung und Feh
 - Öffentliche DE/EN/RU-UI, Katalog/Filter/Suche/Leerzustand, Dialog/Escape/Fokusrückkehr und Health-Refresh im Cloud Browser bestanden. Anonyme HTTP-Checks: Health/Katalog200, unbekannte/private spätere API404, keine Rohdatei-/Schlüssel-Leaks.
 - Abschlussbericht: `reports/reviews/2026-10-17-2535345.md`; Screenshot/HTTP-Nachweis unter `reports/evidence/2026-10-17-d0/`.
 - D1 wurde nicht begonnen. Nächster Auftrag muss ausdrücklich D1 behandeln; bestehende veröffentlichte App als Ausgangsstand verwenden.
+
+## D1 Ausführung
+Autorisierter Folgeauftrag vom 2026-10-17; Ausgang64e7518. Intern: D1a isolierte Komponenten; D1b Story-Engine/Provider/Budgets; D1c Integration und echte Browserabnahme. Jede Teillieferung erhält Tests. D1 DONE erst nach zehn echten Runden, Fehler-/Budget-/Mobilprüfung und Veröffentlichung derselben App.

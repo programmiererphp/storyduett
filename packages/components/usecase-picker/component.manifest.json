@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0",
+  "id": "C01",
+  "tagName": "sd-usecase-picker",
+  "version": "1.0.0",
+  "status": "implemented",
+  "entry": "src/index.ts",
+  "bundle": "dist/sd-usecase-picker.js",
+  "contractsVersion": "1.0",
+  "properties": {
+    "useCases": "SafeUseCase[]",
+    "selectedId": "string",
+    "busy": "boolean",
+    "i18n": "Record<string,string>"
+  },
+  "events": {
+    "sd:usecase-select": {
+      "detailType": "{useCaseId:string}",
+      "bubbles": true,
+      "composed": true
+    }
+  },
+  "backendCalls": false,
+  "accessibility": [
+    "keyboard",
+    "aria",
+    "visible-focus",
+    "author-labels"
+  ],
+  "tests": [
+    "standalone-demo",
+    "input-contract",
+    "keyboard",
+    "double-submit",
+    "empty-state"
+  ]
+}

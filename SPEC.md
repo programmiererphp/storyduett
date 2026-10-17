@@ -1,5 +1,5 @@
 # StoryDuett – verbindliche Produktspezifikation V1.0
-**Referenz:** SD-SPEC-01 | **Stand:** 2026-10-17 | **Status:** D0 DONE – published and verified at https://storyduett.ai.studio/. D1 not started.
+**Referenz:** SD-SPEC-01 | **Stand:** 2026-10-17 | **Status:** D0 DONE; D1 IN PROGRESS (Auftrag 2026-10-17).
 
 ## Ziel / Unterschied zu gewöhnlichen Story-Generatoren
 Zwei Menschen (oder ein Mensch mit KI) bauen **inkrementell und gemeinsam** eine Geschichte, Lernübung oder einen Simulationstext. KI kommentiert jeden Beitrag lakonisch, stellt spielerische Folgefragen und erzeugt jeweils **genau drei Antworten: zwei ernsthafte und eine ironische**. Freitext ist immer möglich. Die App unterstützt später sozialem Kennenlernen nahe Wohnorten durch Matching und privaten Chat.
@@ -66,3 +66,8 @@ TTS, Matching, Realtime-Chat, Cartoon-Grafik, Prompt-Mini-CMS-UI, komplexe Rolle
 - Öffentliche URL: https://storyduett.ai.studio/; AI Studio Publish meldet „storyduett is published!“ und Status Ready.
 - Veröffentlichter Repository-Stand: `2535345d6bf43e1b3a587816ce21d410de9817be`; unveränderter getesteter Anwendungscode aus `7eb1e1c643e9f2eb8817e5d663fcae0f13251b60`.
 - Tatsächliche öffentliche Browser- und anonyme HTTP-Prüfungen bestanden; Abschlussbericht `reports/reviews/2026-10-17-2535345.md`. D0 DONE, D1 weiterhin TODO.
+
+## Delivery D1 – verbindlicher Umfang
+C01–C04 als eigenständige Shadow-DOM-ESM-Komponenten (Manifest, Schnittstellen, Demo, Tests), integriert in dieselbe React/Node-App. Zehn vorhandene Szenarien, echter Gemini-Start und ein kombinierter strukturierter Call pro Runde (Kommentar/Korrektur, Integration, Folgefrage). Append-only Knoten mit unveränderter Rohantwort, serverseitigen IDs, Versions-/Frageprüfung und Idempotenz.
+
+D1 ist eine zeitlich begrenzte Solo-Sitzung ohne Bibliothek/Resume nach Serverneustart (D2). Sitzungszugriff über zufälliges Capability-Token, keine öffentlichen Sessionlisten oder Debugprompts. Vor jedem kostenpflichtigen Call werden konservative Text-Input-/Output-Obergrenzen gegen Call- und Sessionlimits reserviert; unbekannter Verbrauch wird zum reservierten Maximum verbucht. Keine automatischen kostenpflichtigen Retries. UI zeigt Schätzkosten/Limit, aktive Anfrage und verständliche Fehler. Modell/Preisliste werden vor Freigabe verifiziert. D2 bleibt TODO.

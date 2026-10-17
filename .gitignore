@@ -15,3 +15,7 @@ reports/private/
 observability/raw/
 *.pem
 *.key
+
+# Versioned standalone component delivery bundles
+!packages/components/*/dist/
+!packages/components/*/dist/*.js

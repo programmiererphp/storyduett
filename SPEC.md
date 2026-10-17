@@ -1,5 +1,5 @@
 # StoryDuett – verbindliche Produktspezifikation V1.0
-**Referenz:** SD-SPEC-01 | **Stand:** 2026-10-17 | **Status:** Planning complete, implementation not started.
+**Referenz:** SD-SPEC-01 | **Stand:** 2026-10-17 | **Status:** D0 in progress; baseline contracts and CI verified, AI Studio implementation pending.
 
 ## Ziel / Unterschied zu gewöhnlichen Story-Generatoren
 Zwei Menschen (oder ein Mensch mit KI) bauen **inkrementell und gemeinsam** eine Geschichte, Lernübung oder einen Simulationstext. KI kommentiert jeden Beitrag lakonisch, stellt spielerische Folgefragen und erzeugt jeweils **genau drei Antworten: zwei ernsthafte und eine ironische**. Freitext ist immer möglich. Die App unterstützt später sozialem Kennenlernen nahe Wohnorten durch Matching und privaten Chat.
@@ -37,3 +37,12 @@ TTS, Matching, Realtime-Chat, Cartoon-Grafik, Prompt-Mini-CMS-UI, komplexe Rolle
 
 ## Implementierungsverantwortung
 **ChatGPT Work** bedient Google AI Studio Build im Cloud Browser und entwickelt/testet dort die gesamte Anwendung inklusive Fehlerbehebung. Work erstellt außerdem die isolierten Web Components und integriert sie über dieselbe GitHub-Codebasis.
+
+## Delivery D0 – verbindlicher Arbeitsumfang (2026-10-17)
+- Eine React/Node-App im vorhandenen Repository; Kennzeichnung „D0 technische Vorschau“.
+- Auswahl/Vorschau der zehn aktiven Use Cases aus `prompts/catalog.json`, ohne Storygenerierung oder Provider-Aufrufe.
+- Echte serverseitige Endpunkte `GET /api/health` und `GET /api/use-cases`; nur öffentliche Katalogmetadaten, keine Schlüssel/Umgebungsvariablen in Antworten.
+- Übersetzungen in externen Dateien für DE/EN/RU; responsive, tastaturbedienbare Vorschau und nachvollziehbare Lade-/Fehler-/Retry-Zustände.
+- Abnahme: Build, bestehender Validator, Health/Katalog-Tests, Browser Desktop/Mobil, Console/Netzwerkprüfung, GitHub-Push und Pull, dokumentierte URL/Commit.
+- Keine aktiven KI-Endpunkte in D0. Vor D1 müssen Modellverfügbarkeit, Preise, Auth und serverseitige harte Budgets verifiziert/implementiert sein. Die Modell-IDs des Katalogs sind bis dahin ungeprüfte Planungswerte.
+- D1 sowie C01–C04 bleiben unimplementiert.

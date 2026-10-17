@@ -4,7 +4,7 @@ Stand 2026-10-17. Zuständigkeit für Implementierung, Browser-Bedienung und Feh
 | ID | Status | Ziel | Nachweis |
 |---|---|---|---|
 | P0 | DONE | Konzept / Architektur / Contracts / initiale Repository-Checks sichern | Dateien auf `main`, `node scripts/validate.mjs` |
-| D0 | TODO | Work verbindet bestehendes GitHub-Repo mit AI Studio, erzeugt minimales React/Node-Gerüst, arbeitet aus Repo | Repo-Sync beide Richtungen; Build läuft; veröffentlichte Test-URL und Browser-Screenshot |
+| D0 | IN PROGRESS | Work verbindet bestehendes GitHub-Repo mit AI Studio, erzeugt minimales React/Node-Gerüst, arbeitet aus Repo | Repo-Sync beide Richtungen; Build läuft; veröffentlichte Test-URL und Browser-Screenshot |
 | D1 | TODO | Solo-Flow über C01–C04: Start, Auswahl/Freitext, Kommentar, Integration, neue Frage | 10-Runden-E2E, Fehlerfälle, mobile Ansicht |
 | D2 | TODO | C05–C07: Replay/Branches, Story-Bibliothek, Use-Case-Mini-CMS mit 4 Prompts | Refresh/Wiederaufnahme, Promptversionen, Rechte |
 | D3a | TODO | C08: TTS und Audio-Caching | zwei Stimmen, wiederholte Abspielung ohne neuen Request |
@@ -20,3 +20,10 @@ Stand 2026-10-17. Zuständigkeit für Implementierung, Browser-Bedienung und Feh
 - Komponenten einzeln testen (Demo + automatisiert) und nur versionierte Artefakte integrieren.
 - **Work** testet die veröffentlichte App mit Browseragent nach jeder Delivery, erfasst reale Bugs, korrigiert und aktualisiert Roadmap.
 - Keine Phase als DONE markieren allein aufgrund generierten Codes oder eines AI-Studio-Erfolgstexts.
+
+## D0 Ausführung – 2026-10-17
+- Ausgangscommit: `2d610c3e80ad29f1d4e6529a4ecf7750047d96d8`.
+- Alle verlinkten Spezifikationen, Verträge und Delivery-Dokumente gelesen.
+- `node scripts/validate.mjs`: bestanden (10 Use Cases, vier Prompts je Use Case). Baseline GitHub Actions Run `39054201692`: success.
+- Google-Anmeldung im Cloud Browser abgeschlossen. Bestehende App-Liste geprüft: keine StoryDuett-App vorhanden.
+- Implementierung/Repo-Sync/Live-Browserabnahme noch offen. D1 bleibt TODO.

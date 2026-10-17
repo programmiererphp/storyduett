@@ -4,7 +4,6 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
-const isProduction = process.env.NODE_ENV === 'production';
 
 // Explicit projection: public responses never include provider config or prompts.
 export function getPublicCatalog() {
@@ -43,14 +42,8 @@ export function createApi(loadCatalog = getPublicCatalog) {
 
 export async function setupApp() {
   const app = createApi();
-  if (!isProduction) {
-    const { createServer } = await import('vite');
-    const vite = await createServer({ server: { middlewareMode: true, hmr: false }, appType: 'spa' });
-    app.use(vite.middlewares);
-  } else {
-    app.use(express.static(join(root, 'dist')));
-    app.get('*', (_req, res) => { res.sendFile(join(root, 'dist/index.html')); });
-  }
+  app.use(express.static(join(root, 'dist')));
+  app.get('*', (_req, res) => { res.sendFile(join(root, 'dist/index.html')); });
   return app;
 }
 

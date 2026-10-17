@@ -2,7 +2,8 @@
 
 D0 is a technical preview; it implements no D1 Web Components or paid provider calls.
 
-- `server.ts`: `getPublicCatalog()` validates the versioned catalog and returns only public metadata. `createApi(loadCatalog?)` owns GET health/catalog and JSON 404s; the injectable loader permits a real unavailable-catalog test. `setupApp()` adds Vite middleware in development, static `dist` in production. PORT is configurable; bind 0.0.0.0. No key required or returned.
+- `server.ts`: `getPublicCatalog()` validates the versioned catalog and returns only public metadata. `createApi(loadCatalog?)` owns GET health/catalog and JSON 404s; the injectable loader permits a real unavailable-catalog test. `setupApp()` serves static `dist` for both preview and production. PORT is configurable; bind 0.0.0.0. No key required or returned.
+- `package.json`: `npm run dev` builds and starts the production runtime too, avoiding Cloud-Preview HMR WebSocket errors and exposed development source.
 - `src/api.ts`: `fetchJson<T>(sameOriginPath, timeoutMs=10000)` performs a no-cache GET, rejects bad HTTP/JSON and aborts stalled responses. No retries or provider calls are hidden inside it.
 - `src/App.tsx`: D0 shell, catalog search/language filter, accessible metadata dialog and health refresh. Maintains only in-memory UI state. Consumes the two public endpoints; localized error/retry states. Does not persist user text.
 - `src/i18n/{de,en,ru}.json`: UI labels, ARIA text and catalog presentation keyed by immutable catalog ID. Locale changes title and document language. Catalog version and activation remain server-owned.

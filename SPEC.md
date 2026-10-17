@@ -52,3 +52,5 @@ TTS, Matching, Realtime-Chat, Cartoon-Grafik, Prompt-Mini-CMS-UI, komplexe Rolle
 - GET-Anfragen haben zehn Sekunden Timeout und lokalisierte Fehler mit Wiederholung.
 - Bei 375px Breite dürfen Kopfzeile und Status-/Filterbereich nicht horizontal überlaufen.
 - Produktionsstart über `node --import tsx`, festgeschriebene Dependencies und CI für Validator, Typecheck, Build und produktive API-Tests.
+
+- D0 Preview nutzt denselben statischen Produktionsbuild wie das Deployment; `npm run dev` baut zuerst und startet den Produktionsserver. Damit werden weder Vite-HMR-WebSockets noch Quell-/Katalogdateien über die Preview ausgeliefert.

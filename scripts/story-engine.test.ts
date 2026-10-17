@@ -31,3 +31,8 @@ test('transport classifies provider failures without leaking bodies or keys',asy
  for(const status of [429,403,500]){const provider=geminiProvider('private-fixture',async()=>new Response('private provider details',{status}) as any);await assert.rejects(provider({}),e=>e instanceof StoryError&&!e.message.includes('private'));}
  const provider=geminiProvider(undefined);if(!process.env.GEMINI_API_KEY)await assert.rejects(provider({}),/provider_unavailable/);
 });
+
+test('real transport abort signal stops a stalled provider request',async()=>{
+ let aborted=false;const transport=((_url:any,options:any)=>new Promise((_resolve,reject)=>{options.signal.addEventListener('abort',()=>{aborted=true;reject(new Error('aborted'));});})) as typeof fetch;
+ await assert.rejects(geminiProvider('synthetic',transport,10)({}),/timeout/);assert(aborted);
+});

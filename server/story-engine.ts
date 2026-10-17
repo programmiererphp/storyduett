@@ -1,5 +1,6 @@
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
+import {GoogleGenAI} from '@google/genai';
 import type {StoryNodeV1,QuestionV1,StorySegmentV1,StoryCommentV1} from '../contracts/story.contracts';
 
 export const MODEL='gemini-3.5-flash-lite';
@@ -26,17 +27,22 @@ export function validateGeneration(raw:any,start:boolean,teacher:boolean){
 export function question(raw:any):QuestionV1{return {id:randomUUID(),text:raw.text,options:raw.options.map((o:any)=>({id:randomUUID(),text:o.text,tone:o.tone}))};}
 
 // The key is read only on the server. No SDK automatic retries, tools, audio or grounding.
-export function geminiProvider(apiKey=process.env.GEMINI_API_KEY,transport:typeof fetch=fetch):Provider{
+export function geminiProvider(apiKey=process.env.GEMINI_API_KEY,transport:typeof fetch=fetch,timeoutMs=35000):Provider{
+ const client=apiKey?new GoogleGenAI({apiKey,httpOptions:{timeout:timeoutMs,retryOptions:{attempts:1},fetch:transport}}):null;
  return async body=>{
-  if(!apiKey)throw new StoryError('provider_unavailable',503);
-  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),35000);
+  if(!client)throw new StoryError('provider_unavailable',503);
+  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeoutMs);
   try{
-   const response=await transport(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':apiKey},body:JSON.stringify(body),signal:controller.signal});
-   if(!response.ok)throw new StoryError(response.status===429?'rate_limited':response.status===401||response.status===403?'provider_unavailable':'provider_error',response.status===429?429:503);
-   try{return await response.json();}catch{throw new StoryError('invalid_response',502);}
-  }catch(e){if(controller.signal.aborted)throw new StoryError('timeout',504);if(e instanceof StoryError)throw e;throw new StoryError('provider_error',503);}finally{clearTimeout(timer);}
+   return await client.models.generateContent({model:MODEL,contents:body.contents,config:{...body.generationConfig,systemInstruction:body.systemInstruction,abortSignal:controller.signal}});
+  }catch(e){
+   if(controller.signal.aborted)throw new StoryError('timeout',504);
+   const status=typeof (e as any)?.status==='number'?(e as any).status:null;
+   console.warn(JSON.stringify({event:'gemini_transport_error',name:e instanceof Error?e.name:'unknown',status,causeCode:typeof (e as any)?.cause?.code==='string'?(e as any).cause.code:null}));
+   throw new StoryError(status===429?'rate_limited':status===401||status===403?'provider_unavailable':'provider_error',status===429?429:503);
+  }finally{clearTimeout(timer);}
  };
 }
+
 export class StoryEngine{
  private halted=false;private sessions=new Map<string,Session>();private starts=new Map<string,{hash:string,promise:Promise<{state:State,token:string}>;expiresAt:number}>();
  private users=new Map<string,Ledger>();private instance:Ledger={spent:0,reserved:0,requests:0,lastAt:0};private day='';

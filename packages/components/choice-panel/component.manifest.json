@@ -2,20 +2,20 @@
   "schemaVersion": "1.0",
   "id": "C03",
   "tagName": "sd-choice-panel",
-  "version": "0.1.0",
-  "status": "planned",
+  "version": "1.0.0",
+  "status": "implemented",
   "entry": "src/index.ts",
   "bundle": "dist/sd-choice-panel.js",
   "contractsVersion": "1.0",
   "properties": {
-    "question": "QuestionV1",
+    "question": "QuestionV1|null",
     "busy": "boolean",
     "allowCustom": "boolean",
-    "locale": "string"
+    "i18n": "Record<string,string>"
   },
   "events": {
     "sd:answer-submit": {
-      "detailType": "AnswerSubmitV1",
+      "detailType": "Pick<AnswerSubmitV1,questionId|selectedOptionId|customAnswer>",
       "bubbles": true,
       "composed": true
     }

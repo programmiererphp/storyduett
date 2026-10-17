@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0",
+  "id": "C02",
+  "tagName": "sd-story-reader",
+  "version": "1.0.0",
+  "status": "implemented",
+  "entry": "src/index.ts",
+  "bundle": "dist/sd-story-reader.js",
+  "contractsVersion": "1.0",
+  "properties": {
+    "segments": "StorySegmentV1[]",
+    "activeNodeId": "string",
+    "i18n": "Record<string,string>"
+  },
+  "events": {
+    "sd:segment-select": {
+      "detailType": "{segmentId:string}",
+      "bubbles": true,
+      "composed": true
+    }
+  },
+  "backendCalls": false,
+  "accessibility": [
+    "keyboard",
+    "aria",
+    "visible-focus",
+    "author-labels"
+  ],
+  "tests": [
+    "standalone-demo",
+    "input-contract",
+    "keyboard",
+    "double-submit",
+    "empty-state"
+  ]
+}

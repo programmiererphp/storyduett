@@ -1,15 +1,15 @@
 {
   "name": "storyduett",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "description": "KI-unterst\u00fctztes gemeinsames Geschichtenerz\u00e4hlen, Sprachlernen und Kennenlernen \u2013 D0 Technische Vorschau",
+  "description": "StoryDuett D1 \u2013 playable solo stories with server-side Gemini and C01\u2013C04",
   "scripts": {
     "dev": "npm run build && npm start",
     "build": "npm run build:components && vite build && node scripts/build-components.mjs --publish",
     "start": "NODE_ENV=production node --import tsx server.ts",
     "typecheck": "tsc --noEmit",
     "validate": "node scripts/validate.mjs",
-    "test": "npm run test:components && node --import tsx --test scripts/reliability.test.ts && node scripts/test-api.mjs",
+    "test": "npm run test:components && node --import tsx --test scripts/reliability.test.ts scripts/story-engine.test.ts && node scripts/test-api.mjs",
     "build:components": "node scripts/build-components.mjs",
     "test:components": "npm run build:components && node --test packages/components/*/tests/*.test.mjs"
   },

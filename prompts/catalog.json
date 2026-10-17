@@ -6,18 +6,18 @@
     "ttsModel": "gemini-3.8-flash-lite-tts",
     "locale": "de",
     "ttsVoice": "auto",
-    "maxCostUsdPerCall": 0.03,
-    "maxCostUsdPerSession": 1
+    "maxCostUsdPerCall": 0.01,
+    "maxCostUsdPerSession": 0.1
   },
   "useCases": [
     {
       "id": "fiction",
       "name": "Fiktion & Abenteuer",
-      "version": 1,
+      "version": 2,
       "enabled": true,
       "language": "de",
       "commentStyle": "playful",
-      "textModel": "gemini-3.8-flash",
+      "textModel": "gemini-3.5-flash-lite",
       "tts": {
         "model": "gemini-3.8-flash-tts",
         "voiceId": "auto",
@@ -34,11 +34,11 @@
     {
       "id": "madagascar-azubi",
       "name": "Auszubildende aus Madagaskar",
-      "version": 1,
+      "version": 2,
       "enabled": true,
       "language": "de",
       "commentStyle": "ironic",
-      "textModel": "gemini-3.8-flash",
+      "textModel": "gemini-3.5-flash-lite",
       "tts": {
         "model": "gemini-3.8-flash-tts",
         "voiceId": "auto",
@@ -55,7 +55,7 @@
     {
       "id": "german-b2",
       "name": "Deutsch lernen B2",
-      "version": 1,
+      "version": 2,
       "enabled": true,
       "language": "de",
       "commentStyle": "teacher",
@@ -76,7 +76,7 @@
     {
       "id": "italian-a1",
       "name": "Italienisch A1",
-      "version": 1,
+      "version": 2,
       "enabled": true,
       "language": "it",
       "commentStyle": "teacher",
@@ -97,7 +97,7 @@
     {
       "id": "smalltalk",
       "name": "Smalltalk & Schlagfertigkeit",
-      "version": 1,
+      "version": 2,
       "enabled": true,
       "language": "de",
       "commentStyle": "coaching",
@@ -118,11 +118,11 @@
     {
       "id": "getting-to-know",
       "name": "Kennenlernen zu zweit",
-      "version": 1,
+      "version": 2,
       "enabled": true,
       "language": "de",
       "commentStyle": "warm",
-      "textModel": "gemini-3.8-flash",
+      "textModel": "gemini-3.5-flash-lite",
       "tts": {
         "model": "gemini-3.8-flash-tts",
         "voiceId": "auto",
@@ -139,7 +139,7 @@
     {
       "id": "reflection",
       "name": "Perspektivwechsel & Reflexion",
-      "version": 1,
+      "version": 2,
       "enabled": true,
       "language": "de",
       "commentStyle": "supportive",
@@ -160,7 +160,7 @@
     {
       "id": "work",
       "name": "Bewerbung & Beruf",
-      "version": 1,
+      "version": 2,
       "enabled": true,
       "language": "de",
       "commentStyle": "coaching",
@@ -181,7 +181,7 @@
     {
       "id": "learning",
       "name": "Interaktive Lerntexte",
-      "version": 1,
+      "version": 2,
       "enabled": true,
       "language": "de",
       "commentStyle": "didactic",
@@ -202,11 +202,11 @@
     {
       "id": "community",
       "name": "Gemeinschaft & Zukunft",
-      "version": 1,
+      "version": 2,
       "enabled": true,
       "language": "de",
       "commentStyle": "visionary",
-      "textModel": "gemini-3.8-flash",
+      "textModel": "gemini-3.5-flash-lite",
       "tts": {
         "model": "gemini-3.8-flash-tts",
         "voiceId": "auto",

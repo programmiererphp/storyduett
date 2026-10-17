@@ -24,6 +24,7 @@
     "src",
     "contracts",
     "server.ts",
-    "packages/components/*/src"
+    "packages/components/*/src",
+    "server"
   ]
 }

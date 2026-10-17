@@ -1,0 +1,120 @@
+{
+  "app": {
+    "title": "StoryDuett",
+    "badge": "D0 Technical Preview",
+    "tagline": "Collaborative storytelling & language learning",
+    "version": "D0 Technical Preview"
+  },
+  "nav": {
+    "languageAria": "Language selection",
+    "switchTo": "Switch to {lang}",
+    "locales": {
+      "de": "German",
+      "en": "English",
+      "ru": "Russian"
+    }
+  },
+  "previewNotice": {
+    "title": "D0 Technical Preview",
+    "description": "Functional foundation verifying server health and the use case catalog. Interactive solo storytelling will follow in Delivery D1; audio narration (D3a) and multiplayer duo modes (D4) are scheduled for subsequent deliveries.",
+    "noFakeNotice": "No AI generation in D0."
+  },
+  "health": {
+    "title": "Server Status",
+    "endpoint": "GET /api/health",
+    "statusLabel": "Status",
+    "statusOnline": "Online (200 OK)",
+    "onlineShort": "Online",
+    "statusChecking": "Checking...",
+    "statusError": "Unreachable",
+    "delivery": "Milestone",
+    "deliveryValue": "D0 Technical Preview",
+    "catalogCount": "Catalog",
+    "latency": "Latency",
+    "lastChecked": "Checked",
+    "refresh": "Refresh",
+    "refreshAria": "Re-check server status"
+  },
+  "catalog": {
+    "title": "Use Case Catalog",
+    "subtitle": "Active standard scenarios from catalog",
+    "filterAll": "All Languages",
+    "filterDe": "German",
+    "filterIt": "Italian",
+    "searchPlaceholder": "Search scenarios...",
+    "searchAria": "Filter scenarios by name or summary",
+    "clearSearchAria": "Clear search query",
+    "found": "{count} available",
+    "loading": "Loading catalog...",
+    "loadError": "Could not load use case catalog.",
+    "retry": "Try again",
+    "detailsButton": "Details",
+    "detailsAria": "View details for {name}",
+    "previewBadge": "Catalog Preview",
+    "emptyTitle": "No use cases found",
+    "emptyMessage": "No scenarios matched the current search or filter criteria."
+  },
+  "modal": {
+    "title": "Scenario Details",
+    "close": "Close",
+    "closeAria": "Close details dialog",
+    "fieldId": "ID",
+    "fieldName": "Name",
+    "fieldVersion": "Version",
+    "fieldLanguage": "Language",
+    "fieldDescription": "Description",
+    "planningNotice": "Planning Note",
+    "planningText": "This scenario is part of the versioned catalog. Interactive storytelling will be activated in subsequent deliveries per roadmap.",
+    "safetyTitle": "Security",
+    "safetyText": "Public metadata only; no internal prompts or keys exposed."
+  },
+  "languages": {
+    "de": "German",
+    "it": "Italian"
+  },
+  "cases": {
+    "fiction": {
+      "name": "Fiction & Adventure",
+      "summary": "Humorous, romantic, historical, or fantasy – vivid situations for collaborative storytelling."
+    },
+    "madagascar-azubi": {
+      "name": "Trainee from Madagascar",
+      "summary": "Humorous observations and cross-cultural vocational life of an apprentice in Germany."
+    },
+    "german-b2": {
+      "name": "German Learning B2",
+      "summary": "Everyday B2 dialogue scenes with gentle, clear language correction."
+    },
+    "italian-a1": {
+      "name": "Italian A1",
+      "summary": "Very short Italian everyday phrases for beginners with translation aids."
+    },
+    "smalltalk": {
+      "name": "Small Talk & Quick Wit",
+      "summary": "Spontaneous social scenarios with constructive, warm feedback on conversation flow."
+    },
+    "getting-to-know": {
+      "name": "Getting to Know (Duo)",
+      "summary": "Cooperative scenes for two players playfully discovering mutual interests."
+    },
+    "reflection": {
+      "name": "Perspective & Reflection",
+      "summary": "Gentle everyday scenarios exploring personal priorities, wishes, and growth."
+    },
+    "work": {
+      "name": "Job Interview & Career",
+      "summary": "Simulated interviews, customer interactions, and workplace communication."
+    },
+    "learning": {
+      "name": "Interactive Learning",
+      "summary": "Concise informational texts from science, history, and society."
+    },
+    "community": {
+      "name": "Community & Future",
+      "summary": "Co-living, repair workshops, communal gardens, and neighborhood initiatives."
+    }
+  },
+  "footer": {
+    "status": "StoryDuett D0 Technical Preview • Specification SD-SPEC-01"
+  }
+}

@@ -2,7 +2,7 @@
 
 KI-unterstütztes gemeinsames Geschichtenerzählen, Sprachlernen und Kennenlernen. **Ein einziges GitHub-Repository für die vollständige Webapp** inklusive AI-Studio-Build-Code, Web Components, Prompts, Tests und bereinigten Diagnosedaten.
 
-**Stand 2026-10-17:** D0-Planung und Verträge im Repository; die Hauptanwendung ist **noch nicht** implementiert oder deployed. Die künftige Implementierung, AI-Studio-Steuerung und Fehlerbehebung erfolgt durch **ChatGPT Work** (Cloud Browser), nicht durch den Nutzer.
+**Stand 2026-10-17:** Delivery D0 technische Vorschau (React 19 + Node Express auf Port 3000 / 0.0.0.0). Bereitgestellt sind echte Endpunkte `GET /api/health` und `GET /api/use-cases` (sichere öffentliche Projektion ohne interne Prompts oder Modell-IDs) sowie eine schlanke Vorschau der 10 Use Cases in DE/EN/RU. Interaktives Storytelling (Solo C01–C04) folgt in D1; Steuerung und Browserabnahme erfolgen durch **ChatGPT Work**.
 
 ## Einstieg für ChatGPT Work
 
@@ -19,6 +19,9 @@ KI-unterstütztes gemeinsames Geschichtenerzählen, Sprachlernen und Kennenlerne
 - [Logging / Datenschutz](docs/LOGGING_SECURITY.md) · [Promptkatalog](prompts/catalog.json)
 
 ## Status / Checks
-`node scripts/validate.mjs` prüft die Planungsartefakte ohne externe Abhängigkeiten. **Es ist kein Test einer laufenden Webapp.**
+- `node scripts/validate.mjs` prüft die Planungsartefakte und Verträge ohne externe Abhängigkeiten.
+- `npm test` führt isolierte API-Tests (`GET /api/health`, sichere `GET /api/use-cases` Projektion, 404) auf eigenem Port aus.
+- `npm run typecheck` & `npm run build` prüfen TypeScript-Typen und das Produktions-Bundle.
 
 Offizielle Referenzen: https://ai.google.dev/gemini-api/docs/aistudio-build-mode · https://ai.google.dev/gemini-api/docs/models · https://ai.google.dev/gemini-api/docs/speech-generation
+

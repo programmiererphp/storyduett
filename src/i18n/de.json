@@ -1,0 +1,120 @@
+{
+  "app": {
+    "title": "StoryDuett",
+    "badge": "D0 technische Vorschau",
+    "tagline": "Gemeinsames Geschichtenerzählen & Sprachlernen",
+    "version": "D0 Technische Vorschau"
+  },
+  "nav": {
+    "languageAria": "Sprachauswahl",
+    "switchTo": "Zu {lang} wechseln",
+    "locales": {
+      "de": "Deutsch",
+      "en": "Englisch",
+      "ru": "Russisch"
+    }
+  },
+  "previewNotice": {
+    "title": "D0 Technische Vorschau",
+    "description": "Funktionsfähiges Grundgerüst zur Überprüfung von Server-Health und Use-Case-Katalog. Interaktives Solo-Geschichtenerzählen folgt in Delivery D1; erweiterte Funktionen wie Sprachausgabe (D3a) und Mehrspieler-Modi (D4) folgen in späteren Deliveries.",
+    "noFakeNotice": "Keine KI-Generierung in D0."
+  },
+  "health": {
+    "title": "Serverstatus",
+    "endpoint": "GET /api/health",
+    "statusLabel": "Status",
+    "statusOnline": "Online (200 OK)",
+    "onlineShort": "Online",
+    "statusChecking": "Wird geprüft...",
+    "statusError": "Nicht erreichbar",
+    "delivery": "Meilenstein",
+    "deliveryValue": "D0 Technische Vorschau",
+    "catalogCount": "Katalog",
+    "latency": "Latenz",
+    "lastChecked": "Geprüft",
+    "refresh": "Aktualisieren",
+    "refreshAria": "Serverstatus erneut prüfen"
+  },
+  "catalog": {
+    "title": "Use-Case-Katalog",
+    "subtitle": "Aktive Standard-Szenarien aus dem Katalog",
+    "filterAll": "Alle Sprachen",
+    "filterDe": "Deutsch",
+    "filterIt": "Italienisch",
+    "searchPlaceholder": "Szenario suchen...",
+    "searchAria": "Szenario nach Name oder Beschreibung filtern",
+    "clearSearchAria": "Suchbegriff löschen",
+    "found": "{count} verfügbar",
+    "loading": "Katalog wird geladen...",
+    "loadError": "Katalog konnte nicht geladen werden.",
+    "retry": "Erneut versuchen",
+    "detailsButton": "Details",
+    "detailsAria": "Details für {name} anzeigen",
+    "previewBadge": "Katalog-Vorschau",
+    "emptyTitle": "Keine Use Cases gefunden",
+    "emptyMessage": "Für die gewählten Filterkriterien wurden keine Einträge gefunden."
+  },
+  "modal": {
+    "title": "Szenario-Details",
+    "close": "Schließen",
+    "closeAria": "Detaildialog schließen",
+    "fieldId": "ID",
+    "fieldName": "Name",
+    "fieldVersion": "Version",
+    "fieldLanguage": "Sprache",
+    "fieldDescription": "Beschreibung",
+    "planningNotice": "Planungshinweis",
+    "planningText": "Dieser Use Case ist Teil des versionierten Katalogs. Die interaktive Story-Engine wird in nachfolgenden Deliveries gemäß Roadmap aktiviert.",
+    "safetyTitle": "Sicherheit",
+    "safetyText": "Ausschließlich unbedenkliche Metadaten; keine Prompts oder Schlüssel exponiert."
+  },
+  "languages": {
+    "de": "Deutsch",
+    "it": "Italienisch"
+  },
+  "cases": {
+    "fiction": {
+      "name": "Fiktion & Abenteuer",
+      "summary": "Komisch, romantisch, historisch oder Fantasy – bildhafte Situationen für gemeinsames Erzählen."
+    },
+    "madagascar-azubi": {
+      "name": "Auszubildende aus Madagaskar",
+      "summary": "Humorvolle Beobachtungen und interkultureller Berufsalltag einer Auszubildenden in Deutschland."
+    },
+    "german-b2": {
+      "name": "Deutsch lernen B2",
+      "summary": "Alltägliche B2-Gesprächsszenen mit sanfter und verständlicher Sprachkorrektur."
+    },
+    "italian-a1": {
+      "name": "Italienisch A1",
+      "summary": "Sehr kurze italienische Alltagssätze für Einsteiger mit deutscher Übersetzungshilfe."
+    },
+    "smalltalk": {
+      "name": "Smalltalk & Schlagfertigkeit",
+      "summary": "Spontane soziale Alltagssituationen mit wertschätzendem Gesprächsfeedback."
+    },
+    "getting-to-know": {
+      "name": "Kennenlernen zu zweit",
+      "summary": "Kooperative Szenen für zwei Mitspieler zum spielerischen Entdecken von Gemeinsamkeiten."
+    },
+    "reflection": {
+      "name": "Perspektivwechsel & Reflexion",
+      "summary": "Sanfte Alltagsszenen über persönliche Wünsche, Prioritäten und Herausforderungen."
+    },
+    "work": {
+      "name": "Bewerbung & Beruf",
+      "summary": "Vorstellungsgespräche, Kundendialoge und berufliche Kommunikation im Betrieb."
+    },
+    "learning": {
+      "name": "Interaktive Lerntexte",
+      "summary": "Kurze Wissens- und Sachtexte aus Wissenschaft, Geschichte und Gesellschaft."
+    },
+    "community": {
+      "name": "Gemeinschaft & Zukunft",
+      "summary": "Gemeinschaftliches Wohnen, Werkstatt, Garten und zukunftsfähige Nachbarschaftsideen."
+    }
+  },
+  "footer": {
+    "status": "StoryDuett D0 Technische Vorschau • Verbindliche Spezifikation SD-SPEC-01"
+  }
+}

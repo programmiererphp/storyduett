@@ -25,5 +25,9 @@ Stand 2026-10-17. Zuständigkeit für Implementierung, Browser-Bedienung und Feh
 - Ausgangscommit: `2d610c3e80ad29f1d4e6529a4ecf7750047d96d8`.
 - Alle verlinkten Spezifikationen, Verträge und Delivery-Dokumente gelesen.
 - `node scripts/validate.mjs`: bestanden (10 Use Cases, vier Prompts je Use Case). Baseline GitHub Actions Run `39054201692`: success.
-- Google-Anmeldung im Cloud Browser abgeschlossen. Bestehende App-Liste geprüft: keine StoryDuett-App vorhanden.
-- Implementierung/Repo-Sync/Live-Browserabnahme noch offen. D1 bleibt TODO.
+- D0 Full-Stack-Gerüst (React 19 + Node Express, Port 3000 / 0.0.0.0) im existierenden Repository bereitgestellt.
+- Endpunkte `GET /api/health` und `GET /api/use-cases` implementiert; Katalogprojektion schützt interne Prompts und Geheimnisse.
+- Externe Übersetzungen DE/EN/RU eingebunden; mobile-first Vorschau der 10 aktiven Use Cases aus `prompts/catalog.json`.
+- Automatisierte Tests `scripts/test-api.mjs`, `scripts/validate.mjs` und `npm run build` erfolgreich durchgeführt.
+- GitHub-Sync und browserbasierte Endabnahme erfolgen durch ChatGPT Work. Status von D0 bleibt IN PROGRESS bis zur erfolgreichen Verifikation. D1 bleibt TODO.
+

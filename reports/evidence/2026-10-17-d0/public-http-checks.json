@@ -1,0 +1,63 @@
+{
+  "baseUrl": "https://storyduett.ai.studio",
+  "testedAt": "2026-10-17T18:43:39.987656+00:00",
+  "authentication": "none; independent urllib HTTP requests without browser cookies",
+  "checks": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "result": "pass"
+    },
+    {
+      "path": "/api/use-cases",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "result": "pass"
+    },
+    {
+      "path": "/api/unbekannt",
+      "status": 404,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "result": "pass"
+    },
+    {
+      "path": "/api/admin/debug",
+      "status": 404,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "result": "pass"
+    },
+    {
+      "path": "/server.ts",
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "cacheControl": "private, max-age=0",
+      "result": "pass"
+    },
+    {
+      "path": "/prompts/catalog.json",
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "cacheControl": "private, max-age=0",
+      "result": "pass"
+    },
+    {
+      "path": "/.env",
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "cacheControl": "private, max-age=0",
+      "result": "pass"
+    },
+    {
+      "path": "/assets/index-mGfLisKd.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=UTF-8",
+      "cacheControl": "private, max-age=0",
+      "result": "pass"
+    }
+  ]
+}

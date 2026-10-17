@@ -1,5 +1,5 @@
 # StoryDuett – verbindliche Produktspezifikation V1.0
-**Referenz:** SD-SPEC-01 | **Stand:** 2026-10-17 | **Status:** D0 implemented and verified in AI Studio Preview; public deployment pending approval. D1 not started.
+**Referenz:** SD-SPEC-01 | **Stand:** 2026-10-17 | **Status:** D0 DONE – published and verified at https://storyduett.ai.studio/. D1 not started.
 
 ## Ziel / Unterschied zu gewöhnlichen Story-Generatoren
 Zwei Menschen (oder ein Mensch mit KI) bauen **inkrementell und gemeinsam** eine Geschichte, Lernübung oder einen Simulationstext. KI kommentiert jeden Beitrag lakonisch, stellt spielerische Folgefragen und erzeugt jeweils **genau drei Antworten: zwei ernsthafte und eine ironische**. Freitext ist immer möglich. Die App unterstützt später sozialem Kennenlernen nahe Wohnorten durch Matching und privaten Chat.
@@ -60,4 +60,9 @@ TTS, Matching, Realtime-Chat, Cartoon-Grafik, Prompt-Mini-CMS-UI, komplexe Rolle
 - Eine importierte AI-Studio-App `57b82b35-8dbc-4c3d-bcc7-bf454333f191`, verbunden mit `programmiererphp/storyduett`, `main`. Nativer Push und nachfolgende externe Änderungen plus nativer Pull sind nachgewiesen.
 - Preview: https://ais-dev-4xncdtwz7pslafeok6mckl-237548413897.europe-west2.run.app/ (Entwicklungsvorschau, kein öffentliches Deployment).
 - Backend, zehn Katalogeinträge, DE/EN/RU, Filter/Suche/Leerzustand/Dialog/Tastatur, Desktop und Mobilbreite geprüft. CI für Produktionsbuild/API/Fehlerverhalten erfolgreich.
-- Bericht: `reports/reviews/2026-10-17-7eb1e1c.md`. Öffentliche Bereitstellung wurde durch automatische Freigabeprüfung blockiert; keine abgeschlossene Veröffentlichung behaupten.
+- Bericht: `reports/reviews/2026-10-17-7eb1e1c.md`. Der damalige Freigabeblocker wurde durch ausdrückliche Nutzerfreigabe am 2026-10-17 um 20:37 Europe/Berlin aufgehoben. Öffentliche Veröffentlichung und Abnahme sind erfolgt; siehe Abschlussbericht `reports/reviews/2026-10-17-2535345.md`.
+
+## D0 öffentlicher Abschluss – 2026-10-17
+- Öffentliche URL: https://storyduett.ai.studio/; AI Studio Publish meldet „storyduett is published!“ und Status Ready.
+- Veröffentlichter Repository-Stand: `2535345d6bf43e1b3a587816ce21d410de9817be`; unveränderter getesteter Anwendungscode aus `7eb1e1c643e9f2eb8817e5d663fcae0f13251b60`.
+- Tatsächliche öffentliche Browser- und anonyme HTTP-Prüfungen bestanden; Abschlussbericht `reports/reviews/2026-10-17-2535345.md`. D0 DONE, D1 weiterhin TODO.

@@ -18,7 +18,7 @@ Jede Delivery dokumentiert: tatsächlichen GitHub-Commit, Arbeitsbranch, Modell,
 ## Arbeitsregel
 Jede Lieferung beschränkt sich auf wenige Module und ca. max 1–2k zusätzliche/geänderte Codezeilen. Vorher SPEC + ROADMAP anpassen. Work entwickelt isolierte Komponenten samt Manifest+Demo+Tests und integriert diese **selbst** über den AI-Studio-Build-Chat. Danach öffnen: aktuelle laufende/deployte App, echte Events auslösen, Screenshot/Log-Auswertung, Bugs fixen. `reports/reviews/YYYY-MM-DD-<commit>.md` ohne Nutzerdaten ablegen. Folgeschritt nur nach realer Bestandsaufnahme.
 
-## D0: Implementierung und Preview verifiziert, Veröffentlichung offen
+## D0 DONE: Implementierung, Synchronisierung und öffentliche Veröffentlichung verifiziert
 Stand 2026-10-17: Work hat die eine React/Node-App in AI Studio erstellt, nativen GitHub-Push/Pull in beide Richtungen verifiziert und die laufende technische Vorschau mit Desktop-/Mobilbrowser geprüft. Final geprüfter Code: `7eb1e1c643e9f2eb8817e5d663fcae0f13251b60`. CI, Validator, Typecheck, Build und Produktions-API-/Fehlertests sind grün. Bericht: [SD-D0-REVIEW-01](../reports/reviews/2026-10-17-7eb1e1c.md).
 
-D0 bleibt IN PROGRESS, weil die öffentliche Cloud-Run-Veröffentlichung durch die automatische Freigabeprüfung blockiert wurde und ausdrückliche Nutzerfreigabe benötigt. Es existiert eine getestete Entwicklungsvorschau, aber noch keine dauerhafte öffentliche Deployment-URL. Nach Freigabe veröffentlichen, URL erneut testen und erst dann D0 als DONE markieren. D1 wurde nicht begonnen.
+D0 ist nach ausdrücklicher Nutzerfreigabe am 2026-10-17 um 20:37 Europe/Berlin öffentlich unter https://storyduett.ai.studio/ veröffentlicht und dort im Cloud Browser sowie mit anonymen HTTP-Anfragen geprüft. Alle D0-Abnahmekriterien sind erfüllt. [Öffentlicher Abschlussbericht SD-D0-DEPLOY-01](../reports/reviews/2026-10-17-2535345.md). D1 wurde nicht begonnen.

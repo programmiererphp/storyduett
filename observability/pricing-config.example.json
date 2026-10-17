@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-10-17",
+  "currency": "USD",
+  "note": "Example only. Prices intentionally unset; Work must verify current provider pricing before enabling real charging.",
+  "models": {
+    "gemini-3.5-flash-lite": {
+      "inputPerMillionUsd": null,
+      "outputPerMillionUsd": null
+    },
+    "gemini-3.8-flash": {
+      "inputPerMillionUsd": null,
+      "outputPerMillionUsd": null
+    },
+    "gemini-3.8-flash-tts": {
+      "inputPerMillionUsd": null,
+      "audioOutputPerMillionUsd": null
+    },
+    "gemini-3.8-flash-lite-tts": {
+      "inputPerMillionUsd": null,
+      "audioOutputPerMillionUsd": null
+    }
+  },
+  "defaultCaps": {
+    "perCallUsd": 0.03,
+    "perSessionUsd": 1,
+    "perUserPerDayUsd": 2,
+    "byFeatureUsd": {
+      "turn": 1,
+      "tts": 0.5,
+      "cartoon": 0.5,
+      "chat": 0.5
+    }
+  }
+}

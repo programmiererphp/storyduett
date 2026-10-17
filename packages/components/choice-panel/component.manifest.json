@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0",
+  "id": "C03",
+  "tagName": "sd-choice-panel",
+  "version": "0.1.0",
+  "status": "planned",
+  "entry": "src/index.ts",
+  "bundle": "dist/sd-choice-panel.js",
+  "contractsVersion": "1.0",
+  "properties": {
+    "question": "QuestionV1",
+    "busy": "boolean",
+    "allowCustom": "boolean",
+    "locale": "string"
+  },
+  "events": {
+    "sd:answer-submit": {
+      "detailType": "AnswerSubmitV1",
+      "bubbles": true,
+      "composed": true
+    }
+  },
+  "backendCalls": false,
+  "accessibility": [
+    "keyboard",
+    "aria",
+    "visible-focus",
+    "author-labels"
+  ],
+  "tests": [
+    "standalone-demo",
+    "input-contract",
+    "keyboard",
+    "double-submit",
+    "empty-state"
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Private API usage record, not for public user data",
+  "type": "object",
+  "required": [
+    "requestId",
+    "feature",
+    "model",
+    "status",
+    "startedAt",
+    "priceListVersion"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "userId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "feature": {
+      "enum": [
+        "start",
+        "turn",
+        "tts",
+        "cartoon",
+        "chat",
+        "summary"
+      ]
+    },
+    "model": {
+      "type": "string"
+    },
+    "promptVersionIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "enum": [
+        "success",
+        "error",
+        "blocked"
+      ]
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "latencyMs": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "inputTokens": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "outputTokens": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "thinkingTokens": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "cachedTokens": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "audioTokens": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "estimatedCostUsd": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "priceListVersion": {
+      "type": "string"
+    },
+    "errorCode": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

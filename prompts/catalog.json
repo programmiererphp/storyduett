@@ -1,0 +1,224 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Versionierte Standard-Use-Cases. Benutzerspezifische Änderungen ausschließlich in privater App-DB.",
+  "defaults": {
+    "textModel": "gemini-3.5-flash-lite",
+    "ttsModel": "gemini-3.8-flash-lite-tts",
+    "locale": "de",
+    "ttsVoice": "auto",
+    "maxCostUsdPerCall": 0.03,
+    "maxCostUsdPerSession": 1
+  },
+  "useCases": [
+    {
+      "id": "fiction",
+      "name": "Fiktion & Abenteuer",
+      "version": 1,
+      "enabled": true,
+      "language": "de",
+      "commentStyle": "playful",
+      "textModel": "gemini-3.8-flash",
+      "tts": {
+        "model": "gemini-3.8-flash-tts",
+        "voiceId": "auto",
+        "style": "ausdrucksstark, natürlich",
+        "speed": 1
+      },
+      "prompts": {
+        "start": "Beginne eine bildhafte, spannende und zugängliche Geschichte mit einem starken ersten Satz und einer offenen Situation.",
+        "question": "Stelle eine konkrete Frage zur nächsten Szene. Genau drei Optionen, zwei plausible ernsthafte und eine witzig-ironische. Freitext bleibt erlaubt.",
+        "comment": "Reagiere nach jedem Zug in höchstens 18 Wörtern trocken, freundlich und überraschend ironisch, ohne Figuren zu verspotten.",
+        "integrate": "Integriere die Entscheidung als natürlich anschließende neue Prosa. Schreibe keinen bestehenden Text um; ordne menschliche Initiative dem richtigen Akteur zu."
+      }
+    },
+    {
+      "id": "madagascar-azubi",
+      "name": "Auszubildende aus Madagaskar",
+      "version": 1,
+      "enabled": true,
+      "language": "de",
+      "commentStyle": "ironic",
+      "textModel": "gemini-3.8-flash",
+      "tts": {
+        "model": "gemini-3.8-flash-tts",
+        "voiceId": "auto",
+        "style": "ausdrucksstark, natürlich",
+        "speed": 1
+      },
+      "prompts": {
+        "start": "Eröffne eine humorvolle, respektvolle Geschichte über eine junge erwachsene Auszubildende aus Madagaskar im deutschen Berufsalltag. Beobachtungswitz statt Klischees.",
+        "question": "Frage nach der nächsten beruflichen oder kulturellen Alltagssituation; zwei plausible Wege und eine charmant absurde Lösung.",
+        "comment": "Kommentiere kurz, trocken und intelligent wie eine zurückhaltend ironische Erzählerstimme.",
+        "integrate": "Baue die Idee nahtlos als Handlung der Azubine oder Situation im Betrieb ein, ohne die Vergangenheit zu ersetzen."
+      }
+    },
+    {
+      "id": "german-b2",
+      "name": "Deutsch lernen B2",
+      "version": 1,
+      "enabled": true,
+      "language": "de",
+      "commentStyle": "teacher",
+      "textModel": "gemini-3.5-flash-lite",
+      "tts": {
+        "model": "gemini-3.8-flash-tts",
+        "voiceId": "auto",
+        "style": "klar, langsam, deutlich",
+        "speed": 1
+      },
+      "prompts": {
+        "start": "Beginne eine kleine realistische Gesprächsszene auf Deutsch B2, z.B. Café, Behörde, Uni, Rezeption.",
+        "question": "Stelle eine einfache alltagsnahe Frage mit zwei grammatisch passenden und einer humorvollen Option; ergänze eine freie Eingabe.",
+        "comment": "Korrigiere Fehler des Nutzers freundlich, konkret und sehr kurz. Zeige bevorzugt die korrigierte Form mit einem Satz Erklärung.",
+        "integrate": "Führe den Dialog natürlich in korrektem B2-Deutsch weiter. Originalbeitrag bleibt unverändert archiviert."
+      }
+    },
+    {
+      "id": "italian-a1",
+      "name": "Italienisch A1",
+      "version": 1,
+      "enabled": true,
+      "language": "it",
+      "commentStyle": "teacher",
+      "textModel": "gemini-3.5-flash-lite",
+      "tts": {
+        "model": "gemini-3.8-flash-tts",
+        "voiceId": "auto",
+        "style": "klar, langsam, deutlich",
+        "speed": 1
+      },
+      "prompts": {
+        "start": "Starte mit höchstens vier italienischen Wörtern. Alltagsszene: Öffnungszeiten, Straßenschilder, Museum oder Wochentage.",
+        "question": "Formuliere eine sehr kurze Folgefrage und drei leicht verständliche Antworten, zwei sachliche und eine lustige.",
+        "comment": "Korrigiere maximal einen typischen Fehler, gib deutsche Bedeutung und einfache Aussprachehilfe.",
+        "integrate": "Schreibe die Szene in sehr kurzen italienischen Sätzen fort und halte jeden Einzelsatz bei maximal vier Wörtern."
+      }
+    },
+    {
+      "id": "smalltalk",
+      "name": "Smalltalk & Schlagfertigkeit",
+      "version": 1,
+      "enabled": true,
+      "language": "de",
+      "commentStyle": "coaching",
+      "textModel": "gemini-3.5-flash-lite",
+      "tts": {
+        "model": "gemini-3.8-flash-tts",
+        "voiceId": "auto",
+        "style": "ausdrucksstark, natürlich",
+        "speed": 1
+      },
+      "prompts": {
+        "start": "Beginne eine plausible kleine Gesprächssituation zwischen Fremden in Alltag, Kurs oder Veranstaltung.",
+        "question": "Frage nach einer möglichen lockeren Reaktion; zwei sympathische und eine sanft ironische Option.",
+        "comment": "Gib ein kurzes, praxisnahes Feedback auf Wärme, Neugier und Gesprächsfluss ohne moralische Belehrung.",
+        "integrate": "Führe den Dialog realistisch fort, zeige eine gute Reaktion der anderen Person und die nächste Gelegenheit zum Antworten."
+      }
+    },
+    {
+      "id": "getting-to-know",
+      "name": "Kennenlernen zu zweit",
+      "version": 1,
+      "enabled": true,
+      "language": "de",
+      "commentStyle": "warm",
+      "textModel": "gemini-3.8-flash",
+      "tts": {
+        "model": "gemini-3.8-flash-tts",
+        "voiceId": "auto",
+        "style": "ausdrucksstark, natürlich",
+        "speed": 1
+      },
+      "prompts": {
+        "start": "Beginne eine kooperative, leichte Szene für zwei erwachsene Mitspieler, z.B. gemeinsamer Ausflug oder Mini-Abenteuer.",
+        "question": "Frage nach einer gemeinsam zu treffenden Entscheidung, die Interessen und humorvolle Perspektiven sichtbar macht; zwei ernsthafte und eine ironische.",
+        "comment": "Kommentiere knapp, scherzhaft und verbindend; stelle keine aufdringlichen privaten Diagnosen.",
+        "integrate": "Integriere den Beitrag des aktuellen Spielers, lasse auch dem zweiten Spieler relevante Handlungsmöglichkeiten."
+      }
+    },
+    {
+      "id": "reflection",
+      "name": "Perspektivwechsel & Reflexion",
+      "version": 1,
+      "enabled": true,
+      "language": "de",
+      "commentStyle": "supportive",
+      "textModel": "gemini-3.5-flash-lite",
+      "tts": {
+        "model": "gemini-3.8-flash-tts",
+        "voiceId": "auto",
+        "style": "ausdrucksstark, natürlich",
+        "speed": 1
+      },
+      "prompts": {
+        "start": "Beginne eine sanfte, ermutigende Alltagssituation über Wünsche, Herausforderungen oder kleine Zukunftsideen.",
+        "question": "Stelle eine offene, leicht zu beantwortende Frage mit zwei ernsthaften und einer leichten humorvollen Option.",
+        "comment": "Antworte unterstützend und reflektierend, ohne Diagnosen oder unangemessen ironische Bemerkungen.",
+        "integrate": "Führe die symbolische Szene kohärent fort und bewahre die Entscheidung der Person ohne Umdeutung."
+      }
+    },
+    {
+      "id": "work",
+      "name": "Bewerbung & Beruf",
+      "version": 1,
+      "enabled": true,
+      "language": "de",
+      "commentStyle": "coaching",
+      "textModel": "gemini-3.5-flash-lite",
+      "tts": {
+        "model": "gemini-3.8-flash-tts",
+        "voiceId": "auto",
+        "style": "ausdrucksstark, natürlich",
+        "speed": 1
+      },
+      "prompts": {
+        "start": "Eröffne ein realistisches Vorstellungsgespräch, einen Hotel-Rezeptionstag oder eine berufliche Kommunikationssituation.",
+        "question": "Frage nach dem nächsten Satz oder der Entscheidung; zwei beruflich sinnvolle Wege und eine offensichtlich humorvolle Option.",
+        "comment": "Erkläre in maximal zwei Sätzen, warum die Antwort kommunikativ hilfreich oder verbesserbar ist.",
+        "integrate": "Führe die Berufssimulation plausibel und lehrreich fort, ohne die ursprüngliche Nutzerantwort zu überschreiben."
+      }
+    },
+    {
+      "id": "learning",
+      "name": "Interaktive Lerntexte",
+      "version": 1,
+      "enabled": true,
+      "language": "de",
+      "commentStyle": "didactic",
+      "textModel": "gemini-3.5-flash-lite",
+      "tts": {
+        "model": "gemini-3.8-flash-tts",
+        "voiceId": "auto",
+        "style": "ausdrucksstark, natürlich",
+        "speed": 1
+      },
+      "prompts": {
+        "start": "Beginne einen kurzen sachlich korrekten Lerntext über ein Thema aus Geschichte, Wissenschaft oder Gesellschaft.",
+        "question": "Stelle eine Wissens-/Transferfrage mit genau drei Antworten; zwei fachlich sinnvolle, eine harmlose ironische.",
+        "comment": "Gib kurzes verständliches Feedback und berichtige Faktenfehler klar.",
+        "integrate": "Ergänze einen erklärenden Absatz in einfachem Lehrbuchstil. Fakten müssen verlässlich sein; Unsicherheit kennzeichnen."
+      }
+    },
+    {
+      "id": "community",
+      "name": "Gemeinschaft & Zukunft",
+      "version": 1,
+      "enabled": true,
+      "language": "de",
+      "commentStyle": "visionary",
+      "textModel": "gemini-3.8-flash",
+      "tts": {
+        "model": "gemini-3.8-flash-tts",
+        "voiceId": "auto",
+        "style": "ausdrucksstark, natürlich",
+        "speed": 1
+      },
+      "prompts": {
+        "start": "Eröffne die Geschichte einer kleinen selbstorganisierten Gemeinschaft mit gemeinschaftlicher Küche, Reparatur, Garten und mehr freier Zeit.",
+        "question": "Frage nach einer konkreten gemeinsam zu entscheidenden Maßnahme, zwei ernsthaften und einer witzigen Option.",
+        "comment": "Kommentiere kurz, klug und leicht ironisch; betone praktische Zusammenarbeit und Entdeckerfreude.",
+        "integrate": "Schreibe weiter, wie die Gemeinschaft den Vorschlag praktisch testet und welche sozialen oder ökologischen Folgen sichtbar werden."
+      }
+    }
+  ]
+}

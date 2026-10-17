@@ -37,7 +37,8 @@ export function geminiProvider(apiKey=process.env.GEMINI_API_KEY,transport:typeo
   }catch(e){
    if(controller.signal.aborted)throw new StoryError('timeout',504);
    const status=typeof (e as any)?.status==='number'?(e as any).status:null;
-   console.warn(JSON.stringify({event:'gemini_transport_error',name:e instanceof Error?e.name:'unknown',status,causeCode:typeof (e as any)?.cause?.code==='string'?(e as any).cause.code:null}));
+   const message=e instanceof Error?e.message:'';const reason=['api key','thinking','schema','temperature','maxoutput','quota','model','permission','unsupported','invalid argument'].filter(v=>message.toLowerCase().includes(v));
+   console.warn(JSON.stringify({event:'gemini_transport_error',reason,name:e instanceof Error?e.name:'unknown',status,causeCode:typeof (e as any)?.cause?.code==='string'?(e as any).cause.code:null}));
    throw new StoryError(status===429?'rate_limited':status===401||status===403?'provider_unavailable':'provider_error',status===429?429:503);
   }finally{clearTimeout(timer);}
  };
@@ -65,7 +66,7 @@ export class StoryEngine{
   this.starts.set(key,{hash,promise,expiresAt:this.now()+this.limits.ttl});return promise;
  }
  async turn(id:string,owner:string,token:string,input:any){
-  const s=this.get(id,owner,token);if(!string(input?.idempotencyKey,80)||!/^[a-zA-Z0-9-]{16,80}$/.test(input.idempotencyKey))throw new StoryError('invalid_input');
+  const s=this.get(id,owner,token);if(!['de','en','ru'].includes(input?.locale))throw new StoryError('invalid_input');if(!string(input?.idempotencyKey,80)||!/^[a-zA-Z0-9-]{16,80}$/.test(input.idempotencyKey))throw new StoryError('invalid_input');
   const key=input.idempotencyKey,hash=digest(input),prior=s.results.get(key),pending=s.pending.get(key);
   if(prior){if(prior.hash!==hash)throw new StoryError('idempotency_conflict',409);if(prior.error)throw prior.error;return clone(prior.state!);}
   if(pending){if(pending.hash!==hash)throw new StoryError('idempotency_conflict',409);return pending.promise;}

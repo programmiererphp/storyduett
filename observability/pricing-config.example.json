@@ -2,11 +2,12 @@
   "schemaVersion": "1.0",
   "updatedAt": "2026-10-17",
   "currency": "USD",
-  "note": "Example only. Prices intentionally unset; Work must verify current provider pricing before enabling real charging.",
+  "note": "D1 text prices verified 2026-10-17 against https://ai.google.dev/gemini-api/docs/pricing . TTS disabled and prices unset. Runtime source: server/story-engine.ts. USD estimates, no claim of actual invoice.",
   "models": {
     "gemini-3.5-flash-lite": {
-      "inputPerMillionUsd": null,
-      "outputPerMillionUsd": null
+      "inputPerMillionUsd": 0.3,
+      "outputPerMillionUsd": 2.5,
+      "thinkingIncludedInOutputPrice": true
     },
     "gemini-3.8-flash": {
       "inputPerMillionUsd": null,
@@ -22,9 +23,9 @@
     }
   },
   "defaultCaps": {
-    "perCallUsd": 0.03,
-    "perSessionUsd": 1,
-    "perUserPerDayUsd": 2,
+    "perCallUsd": 0.01,
+    "perSessionUsd": 0.1,
+    "perUserPerDayUsd": 0.2,
     "byFeatureUsd": {
       "turn": 1,
       "tts": 0.5,

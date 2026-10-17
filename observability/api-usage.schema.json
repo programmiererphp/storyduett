@@ -113,6 +113,36 @@
         "string",
         "null"
       ]
+    },
+    "chargedUsd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "reservedUsd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "totalTokens": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "modelVersion": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "providerResponseId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "promptHash": {
+      "type": "string"
     }
   }
 }

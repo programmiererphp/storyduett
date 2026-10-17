@@ -1,4 +1,4 @@
-name: D0 application checks
+name: StoryDuett application checks
 on:
   push:
   pull_request:

@@ -27,7 +27,7 @@ try {
   assert.match(health.headers.get('cache-control'), /no-store/);
   const h = await health.json();
   assert.equal(h.status, 'ok');
-  assert.equal(h.version, 'D0');
+  assert.equal(h.version, 'D1');
   assert.ok(Number.isFinite(Date.parse(h.timestamp)));
   const catalog = await request('/api/use-cases');
   assert.equal(catalog.status, 200);
@@ -57,7 +57,7 @@ try {
     const text = await res.text();
     assert.ok(!text.includes('GEMINI_API_KEY') && !text.includes('getPublicCatalog') && !text.includes('Beginne eine bildhafte'));
   }
-  console.log('PASS production D0: real readiness, ten catalog entries, strict public whitelist, JSON 404s, static production HTML, no raw server/catalog/env files.');
+  console.log('PASS production D1: real readiness, ten catalog entries, strict public whitelist, JSON 404s, static production HTML, no raw server/catalog/env files.');
 } finally {
   clearTimeout(timer);
   if (child.exitCode === null) child.kill('SIGTERM');

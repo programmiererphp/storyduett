@@ -94,8 +94,8 @@
       "summary": "Spontane soziale Alltagssituationen mit wertschätzendem Gesprächsfeedback."
     },
     "getting-to-know": {
-      "name": "Kennenlernen zu zweit",
-      "summary": "Kooperative Szenen für zwei Mitspieler zum spielerischen Entdecken von Gemeinsamkeiten."
+      "name": "Gemeinsamkeiten entdecken",
+      "summary": "Eine kooperative fiktive Szene zum spielerischen Entdecken von Gemeinsamkeiten. Solo mit KI."
     },
     "reflection": {
       "name": "Perspektivwechsel & Reflexion",
@@ -186,6 +186,7 @@
       "invalid_input": "Bitte wähle eine gültige Antwort oder gib 1 bis 600 Zeichen ein.",
       "content_blocked": "Die Antwort konnte nicht verarbeitet werden. Wähle eine andere Fortsetzung.",
       "capacity": "Der Server ist ausgelastet. Bitte später erneut versuchen."
-    }
+    },
+    "selected": "Gewähltes Szenario"
   }
 }

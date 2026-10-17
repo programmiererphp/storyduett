@@ -14,9 +14,10 @@ for (const u of cat.useCases) {
   for (const p of ['start','question','comment','integrate']) assert(typeof u.prompts[p]==='string' && u.prompts[p].length>25, u.id+' missing '+p);
   assert(u.tts?.model && u.textModel, u.id+' models missing');
 }
+for(const folder of ['usecase-picker','story-reader','choice-panel','ai-comment']){const manifest=JSON.parse(read(`packages/components/${folder}/component.manifest.json`));assert(manifest.status==='implemented'&&manifest.version==='1.0.0');for(const path of [manifest.entry,manifest.bundle,'demo/index.html','README.md','tests/component.test.mjs'])assert(existsSync(new URL(`../packages/components/${folder}/${path}`,import.meta.url)));}
 const m=JSON.parse(read('packages/components/choice-panel/component.manifest.json'));
 assert(m.tagName === 'sd-choice-panel' && m.events['sd:answer-submit']?.composed===true);
 JSON.parse(read('observability/api-usage.schema.json'));
 JSON.parse(read('observability/pricing-config.example.json'));
 assert(read('.gitignore').includes('.env'));
-console.log('D0 planning validation passed: '+cat.useCases.length+' use cases, 4 prompts each, contracts and manifest verified.');
+console.log('D1 contracts validation passed: '+cat.useCases.length+' use cases, 4 prompts each, contracts and manifest verified.');

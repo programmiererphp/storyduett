@@ -29,3 +29,10 @@ API: GET /api/play-config (öffentliche Bereitschaft/Limitwerte, Owner-Cookie); 
 
 ## Erstbefund Liveintegration
 Runtime-Key ist als AI Studio Free Tier Secret vorhanden. Null-Dollar-Sitzung vor Call blockiert. Erster realer Start lieferte Providerfehler nach171ms, keine Provider-Usage-Metadaten und keine Storyänderung. Reserviertes Maximum USD0.0050473 konservativ belastet (keine behauptete Rechnung). Direkter REST-Transport wird auf das offizielle serverseitige @google/genai-SDK umgestellt; retries explizit attempts1 (Standard wären sonst5),35s Timeout plus AbortSignal. Keine Schlüsselwerte oder Provider-Bodytexte in Diagnoseausgaben.
+
+## Aktueller externer Blocker
+SDK liefert HTTP400, bereinigte Diagnosekategorie api key. Nicht auf Modellqualität oder ungültiges Story-JSON zurückzuführen. Geladene Secret-Auswahl zeigt einen bestehenden Schlüssel aus einem anderen Projekt; keine Werte wurden abgerufen. Im bereits für D0 genutzten Projekt android-app-erstes ist ein eigener bestehender Schlüssel auswählbar. AI Studio führt dafür durch den Dialog Link a paid API key; abschließendes Select key und Secrets Apply wurden NICHT ausgeführt. Hier ist eine konkrete kosten-/berechtigungsrelevante Bestätigung nötig. Öffentliche D0-App bleibt bis erfolgreicher echter D1-Abnahme unverändert.
+
+Sichere UI-Korrektur: bei vom Hosting als HTML gelieferten503-Antworten Provider-Nichtverfügbarkeit statt irreführendem JSON-Fehler zeigen; unsichere Netzwerkantwort behält Idempotenzschlüssel. SDK400 mit api-key-Kategorie wird provider_unavailable. Keine rohen Providerfehlermeldungen im Log.
+
+Kostenlose Alternative ebenfalls geprüft: Secret auf native AI Studio Free Tier gestellt und Apply ausgeführt, Backend-Neustart beobachtet. Auch dieser reale SDK-Start scheitert mitHTTP400/api-key-Kategorie, Latenz119ms; keine generierte Geschichte/Usage-Metadaten. Kein kostenpflichtiger Schlüssel verbunden, kein neues Projekt/Repository/App, kein Upgrade gekauft. Für die nächste tatsächliche Abnahme bleibt die Verbindung des bereits vorhandenen Schlüssels im bestehenden D0-Projekt als konkrete kostenrelevante Entscheidung offen.

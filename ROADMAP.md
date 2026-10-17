@@ -53,3 +53,5 @@ Stand 2026-10-17. Zuständigkeit für Implementierung, Browser-Bedienung und Feh
 
 ## D1 Ausführung
 Autorisierter Folgeauftrag vom 2026-10-17; Ausgang64e7518. Intern: D1a isolierte Komponenten; D1b Story-Engine/Provider/Budgets; D1c Integration und echte Browserabnahme. Jede Teillieferung erhält Tests. D1 DONE erst nach zehn echten Runden, Fehler-/Budget-/Mobilprüfung und Veröffentlichung derselben App.
+
+- D1a/PR2 und D1b/PR3 sind nach grüner CI gemergt. C01–C04, Engine, React-Integration und Kostenreservierung implementiert. Reale Providerstarts scheitern aktuell an der Runtime-Keykonfiguration (HTTP400/api-key), einschließlich nativer Free-Tier-Alternative. Keine erfolgreiche10-Runden-Abnahme und keine D1-Veröffentlichung behauptet. Öffentliche D0-App bleibt erhalten. Details im D1-Zwischenbericht; D1 bleibt IN PROGRESS.

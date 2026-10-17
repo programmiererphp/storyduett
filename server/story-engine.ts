@@ -39,7 +39,7 @@ export function geminiProvider(apiKey=process.env.GEMINI_API_KEY,transport:typeo
    const status=typeof (e as any)?.status==='number'?(e as any).status:null;
    const message=e instanceof Error?e.message:'';const reason=['api key','thinking','schema','temperature','maxoutput','quota','model','permission','unsupported','invalid argument'].filter(v=>message.toLowerCase().includes(v));
    console.warn(JSON.stringify({event:'gemini_transport_error',reason,name:e instanceof Error?e.name:'unknown',status,causeCode:typeof (e as any)?.cause?.code==='string'?(e as any).cause.code:null}));
-   throw new StoryError(status===429?'rate_limited':status===401||status===403?'provider_unavailable':'provider_error',status===429?429:503);
+   throw new StoryError(status===429?'rate_limited':status===401||status===403||(status===400&&reason.includes('api key'))?'provider_unavailable':'provider_error',status===429?429:503);
   }finally{clearTimeout(timer);}
  };
 }

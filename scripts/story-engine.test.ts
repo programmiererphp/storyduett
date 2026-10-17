@@ -36,3 +36,13 @@ test('real transport abort signal stops a stalled provider request',async()=>{
  let aborted=false;const transport=((_url:any,options:any)=>new Promise((_resolve,reject)=>{options.signal.addEventListener('abort',()=>{aborted=true;reject(new Error('aborted'));});})) as typeof fetch;
  await assert.rejects(geminiProvider('synthetic',transport,10)({}),/timeout/);assert(aborted);
 });
+test('a partly used session blocks the next reservation without an extra provider call',async()=>{
+ let calls=0;const {engine,tick}=make(async()=>{calls++;return response();});const initial=await engine.start('owner',{...start(),limitUsd:.006});let state=initial.state;const token=initial.token;
+ let blocked=false;for(let i=0;i<20;i++){tick();try{state=await engine.turn(state.id,'owner',token,turn(state));}catch(e){assert.equal((e as StoryError).code,'session_budget');blocked=true;break;}}
+ assert(blocked);const snapshot=engine.read(state.id,'owner',token);assert.deepEqual(snapshot.nodes,state.nodes);assert.equal(snapshot.usage.at(-1)!.chargedUsd,0);assert.equal(calls,snapshot.nodes.length);assert(snapshot.spentUsd<=.006);
+});
+test('instance budget reservation is atomic across owners; invalid-key errors are safe',async()=>{
+ let release:any,calls=0;const gate=new Promise(r=>release=r);const {engine}=make(async()=>{calls++;await gate;return response();},{...LIMITS,instanceDay:.008});const first=engine.start('owner-a',start());await assert.rejects(engine.start('owner-b',start()),/daily_budget/);assert.equal(calls,1);release();await first;
+ let attempts=0;const provider=geminiProvider('synthetic-key',(async()=>{attempts++;return new Response(JSON.stringify({error:{code:400,message:'API key not valid.',status:'INVALID_ARGUMENT'}}),{status:400,headers:{'Content-Type':'application/json'}});}) as typeof fetch);
+ await assert.rejects(provider({}),e=>e instanceof StoryError&&e.code==='provider_unavailable');assert.equal(attempts,1);
+});

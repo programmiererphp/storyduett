@@ -94,8 +94,8 @@
       "summary": "Spontaneous social scenarios with constructive, warm feedback on conversation flow."
     },
     "getting-to-know": {
-      "name": "Getting to Know (Duo)",
-      "summary": "Cooperative scenes for two players playfully discovering mutual interests."
+      "name": "Discover Common Ground",
+      "summary": "A cooperative fictional scene to discover mutual interests. Solo with AI."
     },
     "reflection": {
       "name": "Perspective & Reflection",
@@ -186,6 +186,7 @@
       "invalid_input": "Select a valid option or enter 1 to 600 characters.",
       "content_blocked": "The response could not be processed. Choose another continuation.",
       "capacity": "The server is at capacity. Try again later."
-    }
+    },
+    "selected": "Selected scenario"
   }
 }

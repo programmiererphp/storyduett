@@ -116,5 +116,9 @@
   },
   "footer": {
     "status": "StoryDuett D0 Technische Vorschau • Verbindliche Spezifikation SD-SPEC-01"
+  },
+  "errors": {
+    "timeout": "Die Anfrage hat zu lange gedauert. Bitte erneut versuchen.",
+    "failed": "Der Server konnte keine gültige Antwort liefern. Bitte erneut versuchen."
   }
 }

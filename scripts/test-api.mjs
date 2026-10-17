@@ -1,132 +1,67 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import http from 'node:http';
+import { createInterface } from 'node:readline';
+import { once } from 'node:events';
 
-const TEST_PORT = 3144;
-const BASE_URL = `http://127.0.0.1:${TEST_PORT}`;
-
-function fetchResponse(path) {
-  return new Promise((resolve, reject) => {
-    http.get(`${BASE_URL}${path}`, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        let json = null;
-        try {
-          json = JSON.parse(data);
-        } catch {
-          // not json
-        }
-        resolve({
-          status: res.statusCode,
-          headers: res.headers,
-          body: json,
-          text: data,
-        });
-      });
-    }).on('error', reject);
-  });
-}
-
-async function waitForServer(retries = 35) {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const res = await fetchResponse('/api/health');
-      if (res.status === 200) return true;
-    } catch {
-      await new Promise(r => setTimeout(r, 200));
-    }
-  }
-  throw new Error('Test server failed to start within timeout');
-}
-
-async function runTests() {
-  console.log(`Starting isolated test server on port ${TEST_PORT}...`);
-  const serverProcess = spawn('npx', ['tsx', 'server.ts'], {
-    env: { ...process.env, PORT: String(TEST_PORT), NODE_ENV: 'test-runner' },
-    detached: true,
-    stdio: 'ignore',
-  });
-
-  const cleanup = () => {
-    try {
-      if (serverProcess.pid) {
-        process.kill(-serverProcess.pid, 'SIGKILL');
-      }
-    } catch {}
-  };
-
-  process.on('exit', cleanup);
-  process.on('SIGINT', cleanup);
-  process.on('SIGTERM', cleanup);
-
-  try {
-    await waitForServer();
-    console.log('✅ Server running, testing D0 API contracts:\n');
-
-    // 1. Health check test
-    console.log('1. Testing GET /api/health...');
-    const health = await fetchResponse('/api/health');
-    assert.equal(health.status, 200, 'Health endpoint must return 200');
-    assert.equal(health.body.status, 'ok', 'Status must be ok');
-    assert.equal(health.body.version, 'D0', 'Version must be D0');
-    assert.equal(health.body.delivery, 'D0 technische Vorschau', 'Delivery must be D0 technische Vorschau');
-    assert.equal(health.body.catalogUseCasesCount, 10, 'Must report 10 use cases');
-    assert.ok(health.body.timestamp, 'Timestamp must exist');
-    assert.equal(health.text.includes('GEMINI_API_KEY'), false, 'Must not leak env names');
-    console.log('   ✓ GET /api/health passed');
-
-    // 2. Safe catalog projection test
-    console.log('2. Testing GET /api/use-cases...');
-    const catalog = await fetchResponse('/api/use-cases');
-    assert.equal(catalog.status, 200, 'Catalog endpoint must return 200');
-    assert.equal(catalog.body.schemaVersion, '1.0', 'Schema version must be 1.0');
-    assert.equal(catalog.body.delivery, 'D0', 'Delivery must be D0');
-    assert.equal(catalog.body.useCases.length, 10, 'Must return 10 enabled use cases');
-
-    const allowedKeys = new Set(['id', 'name', 'version', 'language', 'enabled']);
-    for (const uc of catalog.body.useCases) {
-      assert.ok(uc.id, 'Use case must have id');
-      assert.ok(uc.name, 'Use case must have name');
-      assert.equal(typeof uc.version, 'number', 'Version must be number');
-      assert.ok(uc.language, 'Language must be defined');
-      assert.equal(typeof uc.enabled, 'boolean', 'Enabled must be boolean');
-
-      // Assert no forbidden / internal keys exist on any use case
-      assert.equal(uc.prompts, undefined, `Use case ${uc.id} must NOT leak prompts`);
-      assert.equal(uc.textModel, undefined, `Use case ${uc.id} must NOT expose planning textModel`);
-      assert.equal(uc.tts, undefined, `Use case ${uc.id} must NOT expose planning tts config`);
-      assert.equal(uc.commentStyle, undefined, `Use case ${uc.id} must NOT expose commentStyle in D0`);
-
-      for (const key of Object.keys(uc)) {
-        assert.ok(allowedKeys.has(key), `Unexpected key ${key} in safe use case`);
-      }
-    }
-    console.log('   ✓ GET /api/use-cases passed (10 items, strictly harmless metadata, zero leaks)');
-
-    // 3. Unknown endpoint 404 test
-    console.log('3. Testing GET /api/unbekannt (404)...');
-    const notFound = await fetchResponse('/api/unbekannt');
-    assert.equal(notFound.status, 404, 'Unknown endpoint must return 404');
-    assert.equal(notFound.body?.error, 'Endpoint not found', 'Must return JSON 404 with error message');
-    console.log('   ✓ GET /api/unbekannt correctly returned JSON 404');
-
-    // 4. Static / HTML app test
-    console.log('4. Testing GET / (App entry)...');
-    const appEntry = await fetchResponse('/');
-    assert.equal(appEntry.status, 200, 'Root must return 200');
-    assert.ok(appEntry.text.includes('StoryDuett'), 'Root HTML must contain StoryDuett');
-    console.log('   ✓ GET / serves HTML app shell');
-
-    console.log('\n🎉 All D0 automated test assertions passed!');
-    cleanup();
-    process.exit(0);
-  } finally {
-    cleanup();
-  }
-}
-
-runTests().catch((err) => {
-  console.error('❌ Test suite failed:', err);
-  process.exit(1);
+const child = spawn(process.execPath, ['--import', 'tsx', 'server.ts'], {
+  env: { ...process.env, PORT: '0', NODE_ENV: 'production' },
+  stdio: ['ignore', 'pipe', 'pipe'],
 });
+let stderr = '';
+child.stderr.on('data', chunk => { stderr += chunk; });
+const exited = once(child, 'exit');
+let timer;
+try {
+  const port = await new Promise((resolve, reject) => {
+    timer = setTimeout(() => reject(new Error(`Production startup timed out: ${stderr}`)), 15_000);
+    createInterface({ input: child.stdout }).on('line', line => {
+      const match = line.match(/^STORYDUETT_READY (\d+)$/);
+      if (match) { clearTimeout(timer); resolve(Number(match[1])); }
+    });
+    child.once('error', reject);
+    child.once('exit', code => reject(new Error(`Production server exited ${code}: ${stderr}`)));
+  });
+  const request = path => fetch(`http://127.0.0.1:${port}${path}`, { signal: AbortSignal.timeout(5_000) });
+  const health = await request('/api/health');
+  assert.equal(health.status, 200);
+  assert.match(health.headers.get('cache-control'), /no-store/);
+  const h = await health.json();
+  assert.equal(h.status, 'ok');
+  assert.equal(h.version, 'D0');
+  assert.ok(Number.isFinite(Date.parse(h.timestamp)));
+  const catalog = await request('/api/use-cases');
+  assert.equal(catalog.status, 200);
+  const c = await catalog.json();
+  assert.equal(c.schemaVersion, '1.0');
+  assert.equal(c.useCases.length, 10);
+  assert.equal(h.catalogUseCasesCount, c.useCases.length);
+  const ids = new Set();
+  for (const item of c.useCases) {
+    assert.deepEqual(Object.keys(item).sort(), ['enabled','id','language','name','version']);
+    assert.ok(item.id && item.name && item.language);
+    assert.equal(item.enabled, true);
+    assert.ok(!ids.has(item.id)); ids.add(item.id);
+  }
+  for (const path of ['/api', '/api/unbekannt', '/api/admin/debug', '/api/sessions']) {
+    const res = await request(path);
+    assert.equal(res.status, 404);
+    assert.deepEqual(await res.json(), { error: 'Endpoint not found' });
+  }
+  const root = await request('/');
+  assert.equal(root.status, 200);
+  const html = await root.text();
+  assert.ok(html.includes('StoryDuett') && html.includes('/assets/'));
+  assert.ok(!html.includes('/@vite/client'));
+  for (const path of ['/server.ts', '/prompts/catalog.json', '/.env']) {
+    const res = await request(path);
+    const text = await res.text();
+    assert.ok(!text.includes('GEMINI_API_KEY') && !text.includes('getPublicCatalog') && !text.includes('Beginne eine bildhafte'));
+  }
+  console.log('PASS production D0: real readiness, ten catalog entries, strict public whitelist, JSON 404s, static production HTML, no raw server/catalog/env files.');
+} finally {
+  clearTimeout(timer);
+  if (child.exitCode === null) child.kill('SIGTERM');
+  const fallback = setTimeout(() => child.kill('SIGKILL'), 2000);
+  await exited;
+  clearTimeout(fallback);
+}

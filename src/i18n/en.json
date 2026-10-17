@@ -116,5 +116,9 @@
   },
   "footer": {
     "status": "StoryDuett D0 Technical Preview • Specification SD-SPEC-01"
+  },
+  "errors": {
+    "timeout": "The request took too long. Please try again.",
+    "failed": "The server could not return a valid response. Please try again."
   }
 }

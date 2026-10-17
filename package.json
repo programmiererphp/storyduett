@@ -2,20 +2,21 @@
   "name": "storyduett",
   "version": "0.1.0",
   "type": "module",
-  "description": "KI-unterstütztes gemeinsames Geschichtenerzählen, Sprachlernen und Kennenlernen – D0 Technische Vorschau",
+  "description": "KI-unterst\u00fctztes gemeinsames Geschichtenerz\u00e4hlen, Sprachlernen und Kennenlernen \u2013 D0 Technische Vorschau",
   "scripts": {
-    "dev": "tsx server.ts",
+    "dev": "node --import tsx server.ts",
     "build": "vite build",
-    "start": "NODE_ENV=production tsx server.ts",
+    "start": "NODE_ENV=production node --import tsx server.ts",
     "typecheck": "tsc --noEmit",
     "validate": "node scripts/validate.mjs",
-    "test": "node scripts/test-api.mjs"
+    "test": "node --import tsx --test scripts/reliability.test.ts && node scripts/test-api.mjs"
   },
   "dependencies": {
     "express": "^4.21.2",
     "lucide-react": "^1.16.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tsx": "^4.19.2"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.9",
@@ -25,7 +26,6 @@
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
     "tailwindcss": "^4.0.9",
-    "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "vite": "^6.1.1"
   }

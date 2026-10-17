@@ -1,4 +1,4 @@
-name: D0 contract checks
+name: D0 application checks
 on:
   push:
   pull_request:
@@ -10,5 +10,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Validate D0 contracts
-        run: node scripts/validate.mjs
+          cache: npm
+      - run: npm ci
+      - run: node scripts/validate.mjs
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm test

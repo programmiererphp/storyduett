@@ -31,3 +31,7 @@ Stand 2026-10-17. Zuständigkeit für Implementierung, Browser-Bedienung und Feh
 - Automatisierte Tests `scripts/test-api.mjs`, `scripts/validate.mjs` und `npm run build` erfolgreich durchgeführt.
 - GitHub-Sync und browserbasierte Endabnahme erfolgen durch ChatGPT Work. Status von D0 bleibt IN PROGRESS bis zur erfolgreichen Verifikation. D1 bleibt TODO.
 
+
+- AI Studio → bestehendes GitHub-Repository erfolgreich: Commit `b8901dc568a4d7337a18269ed41d6406e6e96c71`; Oberfläche meldet synchron. Kein Zweitrepository, keine gelöschten Planungsdateien.
+- Weitere Build-Prompts durch kostenloses AI-Studio-Tageskontingent blockiert. Work führt die restlichen D0-Korrekturen direkt am Code aus und prüft GitHub → AI Studio Pull.
+- Browserbefunde: Header/Status bei Mobilbreite laufen über; Statusanzahl war hartkodiert; Requests ohne Timeout. Korrektur und Regressionstest vor D0-Abnahme.

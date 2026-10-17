@@ -46,3 +46,9 @@ TTS, Matching, Realtime-Chat, Cartoon-Grafik, Prompt-Mini-CMS-UI, komplexe Rolle
 - Abnahme: Build, bestehender Validator, Health/Katalog-Tests, Browser Desktop/Mobil, Console/Netzwerkprüfung, GitHub-Push und Pull, dokumentierte URL/Commit.
 - Keine aktiven KI-Endpunkte in D0. Vor D1 müssen Modellverfügbarkeit, Preise, Auth und serverseitige harte Budgets verifiziert/implementiert sein. Die Modell-IDs des Katalogs sind bis dahin ungeprüfte Planungswerte.
 - D1 sowie C01–C04 bleiben unimplementiert.
+
+### D0 Review-Korrekturen vor finalem Codeabgleich
+- Readiness ermittelt den tatsächlich gültigen aktiven Katalog; fehlender/ungültiger Katalog liefert 503.
+- GET-Anfragen haben zehn Sekunden Timeout und lokalisierte Fehler mit Wiederholung.
+- Bei 375px Breite dürfen Kopfzeile und Status-/Filterbereich nicht horizontal überlaufen.
+- Produktionsstart über `node --import tsx`, festgeschriebene Dependencies und CI für Validator, Typecheck, Build und produktive API-Tests.

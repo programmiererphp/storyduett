@@ -21,3 +21,11 @@
 
 ## AI Studio Referenz
 https://ai.google.dev/gemini-api/docs/aistudio-build-mode (GitHub Import + bidirektionale Synchronisation, React/Node, Secrets). Änderungen in AI Studio nur nach bestätigter tatsächlicher Verknüpfung.
+
+## Tatsächlich beobachtete Oberfläche am 2026-10-17 (D0)
+- Import: New app → Insert files → Import from GitHub → `programmiererphp/storyduett`, `main`. Der Dialog warnt ausdrücklich: „Imported code won't stay synced with GitHub.“
+- Das importierte Projekt ist `57b82b35-8dbc-4c3d-bcc7-bf454333f191`.
+- Settings → GitHub bietet „Sync to a new repository“ und „Force push to programmiererphp/storyduett“; die zweite Option ersetzt laut Dialog den main-Inhalt. Ein automatisch konfliktauflösender bidirektionaler Sync ist damit noch nicht nachgewiesen.
+- Sicherungsbranch vor Rücksynchronisierung: `backup/d0-before-aistudio-2026-10-17`, Commit `87acaf15896f4d83228b0508ab6851ec697dd5a1`. Kein Zweitrepository.
+- Vor einem Rückschreiben vollständigen Export/Diff prüfen, fehlende Planungs- und CI-Dateien erhalten. API-Dienste und private Schlüssel sind in D0 nicht nötig.
+- Diese Beobachtungen ersetzen die unbestätigten Annahmen über native bidirektionale Synchronisation in den vorangehenden Abschnitten. Abschlussprüfung steht noch aus.

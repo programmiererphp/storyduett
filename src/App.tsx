@@ -12,6 +12,7 @@ import {
   Languages
 } from 'lucide-react';
 import { SafeUseCase, CatalogResponse, HealthResponse, Locale } from './types';
+import { fetchJson } from './api';
 import deTranslations from './i18n/de.json';
 import enTranslations from './i18n/en.json';
 import ruTranslations from './i18n/ru.json';
@@ -37,7 +38,6 @@ export default function App() {
   const [healthLoading, setHealthLoading] = useState<boolean>(true);
   const [healthError, setHealthError] = useState<string | null>(null);
   const [healthLatency, setHealthLatency] = useState<number | null>(null);
-  const [lastChecked, setLastChecked] = useState<Date | null>(null);
 
   // Catalog state
   const [catalog, setCatalog] = useState<SafeUseCase[]>([]);
@@ -60,17 +60,13 @@ export default function App() {
     setHealthError(null);
     const start = performance.now();
     try {
-      const res = await fetch('/api/health');
+      const data = await fetchJson<HealthResponse>('/api/health');
+      if (data.status !== 'ok' || !Number.isInteger(data.catalogUseCasesCount)) throw new Error('invalid');
       const latency = Math.round(performance.now() - start);
       setHealthLatency(latency);
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-      const data: HealthResponse = await res.json();
       setHealth(data);
-      setLastChecked(new Date());
     } catch (err: any) {
-      setHealthError(err.message || 'Health check failed');
+      setHealthError(err.message === 'timeout' ? 'timeout' : 'failed');
       setHealth(null);
     } finally {
       setHealthLoading(false);
@@ -82,14 +78,11 @@ export default function App() {
     setCatalogLoading(true);
     setCatalogError(null);
     try {
-      const res = await fetch('/api/use-cases');
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-      const data: CatalogResponse = await res.json();
-      setCatalog(data.useCases || []);
+      const data = await fetchJson<CatalogResponse>('/api/use-cases');
+      if (!Array.isArray(data.useCases) || !data.useCases.every(u => typeof u.id === 'string' && typeof u.name === 'string' && typeof u.language === 'string')) throw new Error('invalid');
+      setCatalog(data.useCases);
     } catch (err: any) {
-      setCatalogError(err.message || 'Catalog load failed');
+      setCatalogError(err.message === 'timeout' ? 'timeout' : 'failed');
     } finally {
       setCatalogLoading(false);
     }
@@ -196,12 +189,12 @@ export default function App() {
     <div className="min-h-screen bg-stone-50 text-stone-900 font-sans flex flex-col selection:bg-amber-100 selection:text-amber-900">
       {/* Top Header */}
       <header className="sticky top-0 z-30 bg-stone-50/95 backdrop-blur-md border-b border-stone-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-amber-800 text-amber-50 flex items-center justify-center shadow-xs">
               <BookOpen className="w-4 h-4" />
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h1 className="font-serif font-bold text-lg tracking-tight text-stone-900">
                 {t.app.title}
               </h1>
@@ -263,8 +256,8 @@ export default function App() {
           aria-label={t.health.title}
           className="rounded-xl bg-white border border-stone-200 p-4 shadow-2xs"
         >
-          <div className="flex items-center justify-between gap-3 pb-3 border-b border-stone-100">
-            <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-stone-100">
+            <div className="flex flex-wrap items-center gap-2.5">
               <Activity className="w-4 h-4 text-stone-600" aria-hidden="true" />
               <h2 className="text-xs sm:text-sm font-semibold text-stone-900">
                 {t.health.title}
@@ -285,6 +278,7 @@ export default function App() {
             </button>
           </div>
 
+          {healthError && <p role="status" className="mt-3 text-sm text-red-700">{healthError === 'timeout' ? t.errors.timeout : t.errors.failed}</p>}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-3 text-xs">
             <div className="bg-stone-50 rounded-lg p-2 border border-stone-100">
               <span className="text-stone-500 block text-[11px]">{t.health.statusLabel}</span>
@@ -368,7 +362,7 @@ export default function App() {
               )}
             </div>
 
-            <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-stone-200 text-xs font-medium shrink-0">
+            <div className="flex flex-wrap items-center gap-1 bg-white p-1 rounded-lg border border-stone-200 text-xs font-medium">
               <SlidersHorizontal className="w-3 h-3 text-stone-400 ml-1 mr-0.5" aria-hidden="true" />
               <button
                 onClick={() => setLanguageFilter('all')}
@@ -418,7 +412,7 @@ export default function App() {
           {catalogError && (
             <div className="py-6 px-4 flex flex-col items-center justify-center text-center space-y-2 bg-red-50/60 rounded-xl border border-red-200">
               <AlertCircle className="w-5 h-5 text-red-600" aria-hidden="true" />
-              <p className="text-xs font-medium text-red-900">{t.catalog.loadError}</p>
+              <p className="text-xs font-medium text-red-900">{t.catalog.loadError} {catalogError === 'timeout' ? t.errors.timeout : t.errors.failed}</p>
               <button
                 onClick={loadCatalog}
                 className="mt-1 px-3 py-1 bg-red-600 text-white text-xs font-medium rounded-lg hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:outline-hidden transition-colors"

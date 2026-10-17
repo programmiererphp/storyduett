@@ -1,5 +1,5 @@
 # StoryDuett – verbindliche Produktspezifikation V1.0
-**Referenz:** SD-SPEC-01 | **Stand:** 2026-10-17 | **Status:** D0 in progress; baseline contracts and CI verified, AI Studio implementation pending.
+**Referenz:** SD-SPEC-01 | **Stand:** 2026-10-17 | **Status:** D0 implemented and verified in AI Studio Preview; public deployment pending approval. D1 not started.
 
 ## Ziel / Unterschied zu gewöhnlichen Story-Generatoren
 Zwei Menschen (oder ein Mensch mit KI) bauen **inkrementell und gemeinsam** eine Geschichte, Lernübung oder einen Simulationstext. KI kommentiert jeden Beitrag lakonisch, stellt spielerische Folgefragen und erzeugt jeweils **genau drei Antworten: zwei ernsthafte und eine ironische**. Freitext ist immer möglich. Die App unterstützt später sozialem Kennenlernen nahe Wohnorten durch Matching und privaten Chat.
@@ -54,3 +54,10 @@ TTS, Matching, Realtime-Chat, Cartoon-Grafik, Prompt-Mini-CMS-UI, komplexe Rolle
 - Produktionsstart über `node --import tsx`, festgeschriebene Dependencies und CI für Validator, Typecheck, Build und produktive API-Tests.
 
 - D0 Preview nutzt denselben statischen Produktionsbuild wie das Deployment; `npm run dev` baut zuerst und startet den Produktionsserver. Damit werden weder Vite-HMR-WebSockets noch Quell-/Katalogdateien über die Preview ausgeliefert.
+
+## D0 verifizierter Stand
+- Geprüfter Codecommit: `7eb1e1c643e9f2eb8817e5d663fcae0f13251b60`.
+- Eine importierte AI-Studio-App `57b82b35-8dbc-4c3d-bcc7-bf454333f191`, verbunden mit `programmiererphp/storyduett`, `main`. Nativer Push und nachfolgende externe Änderungen plus nativer Pull sind nachgewiesen.
+- Preview: https://ais-dev-4xncdtwz7pslafeok6mckl-237548413897.europe-west2.run.app/ (Entwicklungsvorschau, kein öffentliches Deployment).
+- Backend, zehn Katalogeinträge, DE/EN/RU, Filter/Suche/Leerzustand/Dialog/Tastatur, Desktop und Mobilbreite geprüft. CI für Produktionsbuild/API/Fehlerverhalten erfolgreich.
+- Bericht: `reports/reviews/2026-10-17-7eb1e1c.md`. Öffentliche Bereitstellung wurde durch automatische Freigabeprüfung blockiert; keine abgeschlossene Veröffentlichung behaupten.

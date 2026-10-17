@@ -25,3 +25,12 @@ KI-unterstütztes gemeinsames Geschichtenerzählen, Sprachlernen und Kennenlerne
 
 Offizielle Referenzen: https://ai.google.dev/gemini-api/docs/aistudio-build-mode · https://ai.google.dev/gemini-api/docs/models · https://ai.google.dev/gemini-api/docs/speech-generation
 
+
+## D0: verifizierte technische Vorschau
+Codecommit `7eb1e1c643e9f2eb8817e5d663fcae0f13251b60`, [Review und Tests](reports/reviews/2026-10-17-7eb1e1c.md), [Modulverträge](docs/D0_MODULES.md), [Build-Eingaben](docs/build-prompts/D0_2026-10-17.md).
+
+- [AI-Studio-Projekt](https://aistudio.google.com/apps/57b82b35-8dbc-4c3d-bcc7-bf454333f191?showAssistant=true&showPreview=true)
+- [Getestete laufende Vorschau](https://ais-dev-4xncdtwz7pslafeok6mckl-237548413897.europe-west2.run.app/) – temporäre Entwicklungsvorschau, keine dauerhafte öffentliche Veröffentlichung.
+- Nativer GitHub-Push und Pull im bestehenden Repo geprüft. Die öffentliche Veröffentlichung wartet auf ausdrückliche Freigabe; D0 bleibt deshalb offen.
+- Lokal: `npm ci`, `npm run typecheck`, `npm run build`, `npm test`, `npm start`. `npm run dev` baut ebenfalls den Produktionsstand und startet ihn; nach Codeänderungen neu starten. Keine API-Schlüssel erforderlich.
+- Noch keine Storygenerierung, kein Modellaufruf, keine Datenbank, kein Chat/TTS/Duo. D1 wurde nicht begonnen.

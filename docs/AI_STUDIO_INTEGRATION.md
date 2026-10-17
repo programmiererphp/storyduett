@@ -29,3 +29,8 @@ https://ai.google.dev/gemini-api/docs/aistudio-build-mode (GitHub Import + bidir
 - Sicherungsbranch vor Rücksynchronisierung: `backup/d0-before-aistudio-2026-10-17`, Commit `87acaf15896f4d83228b0508ab6851ec697dd5a1`. Kein Zweitrepository.
 - Vor einem Rückschreiben vollständigen Export/Diff prüfen, fehlende Planungs- und CI-Dateien erhalten. API-Dienste und private Schlüssel sind in D0 nicht nötig.
 - Diese Beobachtungen ersetzen die unbestätigten Annahmen über native bidirektionale Synchronisation in den vorangehenden Abschnitten. Abschlussprüfung steht noch aus.
+
+## Verifiziertes Ergebnis der nativen Verknüpfung
+Die anfängliche Importwarnung betrifft den noch nicht verknüpften Import. Nach Auswahl „Force push to programmiererphp/storyduett“ wurde ein Dateidiff mit 17 Änderungen und keinen Löschungen angezeigt. „Push latest changes to GitHub“ erzeugte `b8901dc` als normalen Nachfolgecommit von `87acaf1`; die Historie wurde erhalten. Danach stellt Settings → GitHub tatsächlich „Pull changes to Google AI Studio“ für externe Commits bereit. Pull von `5417ac2` und `7eb1e1c` in dieselbe App wurde durchgeführt; die Oberfläche meldete jeweils synchron. Kein neues Repository und keine zweite App wurden angelegt.
+
+Für weitere Deliveries: vor externen Änderungen Syncstatus prüfen, nach GitHub-Commit nativ pullen, App reloaden und den tatsächlichen Browserstand prüfen. Keine parallelen Änderungen an denselben Dateien.

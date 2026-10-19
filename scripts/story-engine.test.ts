@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {StoryEngine,StoryError,LIMITS,geminiProvider} from '../server/story-engine';
+import {StoryEngine,StoryError,LIMITS,geminiProvider,parseKnownErrorInfoReason,KNOWN_ERROR_INFO_REASONS} from '../server/story-engine';
 const fixture=(teacher=false)=>({opening:'The door opened.',contribution:'I opened a window.',bridge:'A breeze entered.',comment:{kind:teacher?'correction':'ironic',text:'A fresh idea.'},nextQuestion:{text:'Where next?',options:[{text:'Garden',tone:'serious'},{text:'Library',tone:'serious'},{text:'Ask the window',tone:'ironic'}]}});
 const response=(raw:any=fixture())=>({modelVersion:'test-fixture',responseId:'synthetic',usageMetadata:{promptTokenCount:100,candidatesTokenCount:100,thoughtsTokenCount:2,totalTokenCount:202},candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(raw)}]}}]});
 const start=()=>({useCaseId:'fiction',locale:'de',idempotencyKey:randomUUID()});
@@ -45,4 +45,31 @@ test('instance budget reservation is atomic across owners; invalid-key errors ar
  let release:any,calls=0;const gate=new Promise(r=>release=r);const {engine}=make(async()=>{calls++;await gate;return response();},{...LIMITS,instanceDay:.008});const first=engine.start('owner-a',start());await assert.rejects(engine.start('owner-b',start()),/daily_budget/);assert.equal(calls,1);release();await first;
  let attempts=0;const provider=geminiProvider('synthetic-key',(async()=>{attempts++;return new Response(JSON.stringify({error:{code:400,message:'API key not valid.',status:'INVALID_ARGUMENT'}}),{status:400,headers:{'Content-Type':'application/json'}});}) as typeof fetch);
  await assert.rejects(provider({}),e=>e instanceof StoryError&&e.code==='provider_unavailable');assert.equal(attempts,1);
+});
+
+test('parseKnownErrorInfoReason recognizes allowed Google ErrorInfo reasons and filters unallowed messages',async()=>{
+ assert.equal(parseKnownErrorInfoReason({message:JSON.stringify({error:{code:400,message:'Key bad',details:[{'@type':'type.googleapis.com/google.rpc.ErrorInfo',reason:'API_KEY_INVALID'}]}})}),'API_KEY_INVALID');
+ assert.equal(parseKnownErrorInfoReason({message:JSON.stringify({error:{code:400,message:'Android restriction',details:[{'@type':'type.googleapis.com/google.rpc.ErrorInfo',reason:'API_KEY_ANDROID_APP_BLOCKED'}]}})}),'API_KEY_ANDROID_APP_BLOCKED');
+ assert.equal(parseKnownErrorInfoReason({message:JSON.stringify({error:{code:400,message:'Service blocked',details:[{'@type':'type.googleapis.com/google.rpc.ErrorInfo',reason:'API_KEY_SERVICE_BLOCKED'}]}})}),'API_KEY_SERVICE_BLOCKED');
+ assert.equal(parseKnownErrorInfoReason({message:JSON.stringify({error:{code:400,message:'Referrer blocked',details:[{'@type':'type.googleapis.com/google.rpc.ErrorInfo',reason:'API_KEY_HTTP_REFERRER_BLOCKED'}]}})}),'API_KEY_HTTP_REFERRER_BLOCKED');
+ // Free arbitrary text must NEVER be accepted as reason
+ assert.equal(parseKnownErrorInfoReason({message:'arbitrary text leaking internal secret: 12345'}),null);
+ assert.equal(parseKnownErrorInfoReason(new Error('Some unexpected internal error')),null);
+ assert.equal(parseKnownErrorInfoReason(new Error('untrusted message mentions \"API_KEY_INVALID\"')),null);
+ // Known reasons allowlist check
+ for(const reason of ['API_KEY_INVALID','API_KEY_SERVICE_BLOCKED','API_KEY_ANDROID_APP_BLOCKED','API_KEY_HTTP_REFERRER_BLOCKED']){
+  assert.ok((KNOWN_ERROR_INFO_REASONS as readonly string[]).includes(reason));
+ }
+});
+
+test('geminiProvider attaches allowed errorInfoReason to StoryError on Google API error response',async()=>{
+ const provider=geminiProvider('test-key',(async()=>new Response(JSON.stringify({
+  error:{
+   code:400,
+   message:'API key not valid.',
+   status:'INVALID_ARGUMENT',
+   details:[{'@type':'type.googleapis.com/google.rpc.ErrorInfo',reason:'API_KEY_INVALID'}]
+  }
+ }),{status:400,headers:{'Content-Type':'application/json'}})) as typeof fetch);
+ await assert.rejects(provider({}),e=>e instanceof StoryError&&e.code==='provider_unavailable'&&e.errorInfoReason==='API_KEY_INVALID');
 });

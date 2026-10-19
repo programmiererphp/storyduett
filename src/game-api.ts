@@ -5,7 +5,7 @@ export async function gameRequest<T>(path:string,body?:unknown,token?:string,met
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),45000);
  try{const r=await fetch(path,{method,credentials:'same-origin',cache:'no-store',signal:controller.signal,headers:{'Content-Type':'application/json','x-sd-request':'1',...(token?{'x-sd-session':token}:{})},...(body?{body:JSON.stringify(body)}:{})});
  if(r.status===204)return undefined as T;
- let data;try{data=await r.json();}catch{throw new ApiError(!r.ok?(r.status===429?'rate_limited':r.status===503?'provider_unavailable':'provider_error'):'invalid_response',false);}
+ let data;try{data=await r.json();}catch{throw new ApiError(!r.ok?(r.status===429?'rate_limited':r.status===503?'provider_unavailable':'provider_error'):r.headers.get('content-type')?.includes('text/html')?'provider_unavailable':'invalid_response',false);}
  if(!r.ok)throw new ApiError(data.error??'provider_error',true);return data as T;
  }catch(e){if(e instanceof ApiError)throw e;throw new ApiError(controller.signal.aborted?'timeout':'network',false);}finally{clearTimeout(timeout);}
 }

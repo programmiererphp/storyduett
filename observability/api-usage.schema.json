@@ -143,6 +143,26 @@
     },
     "promptHash": {
       "type": "string"
+    },
+    "errorInfoReason": {
+      "enum": [
+        "API_KEY_INVALID",
+        "API_KEY_SERVICE_BLOCKED",
+        "API_KEY_ANDROID_APP_BLOCKED",
+        "API_KEY_HTTP_REFERRER_BLOCKED",
+        "API_KEY_IP_ADDRESS_BLOCKED",
+        "API_KEY_IOS_APP_BLOCKED",
+        "API_KEY_EXPIRED",
+        "API_KEY_NOT_FOUND",
+        "SERVICE_DISABLED",
+        "ACCESS_TOKEN_EXPIRED",
+        "ACCESS_TOKEN_SCOPE_INSUFFICIENT",
+        "RATE_LIMIT_EXCEEDED",
+        "USER_PROJECT_DENIED",
+        "CONSUMER_INVALID",
+        "BILLING_DISABLED",
+        null
+      ]
     }
   }
 }

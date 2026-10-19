@@ -39,3 +39,6 @@ Für weitere Deliveries: vor externen Änderungen Syncstatus prüfen, nach GitHu
 2026-10-17: nach ausdrücklicher Freigabe Publish im vorhandenen Projekt `android-app-erstes` ausgeführt. AI Studio meldet Status Ready und https://storyduett.ai.studio/; die öffentliche Seite wurde geöffnet und praktisch getestet. Veröffentlichter Quellstand `2535345` (Code `7eb1e1c`). Keine Codeänderung durch die Veröffentlichung; GitHub meldete danach synchron. Abschlussdokumentation und HTTP-/Screenshotnachweise im Review `2026-10-17-2535345.md`.
 
 D1-Zwischenbericht: [SD-D1-REVIEW-01](../reports/reviews/2026-10-17-c4521a6.md). Code c4521a6, automatisiert/CI geprüft; echte10-Runden-Abnahme durch Runtime-Keykonfiguration blockiert. D1 bleibt IN PROGRESS, öffentlich weiterhin D0.
+
+## D1 Schlüsseldiagnose – Fortsetzung 2026-10-19
+Die Nutzung vorhandener Projektschlüssel und Veröffentlichung nach bestandenen Tests sind autorisiert. Gespeicherter Projektschlüssel tatsächlich getestet: Google meldet API_KEY_INVALID. Keine erfolgreiche echte Generierung/10-Runden-Abnahme; D1 weiterhin IN PROGRESS, öffentlich D0. Sichere Diagnosekorrekturen implementiert, Lockdatei erhalten. [Aktueller Bericht SD-D1-REVIEW-02](../reports/reviews/2026-10-18-d1-key-diagnosis.md).

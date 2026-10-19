@@ -73,3 +73,6 @@ C01–C04 als eigenständige Shadow-DOM-ESM-Komponenten (Manifest, Schnittstelle
 D1 ist eine zeitlich begrenzte Solo-Sitzung ohne Bibliothek/Resume nach Serverneustart (D2). Sitzungszugriff über zufälliges Capability-Token, keine öffentlichen Sessionlisten oder Debugprompts. Vor jedem kostenpflichtigen Call werden konservative Text-Input-/Output-Obergrenzen gegen Call- und Sessionlimits reserviert; unbekannter Verbrauch wird zum reservierten Maximum verbucht. Keine automatischen kostenpflichtigen Retries. UI zeigt Schätzkosten/Limit, aktive Anfrage und verständliche Fehler. Modell/Preisliste werden vor Freigabe verifiziert. D2 bleibt TODO.
 
 D1-Zwischenbericht: [SD-D1-REVIEW-01](reports/reviews/2026-10-17-c4521a6.md). Code c4521a6, automatisiert/CI geprüft; echte10-Runden-Abnahme durch Runtime-Keykonfiguration blockiert. D1 bleibt IN PROGRESS, öffentlich weiterhin D0.
+
+## D1 Schlüsseldiagnose – Fortsetzung 2026-10-19
+Die Nutzung vorhandener Projektschlüssel und Veröffentlichung nach bestandenen Tests sind autorisiert. Gespeicherter Projektschlüssel tatsächlich getestet: Google meldet API_KEY_INVALID. Keine erfolgreiche echte Generierung/10-Runden-Abnahme; D1 weiterhin IN PROGRESS, öffentlich D0. Sichere Diagnosekorrekturen implementiert, Lockdatei erhalten. [Aktueller Bericht SD-D1-REVIEW-02](reports/reviews/2026-10-18-d1-key-diagnosis.md).

@@ -47,6 +47,8 @@ test('game client preserves ambiguous HTML gateway failures and distinguishes ex
  try{
   globalThis.fetch=async()=>new Response('<html>Gateway</html>',{status:503});
   await assert.rejects(gameRequest('/api/sessions',{}),e=>e instanceof ApiError&&e.code==='provider_unavailable'&&!e.confirmed);
+  globalThis.fetch=async()=>new Response('<html>Hosting error</html>',{status:200,headers:{'Content-Type':'text/html'}});
+  await assert.rejects(gameRequest('/api/sessions',{}),e=>e instanceof ApiError&&e.code==='provider_unavailable'&&!e.confirmed);
   globalThis.fetch=async()=>Response.json({error:'session_budget'},{status:402});
   await assert.rejects(gameRequest('/api/sessions',{}),e=>e instanceof ApiError&&e.code==='session_budget'&&e.confirmed);
   globalThis.fetch=async()=>Response.json({state:{version:1}});

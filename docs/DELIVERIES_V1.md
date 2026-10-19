@@ -24,3 +24,6 @@ Stand 2026-10-17: Work hat die eine React/Node-App in AI Studio erstellt, native
 D0 ist nach ausdrücklicher Nutzerfreigabe am 2026-10-17 um 20:37 Europe/Berlin öffentlich unter https://storyduett.ai.studio/ veröffentlicht und dort im Cloud Browser sowie mit anonymen HTTP-Anfragen geprüft. Alle D0-Abnahmekriterien sind erfüllt. [Öffentlicher Abschlussbericht SD-D0-DEPLOY-01](../reports/reviews/2026-10-17-2535345.md). D1 wurde nicht begonnen.
 
 D1-Zwischenbericht: [SD-D1-REVIEW-01](../reports/reviews/2026-10-17-c4521a6.md). Code c4521a6, automatisiert/CI geprüft; echte10-Runden-Abnahme durch Runtime-Keykonfiguration blockiert. D1 bleibt IN PROGRESS, öffentlich weiterhin D0.
+
+## D1 Schlüsseldiagnose – Fortsetzung 2026-10-19
+Die Nutzung vorhandener Projektschlüssel und Veröffentlichung nach bestandenen Tests sind autorisiert. Gespeicherter Projektschlüssel tatsächlich getestet: Google meldet API_KEY_INVALID. Keine erfolgreiche echte Generierung/10-Runden-Abnahme; D1 weiterhin IN PROGRESS, öffentlich D0. Sichere Diagnosekorrekturen implementiert, Lockdatei erhalten. [Aktueller Bericht SD-D1-REVIEW-02](../reports/reviews/2026-10-18-d1-key-diagnosis.md).

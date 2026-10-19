@@ -6,8 +6,44 @@ import type {StoryNodeV1,QuestionV1,StorySegmentV1,StoryCommentV1} from '../cont
 export const MODEL='gemini-3.5-flash-lite';
 export const PRICE={version:'google-standard-2026-10-17',input:0.30,output:2.50,validUntil:'2026-11-17'};
 export const LIMITS={call:0.01,session:0.10,userDay:0.20,instanceDay:2,input:18000,output:1600,turns:30,ttl:2*60*60*1000};
-export class StoryError extends Error{constructor(public code:string,public status=400){super(code);}}
-export interface Usage {requestId:string;feature:'start'|'turn';model:string;modelVersion:string|null;providerResponseId:string|null;promptHash:string;promptVersionIds:string[];inputTokens:number|null;outputTokens:number|null;thinkingTokens:number|null;cachedTokens:number|null;totalTokens:number|null;estimatedCostUsd:number|null;chargedUsd:number;reservedUsd:number;priceListVersion:string;status:'success'|'error'|'blocked';errorCode:string|null;latencyMs:number;startedAt:string;}
+
+export const KNOWN_ERROR_INFO_REASONS=[
+ 'API_KEY_INVALID',
+ 'API_KEY_SERVICE_BLOCKED',
+ 'API_KEY_ANDROID_APP_BLOCKED',
+ 'API_KEY_HTTP_REFERRER_BLOCKED',
+ 'API_KEY_IP_ADDRESS_BLOCKED',
+ 'API_KEY_IOS_APP_BLOCKED',
+ 'API_KEY_EXPIRED',
+ 'API_KEY_NOT_FOUND',
+ 'SERVICE_DISABLED',
+ 'ACCESS_TOKEN_EXPIRED',
+ 'ACCESS_TOKEN_SCOPE_INSUFFICIENT',
+ 'RATE_LIMIT_EXCEEDED',
+ 'USER_PROJECT_DENIED',
+ 'CONSUMER_INVALID',
+ 'BILLING_DISABLED'
+] as const;
+export type KnownErrorInfoReason=typeof KNOWN_ERROR_INFO_REASONS[number];
+
+export function parseKnownErrorInfoReason(e:unknown):KnownErrorInfoReason|null{
+ try{
+  const raw=e instanceof Error?e.message:typeof e==='string'?e:typeof (e as any)?.message==='string'?(e as any).message:'';
+  let parsed:any=null;
+  const start=raw.indexOf('{'),end=raw.lastIndexOf('}');
+  if(start!==-1&&end>start){try{parsed=JSON.parse(raw.slice(start,end+1));}catch{}}
+  const details=Array.isArray(parsed?.error?.details)?parsed.error.details:Array.isArray((e as any)?.details)?(e as any).details:[];
+  for(const d of details){
+   if(typeof d?.reason==='string'&&(KNOWN_ERROR_INFO_REASONS as readonly string[]).includes(d.reason)){
+    return d.reason as KnownErrorInfoReason;
+   }
+  }
+ }catch{}
+ return null;
+}
+
+export class StoryError extends Error{constructor(public code:string,public status=400,public errorInfoReason:KnownErrorInfoReason|null=null){super(code);}}
+export interface Usage {requestId:string;feature:'start'|'turn';model:string;modelVersion:string|null;providerResponseId:string|null;promptHash:string;promptVersionIds:string[];inputTokens:number|null;outputTokens:number|null;thinkingTokens:number|null;cachedTokens:number|null;totalTokens:number|null;estimatedCostUsd:number|null;chargedUsd:number;reservedUsd:number;priceListVersion:string;status:'success'|'error'|'blocked';errorCode:string|null;errorInfoReason?:KnownErrorInfoReason|null;latencyMs:number;startedAt:string;}
 export interface State {id:string;useCaseId:string;version:number;nodes:StoryNodeV1[];segments:StorySegmentV1[];usage:Usage[];spentUsd:number;limitUsd:number;expiresAt:string;}
 interface Session{state:State;owner:string;token:string;busy:boolean;pending:Map<string,{hash:string,promise:Promise<State>}>;results:Map<string,{hash:string,state?:State,error?:StoryError}>;}
 interface Ledger{spent:number;reserved:number;requests:number;lastAt:number;}
@@ -28,7 +64,7 @@ export function question(raw:any):QuestionV1{return {id:randomUUID(),text:raw.te
 
 // The key is read only on the server. No SDK automatic retries, tools, audio or grounding.
 export function geminiProvider(apiKey=process.env.GEMINI_API_KEY,transport:typeof fetch=fetch,timeoutMs=35000):Provider{
- const client=apiKey?new GoogleGenAI({apiKey,httpOptions:{timeout:timeoutMs,retryOptions:{attempts:1},fetch:transport}}):null;
+ const client=apiKey?new GoogleGenAI({apiKey,httpOptions:{timeout:timeoutMs,retryOptions:{attempts:1},headers:{'User-Agent':'aistudio-build'},fetch:transport}}):null;
  return async body=>{
   if(!client)throw new StoryError('provider_unavailable',503);
   const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeoutMs);
@@ -38,8 +74,9 @@ export function geminiProvider(apiKey=process.env.GEMINI_API_KEY,transport:typeo
    if(controller.signal.aborted)throw new StoryError('timeout',504);
    const status=typeof (e as any)?.status==='number'?(e as any).status:null;
    const message=e instanceof Error?e.message:'';const reason=['api key','thinking','schema','temperature','maxoutput','quota','model','permission','unsupported','invalid argument'].filter(v=>message.toLowerCase().includes(v));
-   console.warn(JSON.stringify({event:'gemini_transport_error',reason,name:e instanceof Error?e.name:'unknown',status,causeCode:typeof (e as any)?.cause?.code==='string'?(e as any).cause.code:null}));
-   throw new StoryError(status===429?'rate_limited':status===401||status===403||(status===400&&reason.includes('api key'))?'provider_unavailable':'provider_error',status===429?429:503);
+   const errorInfoReason=parseKnownErrorInfoReason(e);
+   console.warn(JSON.stringify({event:'gemini_transport_error',reason,errorInfoReason,name:e instanceof Error?e.name:'unknown',status,causeCode:typeof (e as any)?.cause?.code==='string'?(e as any).cause.code:null}));
+   throw new StoryError(status===429?'rate_limited':status===401||status===403||(status===400&&(reason.includes('api key')||Boolean(errorInfoReason)))?'provider_unavailable':'provider_error',status===429?429:503,errorInfoReason);
   }finally{clearTimeout(timer);}
  };
 }
@@ -112,7 +149,7 @@ export class StoryEngine{
    const text=candidate.content?.parts?.filter((p:any)=>!p.thought).map((p:any)=>p.text??'').join('');
    let raw;try{raw=JSON.parse(text);}catch{throw new StoryError('invalid_response',502);}
    validateGeneration(raw,start,preset.commentStyle==='teacher');usage.status='success';return raw;
-  }catch(e){usage.status='error';usage.errorCode=e instanceof StoryError?e.code:'provider_error';throw e instanceof StoryError?e:new StoryError('provider_error',503);}
+  }catch(e){if(e instanceof StoryError&&e.errorInfoReason)usage.errorInfoReason=e.errorInfoReason;usage.status='error';usage.errorCode=e instanceof StoryError?e.code:'provider_error';throw e instanceof StoryError?e:new StoryError('provider_error',503);}
   finally{user.reserved-=reserved;instance.reserved-=reserved;user.spent+=charged;instance.spent+=charged;s.state.spentUsd+=charged;usage.chargedUsd=charged;usage.latencyMs=this.now()-started;s.state.usage.push(usage);console.info(JSON.stringify({event:'sd_api_usage',...usage}));}
  }
  private commit(s:Session,preset:any,raw:any,answer:{rawAnswer:string,selectedOptionId:string|null}|null){

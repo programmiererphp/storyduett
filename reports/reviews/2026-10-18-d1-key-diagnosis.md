@@ -31,3 +31,8 @@ ErrorInfo-Parser übernimmt ausschließlich erlaubte Konstanten aus strukturiert
 - SD-D1-KEY-02: ../evidence/2026-10-18-d1/project-key-linked.jpg – gespeicherte maskierte Zuordnung.
 - SD-D1-KEY-03: ../evidence/2026-10-18-d1/new-key-ready.jpg – vorbereitete Neuanlage im bestehenden Projekt; Create key nicht gedrückt.
 - Frühere Komponenten-/Mobil-/Nullbudget-Belege: SD-D1-REVIEW-01.
+
+## Verifikation am 2026-10-19
+Geprüfter Codecommit4997b1a321ca8a1b343ad3409711a145757782cc: lokal validate/typecheck/build/npm test erfolgreich (4 Komponenten+14 weitere Tests, keine Fehler), zusätzlich CI39234092608 erfolgreich. Native GitHub-Pull in dieselbe AI-Studio-App abgeschlossen; drei Konflikte in Engine, Engine-Test und Client zugunsten des geprüften GitHub-Stands aufgelöst. UI bestätigt am19.10.12:01 Europe/Berlin „GitHub & Google AI Studio are currently in sync“. Nachweis SD-D1-SYNC-02: ../evidence/2026-10-18-d1/github-sync-2026-10-19.jpg .
+
+Am19.10. wurde die Vorbereitung der Schlüsselneuanlage von der automatischen Sicherheitsprüfung abgelehnt: bisherige Autorisierung betrifft vorhandene Schlüssel, ein neuer persistenter API-Zugang benötigt spezifische Freigabe. Nicht umgangen; keine Neuanlage ausgeführt. Nächste konkrete Entscheidung: Ersatzschlüssel StoryDuett D1 server im vorhandenen Projekt android-app-erstes ausschließlich für die bestehende App anlegen/verbinden; keine neue Abrechnung, kein neues Projekt. Bestehende Freigaben für API-Nutzung bisUSD0.50 in der Abnahme und D1-Veröffentlichung nach bestandenen echten Tests bleiben bestehen. D1 bleibt bis dahin IN PROGRESS.

@@ -92,3 +92,27 @@ Die Nutzung vorhandener Projektschlüssel und Veröffentlichung nach bestandenen
 
 ### Logging-Nachprüfung – 2026-10-25
 Der echte Zehn-Runden-Test besteht, aber die Plattform markiert auch stdout-Usage mit `errorCode:null` als Fehler. Weitere gezielte Korrektur: nullable Fehlerfelder nur in der Log-Zeile auslassen, wenn kein Fehler vorliegt; vollständiger privater Usage-Zustand und tatsächliche Fehler bleiben erhalten. Kein Unterdrücken realer Fehler. Anschließender echter Browser-Nachtest erforderlich.
+
+### Gezielter Italienisch-A1-Fix (Isoliertes Provider-Wireformat) – 2026-10-25
+- **Befund:** Im realen Browser-Test funktionierte der A1-Start korrekt mit <= 4 Wörtern je Satz, der erste Turn erzeugte jedoch 7/5/5 Wörter pro Storysatz trotz Prompt-Instruktionen.
+- **Gemini Structured Output Garantie:** Gemäß offizieller `generateContent`-Dokumentation (`https://ai.google.dev/gemini-api/docs/generate-content/structured-output`) garantiert das Schema für Arrays `items`, `minItems` und `maxItems`. String-Validierungen wie `pattern` oder `maxLength` werden von der Gemini-Engine nicht garantiert erzwungen.
+- **Isoliertes Wireformat für `italian-a1`:**
+  - `opening`: Wort-Array (max 4 Strings; bei Start aktiv, bei Turn leer `[]`).
+  - `contribution`: Array von maximal 3 Sätzen; jeder Satz ist ein Wort-Array mit maximal 4 Strings (bei Turn aktiv, bei Start leer `[]`).
+  - `bridge`: Wort-Array (max 4 Strings, optional; bei Inaktivität `[]`).
+  - `comment`: bleibt normales Text-Objekt `{ kind: 'correction', text: string }` auf Deutsch. Prompt instruiert: tatsächlich vorhandenen Fehler korrigieren (ohne erfundene Modalverb-Erklärung), korrigierter Satz, deutsche Bedeutung und einfache Aussprachehilfe.
+  - `nextQuestion`: `text` als Wort-Array (max 4 Strings); `options` als genau 3 Optionen, jede Option mit `text` als Wort-Array (max 4 Strings) und `tone` ('serious' | 'ironic').
+  - Inaktive Textfelder liefern leere Arrays; aktive Felder dürfen nicht leer sein.
+- **Deterministische Normalisierung & Validierung:**
+  - Normalisiert Provider-Wort-Arrays zu kanonischen internen Strings (Wörter mit Leerzeichen verbunden; fehlende Satzendpunkte ergänzt, zusätzliche Satzenden innerhalb eines Wortarrays abgewiesen). Keine synthetischen Antworten, keine automatischen Retries.
+  - Serverseitige Validierung: Prüfung aller Arraygrenzen (max 4 Wörter pro Satz/Feld, max 3 Sätze in contribution, min 1 aktives Wort).
+  - Einzelwort-Integrität: Jedes Array-Element muss genau ein einzelnes Wort ohne Whitespace sein (Unicode-Einzelwortprüfung mit Satzzeichen nur um das Wort), damit Mehrwort-Strings die Arraygrenze nicht umgehen.
+  - Satzgrenzen-Prüfung: Jeder resultierende Satz wird nochmals auf max 4 Wörter geprüft.
+  - Bei Verletzung: `StoryError('invalid_response', 502)`. Kein State-Commit, aber reguläre Verbuchung der verbrauchten Token/Kosten im `finally`-Block.
+- **Budget & Nicht-Italian-Invarianz:**
+  - Zusätzliches Schema- und Systemprompt-Volumen fließt vollständig in `inputBound` und die harten Vorabreservierungen ein.
+  - Native Nicht-Italian-Schemas und alle C01–C04/API-Contracts bleiben unverändert.
+  - Versionsnummer in `prompts/catalog.json` wird ausschließlich für `italian-a1` auf v3 erhöht.
+
+
+Details und Schnittstellen: [SD-D1-A1-01](docs/A1_WIREFORMAT.md). Nach dem Review zusätzlich interne Mehrwort-Verbindungen, fehlende Satztrennung und Unicode-Kombinationszeichen abgesichert.

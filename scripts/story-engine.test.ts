@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {StoryEngine,StoryError,LIMITS,geminiProvider,parseKnownErrorInfoReason,KNOWN_ERROR_INFO_REASONS,resolveServerApiKey,usageLogLine,type Usage} from '../server/story-engine';
+import {StoryEngine,StoryError,LIMITS,geminiProvider,parseKnownErrorInfoReason,KNOWN_ERROR_INFO_REASONS,resolveServerApiKey,usageLogLine,validateAndNormalizeItalianA1,isSingleItalianWord,type Usage} from '../server/story-engine';
 const fixture=(teacher=false)=>({opening:'The door opened.',contribution:'I opened a window.',bridge:'A breeze entered.',comment:{kind:teacher?'correction':'ironic',text:'A fresh idea.'},nextQuestion:{text:'Where next?',options:[{text:'Garden',tone:'serious'},{text:'Library',tone:'serious'},{text:'Ask the window',tone:'ironic'}]}});
 const response=(raw:any=fixture())=>({modelVersion:'test-fixture',responseId:'synthetic',usageMetadata:{promptTokenCount:100,candidatesTokenCount:100,thoughtsTokenCount:2,totalTokenCount:202},candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(raw)}]}}]});
 const start=()=>({useCaseId:'fiction',locale:'de',idempotencyKey:randomUUID()});
@@ -185,3 +185,391 @@ test('resolveServerApiKey prioritizes SD_GEMINI_API_KEY and falls back on empty 
   'synthetic-sd-key-12345'
  );
 });
+
+test('Italian A1: isSingleItalianWord accepts valid Italian words with attached punctuation and rejects whitespace/multi-word/pure-punctuation', () => {
+  assert.equal(isSingleItalianWord('ciao'), true);
+  assert.equal(isSingleItalianWord('è'), true);
+  assert.equal(isSingleItalianWord('perché'), true);
+  assert.equal(isSingleItalianWord('città'), true);
+  assert.equal(isSingleItalianWord("L'ora"), true);
+  assert.equal(isSingleItalianWord("d'accordo"), true);
+  assert.equal(isSingleItalianWord('aperto!'), true);
+  assert.equal(isSingleItalianWord('chiuso.'), true);
+  assert.equal(isSingleItalianWord('«prego»'), true);
+  assert.equal(isSingleItalianWord('10:00'), true);
+  assert.equal(isSingleItalianWord('nord-est'), true);
+  assert.equal(isSingleItalianWord('citta\u0300'), true);
+  assert.equal(isSingleItalianWord('ciao,mondo'), false);
+  assert.equal(isSingleItalianWord('guida.arriva'), false);
+
+  // Must reject multi-word strings and whitespace
+  assert.equal(isSingleItalianWord('ciao mondo'), false);
+  assert.equal(isSingleItalianWord(' ciao'), false);
+  assert.equal(isSingleItalianWord('ciao '), false);
+  assert.equal(isSingleItalianWord('ciao\nmondo'), false);
+  assert.equal(isSingleItalianWord('ciao\tmondo'), false);
+  assert.equal(isSingleItalianWord(''), false);
+  assert.equal(isSingleItalianWord('   '), false);
+  assert.equal(isSingleItalianWord(null), false);
+  assert.equal(isSingleItalianWord(undefined), false);
+  assert.equal(isSingleItalianWord(123), false);
+
+  // Pure punctuation without letters/digits must be rejected
+  assert.equal(isSingleItalianWord('.'), false);
+  assert.equal(isSingleItalianWord('...'), false);
+  assert.equal(isSingleItalianWord('?!'), false);
+});
+
+test('Italian A1: validateAndNormalizeItalianA1 validates and normalizes valid start and turn responses', () => {
+  const validStart = {
+    opening: ['Il', 'museo', 'è', 'aperto.'],
+    contribution: [],
+    bridge: [],
+    comment: { kind: 'neutral', text: '' },
+    nextQuestion: {
+      text: ['Cosa', 'fai', 'adesso?'],
+      options: [
+        { text: ['Entro', 'subito.'], tone: 'serious' },
+        { text: ['Aspetto', 'fuori.'], tone: 'serious' },
+        { text: ['Mangio', 'un', 'gelato.'], tone: 'ironic' }
+      ]
+    }
+  };
+
+  const normStart = validateAndNormalizeItalianA1(validStart, true);
+  assert.equal(normStart.opening, 'Il museo è aperto.');
+  assert.equal(normStart.contribution, '');
+  assert.equal(normStart.bridge, '');
+  assert.equal(normStart.nextQuestion.text, 'Cosa fai adesso?');
+  assert.equal(normStart.nextQuestion.options.length, 3);
+  assert.equal(normStart.nextQuestion.options[0].text, 'Entro subito.');
+  assert.equal(normStart.nextQuestion.options[1].text, 'Aspetto fuori.');
+  assert.equal(normStart.nextQuestion.options[2].text, 'Mangio un gelato.');
+
+  const validTurn = {
+    opening: [],
+    contribution: [
+      ['Entro', 'nel', 'museo.'],
+      ['Guardo', 'un', 'bel', 'quadro.']
+    ],
+    bridge: ['La', 'guida', 'sorride.'],
+    comment: {
+      kind: 'correction',
+      text: 'Sehr gut! Korrektur: "Entro subito." (Ich trete sofort ein, Aussprache: en-tro su-bi-to).'
+    },
+    nextQuestion: {
+      text: ['Dove', 'vai', 'dopo?'],
+      options: [
+        { text: ['Al', 'bar.'], tone: 'serious' },
+        { text: ['A', 'casa.'], tone: 'serious' },
+        { text: ['Sulla', 'luna.'], tone: 'ironic' }
+      ]
+    }
+  };
+
+  const normTurn = validateAndNormalizeItalianA1(validTurn, false);
+  assert.equal(normTurn.opening, '');
+  assert.equal(normTurn.contribution, 'Entro nel museo. Guardo un bel quadro.');
+  assert.equal(normTurn.bridge, 'La guida sorride.');
+  assert.equal(normTurn.comment.kind, 'correction');
+  assert.equal(normTurn.comment.text.includes('en-tro su-bi-to'), true);
+  assert.equal(normTurn.nextQuestion.text, 'Dove vai dopo?');
+  assert.equal(normTurn.nextQuestion.options.length, 3);
+});
+
+test('Italian A1: sentence tuples stay separate even if the provider omits punctuation',()=>{
+ const raw={opening:[],contribution:[['Io','entro','nel','museo'],['La','guida','arriva','ora']],bridge:['Tutti','sono','molto','gentili'],comment:{kind:'correction',text:'Korrektur'},nextQuestion:{text:['Cosa','vedi?'],options:[{text:['Un','quadro.'],tone:'serious'},{text:['Una','statua.'],tone:'serious'},{text:['Un','drago.'],tone:'ironic'}]}};
+ const normalized=validateAndNormalizeItalianA1(raw,false);
+ assert.equal(normalized.contribution,'Io entro nel museo. La guida arriva ora.');
+ assert.equal(normalized.bridge,'Tutti sono molto gentili.');
+ assert.throws(()=>validateAndNormalizeItalianA1({...raw,contribution:[['Io','entro.','La','guida.']]},false),/invalid_response/);
+ assert.throws(()=>validateAndNormalizeItalianA1({...raw,contribution:[['Io,entro','nel','museo']]},false),/invalid_response/);
+});
+
+test('Italian A1: strict error enforcement for multi-word items, word counts, empty contents and invalid shapes', () => {
+  const baseStart = () => ({
+    opening: ['Il', 'museo', 'è', 'aperto.'],
+    contribution: [],
+    bridge: [],
+    comment: { kind: 'neutral', text: '' },
+    nextQuestion: {
+      text: ['Cosa', 'fai', 'adesso?'],
+      options: [
+        { text: ['Entro', 'subito.'], tone: 'serious' },
+        { text: ['Aspetto', 'fuori.'], tone: 'serious' },
+        { text: ['Mangio', 'un', 'gelato.'], tone: 'ironic' }
+      ]
+    }
+  });
+
+  const baseTurn = () => ({
+    opening: [],
+    contribution: [['Entro', 'nel', 'museo.']],
+    bridge: [],
+    comment: { kind: 'correction', text: 'Korrektur: Entro subito (Ich gehe hinein, en-tro).' },
+    nextQuestion: {
+      text: ['Dove', 'vai', 'dopo?'],
+      options: [
+        { text: ['Al', 'bar.'], tone: 'serious' },
+        { text: ['A', 'casa.'], tone: 'serious' },
+        { text: ['Sulla', 'luna.'], tone: 'ironic' }
+      ]
+    }
+  });
+
+  // 1. Multi-word item bypass attempt
+  const multiWordStart = baseStart();
+  multiWordStart.opening = ['Il', 'museo è', 'aperto.'];
+  assert.throws(() => validateAndNormalizeItalianA1(multiWordStart, true), /invalid_response/);
+
+  const multiWordTurn = baseTurn();
+  multiWordTurn.contribution[0] = ['Entro', 'nel museo'];
+  assert.throws(() => validateAndNormalizeItalianA1(multiWordTurn, false), /invalid_response/);
+
+  // 2. Exceeding word limit in start opening (5 words)
+  const tooManyWordsOpening = baseStart();
+  tooManyWordsOpening.opening = ['Il', 'grande', 'museo', 'è', 'aperto.'];
+  assert.throws(() => validateAndNormalizeItalianA1(tooManyWordsOpening, true), /invalid_response/);
+
+  // 3. Exceeding word limit in a contribution sentence (5 words)
+  const tooManyWordsSentence = baseTurn();
+  tooManyWordsSentence.contribution = [['Vado', 'al', 'bar', 'molto', 'velocemente.']];
+  assert.throws(() => validateAndNormalizeItalianA1(tooManyWordsSentence, false), /invalid_response/);
+
+  // 4. Exceeding sentence count in contribution (> 3 sentences)
+  const tooManySentences = baseTurn();
+  tooManySentences.contribution = [
+    ['Uno', 'due.'],
+    ['Tre', 'quattro.'],
+    ['Cinque', 'sei.'],
+    ['Sette', 'otto.']
+  ];
+  assert.throws(() => validateAndNormalizeItalianA1(tooManySentences, false), /invalid_response/);
+
+  // 5. Exceeding words in bridge (> 4 words)
+  const tooManyBridgeWords = baseTurn();
+  tooManyBridgeWords.bridge = ['La', 'guida', 'italiana', 'parla', 'bene.'];
+  assert.throws(() => validateAndNormalizeItalianA1(tooManyBridgeWords, false), /invalid_response/);
+
+  // 6. Exceeding words in nextQuestion text (> 4 words)
+  const tooManyQuestionWords = baseStart();
+  tooManyQuestionWords.nextQuestion.text = ['Che', 'cosa', 'fai', 'adesso', 'qui?'];
+  assert.throws(() => validateAndNormalizeItalianA1(tooManyQuestionWords, true), /invalid_response/);
+
+  // 7. Exceeding words in option text (> 4 words)
+  const tooManyOptionWords = baseStart();
+  tooManyOptionWords.nextQuestion.options[0].text = ['Entro', 'subito', 'nel', 'bel', 'museo.'];
+  assert.throws(() => validateAndNormalizeItalianA1(tooManyOptionWords, true), /invalid_response/);
+
+  // 8. Empty active opening on start
+  const emptyOpeningStart = baseStart();
+  emptyOpeningStart.opening = [];
+  assert.throws(() => validateAndNormalizeItalianA1(emptyOpeningStart, true), /invalid_response/);
+
+  // 9. Active opening present on turn (must be empty)
+  const nonZeroOpeningTurn = baseTurn();
+  nonZeroOpeningTurn.opening = ['Ciao.'];
+  assert.throws(() => validateAndNormalizeItalianA1(nonZeroOpeningTurn, false), /invalid_response/);
+
+  // 10. Non-empty contribution on start (must be empty)
+  const nonZeroContribStart = baseStart();
+  nonZeroContribStart.contribution = [['Entro.']];
+  assert.throws(() => validateAndNormalizeItalianA1(nonZeroContribStart, true), /invalid_response/);
+
+  // 11. Empty contribution on turn
+  const emptyContribTurn = baseTurn();
+  emptyContribTurn.contribution = [];
+  assert.throws(() => validateAndNormalizeItalianA1(emptyContribTurn, false), /invalid_response/);
+
+  // 12. Turn comment missing or wrong kind
+  const wrongCommentKind = baseTurn();
+  wrongCommentKind.comment = { kind: 'ironic', text: 'Non-correction' };
+  assert.throws(() => validateAndNormalizeItalianA1(wrongCommentKind, false), /invalid_response/);
+
+  const emptyCommentText = baseTurn();
+  emptyCommentText.comment = { kind: 'correction', text: '   ' };
+  assert.throws(() => validateAndNormalizeItalianA1(emptyCommentText, false), /invalid_response/);
+
+  // 13. Invalid tone distribution or duplicate options
+  const wrongTones = baseStart();
+  wrongTones.nextQuestion.options[0].tone = 'ironic';
+  wrongTones.nextQuestion.options[1].tone = 'ironic';
+  assert.throws(() => validateAndNormalizeItalianA1(wrongTones, true), /invalid_response/);
+
+  const dupOptions = baseStart();
+  dupOptions.nextQuestion.options[1].text = ['Entro', 'subito.'];
+  assert.throws(() => validateAndNormalizeItalianA1(dupOptions, true), /invalid_response/);
+});
+
+test('Italian A1: StoryEngine start and turn execute successfully with A1 word-array fixtures', async () => {
+  const a1StartFixture = {
+    opening: ['Il', 'museo', 'è', 'aperto.'],
+    contribution: [],
+    bridge: [],
+    comment: { kind: 'neutral', text: '' },
+    nextQuestion: {
+      text: ['Cosa', 'fai', 'adesso?'],
+      options: [
+        { text: ['Entro', 'subito.'], tone: 'serious' },
+        { text: ['Aspetto', 'fuori.'], tone: 'serious' },
+        { text: ['Mangio', 'un', 'gelato.'], tone: 'ironic' }
+      ]
+    }
+  };
+
+  const a1TurnFixture = {
+    opening: [],
+    contribution: [
+      ['Entro', 'nel', 'museo.'],
+      ['Compro', 'un', 'biglietto.']
+    ],
+    bridge: ['La', 'guida', 'arriva.'],
+    comment: {
+      kind: 'correction',
+      text: 'Ottimo! Korrektur: "Entro subito." (Ich trete sofort ein, Aussprache: en-tro su-bi-to).'
+    },
+    nextQuestion: {
+      text: ['Dove', 'vai', 'ora?'],
+      options: [
+        { text: ['Nella', 'sala.'], tone: 'serious' },
+        { text: ['Al', 'giardino.'], tone: 'serious' },
+        { text: ['Sul', 'tetto.'], tone: 'ironic' }
+      ]
+    }
+  };
+
+  let callCount = 0;
+  const a1Provider = async () => {
+    callCount++;
+    const payload = callCount === 1 ? a1StartFixture : a1TurnFixture;
+    return {
+      modelVersion: 'gemini-3.5-flash-lite',
+      responseId: 'synth-a1-' + callCount,
+      usageMetadata: { promptTokenCount: 150, candidatesTokenCount: 80, thoughtsTokenCount: 5, totalTokenCount: 235 },
+      candidates: [{ finishReason: 'STOP', content: { parts: [{ text: JSON.stringify(payload) }] } }]
+    };
+  };
+
+  let now = Date.parse('2026-10-25T12:00:00Z');
+  const engine = new StoryEngine(a1Provider, () => (now += 1000));
+
+  const startRes = await engine.start('tester', {
+    useCaseId: 'italian-a1',
+    locale: 'de',
+    idempotencyKey: randomUUID()
+  });
+
+  assert.equal(startRes.state.useCaseId, 'italian-a1');
+  assert.equal(startRes.state.nodes.length, 1);
+  assert.equal(startRes.state.segments[0].text, 'Il museo è aperto.');
+  assert.equal(startRes.state.version, 0);
+
+  const turnInput = {
+    version: 0,
+    questionId: startRes.state.nodes[0].nextQuestion.id,
+    selectedOptionId: startRes.state.nodes[0].nextQuestion.options[0].id,
+    locale: 'de',
+    idempotencyKey: randomUUID()
+  };
+
+  const turnRes = await engine.turn(startRes.state.id, 'tester', startRes.token, turnInput);
+  assert.equal(turnRes.version, 1);
+  assert.equal(turnRes.nodes.length, 2);
+  assert.equal(turnRes.segments.length, 3); // opening, contribution, bridge
+  assert.equal(turnRes.segments[1].text, 'Entro nel museo. Compro un biglietto.');
+  assert.equal(turnRes.segments[2].text, 'La guida arriva.');
+  assert.equal(turnRes.nodes[1].comment?.kind, 'correction');
+  assert.equal(turnRes.nodes[1].comment?.text.includes('en-tro su-bi-to'), true);
+  assert.equal(turnRes.nodes[1].promptVersionIds.start, 'italian-a1:v3:start');
+});
+
+test('Italian A1: invalid A1 response does NOT commit story state and properly accounts usage cost', async () => {
+  const a1StartFixture = {
+    opening: ['Il', 'museo', 'è', 'aperto.'],
+    contribution: [],
+    bridge: [],
+    comment: { kind: 'neutral', text: '' },
+    nextQuestion: {
+      text: ['Cosa', 'fai', 'adesso?'],
+      options: [
+        { text: ['Entro', 'subito.'], tone: 'serious' },
+        { text: ['Aspetto', 'fuori.'], tone: 'serious' },
+        { text: ['Mangio', 'un', 'gelato.'], tone: 'ironic' }
+      ]
+    }
+  };
+
+  // Turn fixture returns an invalid sentence with 6 words (violates max 4 words)
+  const a1InvalidTurnFixture = {
+    opening: [],
+    contribution: [
+      ['Questa', 'frase', 'ha', 'troppe', 'parole', 'davvero.']
+    ],
+    bridge: [],
+    comment: { kind: 'correction', text: 'Korrektur.' },
+    nextQuestion: {
+      text: ['Dove', 'vai', 'ora?'],
+      options: [
+        { text: ['Nella', 'sala.'], tone: 'serious' },
+        { text: ['Al', 'giardino.'], tone: 'serious' },
+        { text: ['Sul', 'tetto.'], tone: 'ironic' }
+      ]
+    }
+  };
+
+  let callCount = 0;
+  const a1Provider = async () => {
+    callCount++;
+    const payload = callCount === 1 ? a1StartFixture : a1InvalidTurnFixture;
+    return {
+      modelVersion: 'gemini-3.5-flash-lite',
+      responseId: 'synth-a1-' + callCount,
+      usageMetadata: { promptTokenCount: 150, candidatesTokenCount: 80, thoughtsTokenCount: 5, totalTokenCount: 235 },
+      candidates: [{ finishReason: 'STOP', content: { parts: [{ text: JSON.stringify(payload) }] } }]
+    };
+  };
+
+  let now = Date.parse('2026-10-25T12:00:00Z');
+  const engine = new StoryEngine(a1Provider, () => (now += 1000));
+
+  const startRes = await engine.start('tester', {
+    useCaseId: 'italian-a1',
+    locale: 'de',
+    idempotencyKey: randomUUID()
+  });
+
+  const stateBefore = engine.read(startRes.state.id, 'tester', startRes.token);
+  assert.equal(stateBefore.version, 0);
+  assert.equal(stateBefore.nodes.length, 1);
+  assert.equal(stateBefore.segments.length, 1);
+
+  const turnInput = {
+    version: 0,
+    questionId: startRes.state.nodes[0].nextQuestion.id,
+    selectedOptionId: startRes.state.nodes[0].nextQuestion.options[0].id,
+    locale: 'de',
+    idempotencyKey: randomUUID()
+  };
+
+  await assert.rejects(
+    () => engine.turn(startRes.state.id, 'tester', startRes.token, turnInput),
+    (err: any) => err instanceof StoryError && err.code === 'invalid_response' && err.status === 502
+  );
+
+  // Story state MUST remain unchanged (no rollback corruption, no commit)
+  const stateAfter = engine.read(startRes.state.id, 'tester', startRes.token);
+  assert.equal(stateAfter.version, 0);
+  assert.equal(stateAfter.nodes.length, 1);
+  assert.equal(stateAfter.segments.length, 1);
+  assert.deepEqual(stateAfter.nodes, stateBefore.nodes);
+  assert.deepEqual(stateAfter.segments, stateBefore.segments);
+
+  // Usage cost MUST be recorded with error status and charged cost
+  assert.equal(stateAfter.usage.length, 2);
+  const failedUsage = stateAfter.usage[1];
+  assert.equal(failedUsage.status, 'error');
+  assert.equal(failedUsage.errorCode, 'invalid_response');
+  assert.equal(failedUsage.chargedUsd > 0, true);
+  assert.equal(stateAfter.spentUsd > stateBefore.spentUsd, true);
+});
+

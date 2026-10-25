@@ -76,7 +76,7 @@
     {
       "id": "italian-a1",
       "name": "Italienisch A1",
-      "version": 2,
+      "version": 3,
       "enabled": true,
       "language": "it",
       "commentStyle": "teacher",
@@ -90,7 +90,7 @@
       "prompts": {
         "start": "Starte mit höchstens vier italienischen Wörtern. Alltagsszene: Öffnungszeiten, Straßenschilder, Museum oder Wochentage.",
         "question": "Formuliere eine sehr kurze Folgefrage und drei leicht verständliche Antworten, zwei sachliche und eine lustige.",
-        "comment": "Korrigiere maximal einen typischen Fehler, gib deutsche Bedeutung und einfache Aussprachehilfe.",
+        "comment": "Korrigiere nur einen tatsächlich vorhandenen Fehler ohne erfundene Regelerklärungen: korrigierter Satz, deutsche Bedeutung und einfache Aussprachehilfe für den korrigierten Satz. Bei fehlerfreier Eingabe bestätige kurz.",
         "integrate": "Schreibe die Szene in sehr kurzen italienischen Sätzen fort und halte jeden Einzelsatz bei maximal vier Wörtern."
       }
     },

@@ -1,10 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {StoryEngine,StoryError,LIMITS,geminiProvider,parseKnownErrorInfoReason,KNOWN_ERROR_INFO_REASONS,resolveServerApiKey} from '../server/story-engine';
+import {StoryEngine,StoryError,LIMITS,geminiProvider,parseKnownErrorInfoReason,KNOWN_ERROR_INFO_REASONS,resolveServerApiKey,usageLogLine,type Usage} from '../server/story-engine';
 const fixture=(teacher=false)=>({opening:'The door opened.',contribution:'I opened a window.',bridge:'A breeze entered.',comment:{kind:teacher?'correction':'ironic',text:'A fresh idea.'},nextQuestion:{text:'Where next?',options:[{text:'Garden',tone:'serious'},{text:'Library',tone:'serious'},{text:'Ask the window',tone:'ironic'}]}});
 const response=(raw:any=fixture())=>({modelVersion:'test-fixture',responseId:'synthetic',usageMetadata:{promptTokenCount:100,candidatesTokenCount:100,thoughtsTokenCount:2,totalTokenCount:202},candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(raw)}]}}]});
 const start=()=>({useCaseId:'fiction',locale:'de',idempotencyKey:randomUUID()});
+test('usage logs omit absent error indicators, preserve actual failures and do not mutate the audit record',()=>{
+ const success={status:'success',model:'synthetic',inputTokens:10,errorCode:null,errorInfoReason:null} as unknown as Usage;
+ const before=structuredClone(success);const line=usageLogLine(success);const parsed=JSON.parse(line);
+ assert.equal(parsed.event,'sd_api_usage');assert.equal(parsed.status,'success');assert.equal(parsed.inputTokens,10);assert(!('errorCode' in parsed));assert(!('errorInfoReason' in parsed));assert(line.endsWith('\n'));assert.deepEqual(success,before);
+ for(const status of ['error','blocked']){const failed={...success,status,errorCode:'provider_unavailable',errorInfoReason:'API_KEY_INVALID'} as Usage;const record=JSON.parse(usageLogLine(failed));assert.equal(record.status,status);assert.equal(record.errorCode,'provider_unavailable');assert.equal(record.errorInfoReason,'API_KEY_INVALID');}
+});
 const turn=(s:any)=>({version:s.version,questionId:s.nodes.at(-1).nextQuestion.id,selectedOptionId:s.nodes.at(-1).nextQuestion.options[0].id,locale:'de',idempotencyKey:randomUUID()});
 const make=(provider:any=async()=>response(),limits=LIMITS)=>{let now=Date.parse('2026-10-17T22:00:00Z');return {engine:new StoryEngine(provider,()=>now,{...limits}),tick:()=>now+=1000};};
 test('ten append-only rounds, original free text, owner isolation and idempotency',async()=>{

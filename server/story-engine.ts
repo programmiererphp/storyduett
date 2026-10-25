@@ -48,6 +48,12 @@ export function parseKnownErrorInfoReason(e:unknown):KnownErrorInfoReason|null{
 export class StoryError extends Error{constructor(public code:string,public status=400,public errorInfoReason:KnownErrorInfoReason|null=null){super(code);}}
 export interface Usage {requestId:string;feature:'start'|'turn';model:string;modelVersion:string|null;providerResponseId:string|null;promptHash:string;promptVersionIds:string[];inputTokens:number|null;outputTokens:number|null;thinkingTokens:number|null;cachedTokens:number|null;totalTokens:number|null;estimatedCostUsd:number|null;chargedUsd:number;reservedUsd:number;priceListVersion:string;status:'success'|'error'|'blocked';errorCode:string|null;errorInfoReason?:KnownErrorInfoReason|null;latencyMs:number;startedAt:string;}
 export interface State {id:string;useCaseId:string;version:number;nodes:StoryNodeV1[];segments:StorySegmentV1[];usage:Usage[];spentUsd:number;limitUsd:number;expiresAt:string;}
+// Avoid false-positive platform log classification from absent error indicators.
+// Keep the full private Usage record; omit only absent error fields from the log line.
+export function usageLogLine(usage:Usage):string{
+ const {errorCode,errorInfoReason,...record}=usage;
+ return JSON.stringify({event:'sd_api_usage',...record,...(errorCode?{errorCode}:{}),...(errorInfoReason?{errorInfoReason}:{})})+'\n';
+}
 interface Session{state:State;owner:string;token:string;busy:boolean;pending:Map<string,{hash:string,promise:Promise<State>}>;results:Map<string,{hash:string,state?:State,error?:StoryError}>;}
 interface Ledger{spent:number;reserved:number;requests:number;lastAt:number;}
 export type Provider=(body:any)=>Promise<any>;
@@ -133,7 +139,7 @@ export class StoryEngine{
   const inputBound=Buffer.byteLength(JSON.stringify(body),'utf8')+1024;
   const reserved=cost(inputBound,this.limits.output);
   const usage:Usage={requestId:randomUUID(),feature:start?'start':'turn',model:MODEL,modelVersion:null,providerResponseId:null,promptHash:digest(body),promptVersionIds:Object.values(versions),inputTokens:null,outputTokens:null,thinkingTokens:null,cachedTokens:null,totalTokens:null,estimatedCostUsd:null,chargedUsd:0,reservedUsd:reserved,priceListVersion:PRICE.version,status:'blocked',errorCode:null,latencyMs:0,startedAt:new Date(started).toISOString()};
-  const block=(code:string,status=402):never=>{usage.errorCode=code;s.state.usage.push(usage);process.stdout.write(JSON.stringify({event:'sd_api_usage',...usage})+'\n');throw new StoryError(code,status);};
+  const block=(code:string,status=402):never=>{usage.errorCode=code;s.state.usage.push(usage);process.stdout.write(usageLogLine(usage));throw new StoryError(code,status);};
   if(this.halted)block('provider_unavailable',503);
   if(this.now()>Date.parse(PRICE.validUntil+'T23:59:59Z'))block('pricing_expired',503);
   if(inputBound>this.limits.input)block('context_limit');
@@ -153,7 +159,7 @@ export class StoryEngine{
    let raw;try{raw=JSON.parse(text);}catch{throw new StoryError('invalid_response',502);}
    validateGeneration(raw,start,preset.commentStyle==='teacher');usage.status='success';return raw;
   }catch(e){if(e instanceof StoryError&&e.errorInfoReason)usage.errorInfoReason=e.errorInfoReason;usage.status='error';usage.errorCode=e instanceof StoryError?e.code:'provider_error';throw e instanceof StoryError?e:new StoryError('provider_error',503);}
-  finally{user.reserved-=reserved;instance.reserved-=reserved;user.spent+=charged;instance.spent+=charged;s.state.spentUsd+=charged;usage.chargedUsd=charged;usage.latencyMs=this.now()-started;s.state.usage.push(usage);process.stdout.write(JSON.stringify({event:'sd_api_usage',...usage})+'\n');}
+  finally{user.reserved-=reserved;instance.reserved-=reserved;user.spent+=charged;instance.spent+=charged;s.state.spentUsd+=charged;usage.chargedUsd=charged;usage.latencyMs=this.now()-started;s.state.usage.push(usage);process.stdout.write(usageLogLine(usage));}
  }
  private commit(s:Session,preset:any,raw:any,answer:{rawAnswer:string,selectedOptionId:string|null}|null){
   const state=s.state,id=randomUUID();const segment=(text:string,kind:StorySegmentV1['kind']):StorySegmentV1=>({id:randomUUID(),turnId:id,text,kind,actorId:kind==='user-contribution'?'solo':'ai'});

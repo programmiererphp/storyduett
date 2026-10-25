@@ -2,6 +2,9 @@ import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {GoogleGenAI} from '@google/genai';
 import type {StoryNodeV1,QuestionV1,StorySegmentV1,StoryCommentV1} from '../contracts/story.contracts';
+import {resolveServerApiKey} from './key-resolver';
+
+export {resolveServerApiKey};
 
 export const MODEL='gemini-3.5-flash-lite';
 export const PRICE={version:'google-standard-2026-10-17',input:0.30,output:2.50,validUntil:'2026-11-17'};
@@ -63,7 +66,7 @@ export function validateGeneration(raw:any,start:boolean,teacher:boolean){
 export function question(raw:any):QuestionV1{return {id:randomUUID(),text:raw.text,options:raw.options.map((o:any)=>({id:randomUUID(),text:o.text,tone:o.tone}))};}
 
 // The key is read only on the server. No SDK automatic retries, tools, audio or grounding.
-export function geminiProvider(apiKey=process.env.GEMINI_API_KEY,transport:typeof fetch=fetch,timeoutMs=35000):Provider{
+export function geminiProvider(apiKey=resolveServerApiKey(),transport:typeof fetch=fetch,timeoutMs=35000):Provider{
  const client=apiKey?new GoogleGenAI({apiKey,httpOptions:{timeout:timeoutMs,retryOptions:{attempts:1},headers:{'User-Agent':'aistudio-build'},fetch:transport}}):null;
  return async body=>{
   if(!client)throw new StoryError('provider_unavailable',503);
@@ -130,7 +133,7 @@ export class StoryEngine{
   const inputBound=Buffer.byteLength(JSON.stringify(body),'utf8')+1024;
   const reserved=cost(inputBound,this.limits.output);
   const usage:Usage={requestId:randomUUID(),feature:start?'start':'turn',model:MODEL,modelVersion:null,providerResponseId:null,promptHash:digest(body),promptVersionIds:Object.values(versions),inputTokens:null,outputTokens:null,thinkingTokens:null,cachedTokens:null,totalTokens:null,estimatedCostUsd:null,chargedUsd:0,reservedUsd:reserved,priceListVersion:PRICE.version,status:'blocked',errorCode:null,latencyMs:0,startedAt:new Date(started).toISOString()};
-  const block=(code:string,status=402):never=>{usage.errorCode=code;s.state.usage.push(usage);console.info(JSON.stringify({event:'sd_api_usage',...usage}));throw new StoryError(code,status);};
+  const block=(code:string,status=402):never=>{usage.errorCode=code;s.state.usage.push(usage);process.stdout.write(JSON.stringify({event:'sd_api_usage',...usage})+'\n');throw new StoryError(code,status);};
   if(this.halted)block('provider_unavailable',503);
   if(this.now()>Date.parse(PRICE.validUntil+'T23:59:59Z'))block('pricing_expired',503);
   if(inputBound>this.limits.input)block('context_limit');
@@ -150,7 +153,7 @@ export class StoryEngine{
    let raw;try{raw=JSON.parse(text);}catch{throw new StoryError('invalid_response',502);}
    validateGeneration(raw,start,preset.commentStyle==='teacher');usage.status='success';return raw;
   }catch(e){if(e instanceof StoryError&&e.errorInfoReason)usage.errorInfoReason=e.errorInfoReason;usage.status='error';usage.errorCode=e instanceof StoryError?e.code:'provider_error';throw e instanceof StoryError?e:new StoryError('provider_error',503);}
-  finally{user.reserved-=reserved;instance.reserved-=reserved;user.spent+=charged;instance.spent+=charged;s.state.spentUsd+=charged;usage.chargedUsd=charged;usage.latencyMs=this.now()-started;s.state.usage.push(usage);console.info(JSON.stringify({event:'sd_api_usage',...usage}));}
+  finally{user.reserved-=reserved;instance.reserved-=reserved;user.spent+=charged;instance.spent+=charged;s.state.spentUsd+=charged;usage.chargedUsd=charged;usage.latencyMs=this.now()-started;s.state.usage.push(usage);process.stdout.write(JSON.stringify({event:'sd_api_usage',...usage})+'\n');}
  }
  private commit(s:Session,preset:any,raw:any,answer:{rawAnswer:string,selectedOptionId:string|null}|null){
   const state=s.state,id=randomUUID();const segment=(text:string,kind:StorySegmentV1['kind']):StorySegmentV1=>({id:randomUUID(),turnId:id,text,kind,actorId:kind==='user-contribution'?'solo':'ai'});

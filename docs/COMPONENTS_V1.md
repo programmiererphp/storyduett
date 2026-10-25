@@ -5,7 +5,7 @@ Jede Komponente: eigenes `component.manifest.json`, `src/index.ts`, `dist/*.js`,
 |---|---|---|---|---|
 | C01 | sd-usecase-picker | useCases, selectedId | sd:usecase-select | D1 |
 | C02 | sd-story-reader | segments, activeNodeId | sd:segment-select | D1 |
-| C03 | sd-choice-panel | question, busy, allowCustom | sd:answer-submit | D1 |
+| C03 | sd-choice-panel | question, busy, disabled, allowCustom | sd:answer-submit | D1 |
 | C04 | sd-ai-comment | comment, context | sd:comment-expand | D1 |
 | C05 | sd-story-timeline | nodes, currentNodeId, allowBranch | sd:navigate, sd:branch-request | D2 |
 | C06 | sd-story-library | sessions, loading | sd:session-open, sd:session-create | D2 |
@@ -30,3 +30,6 @@ Jede Komponente: eigenes `component.manifest.json`, `src/index.ts`, `dist/*.js`,
 - Build als versionierte ESM-Datei; React-Adapter implementiert Property-Updates und Listener-Cleanup.
 - Keine hardcodierten deutschen Strings; lokalisierte Texte werden über Prop/I18n-Contract übergeben.
 - Jede Erweiterung muss auch bereits gemergte Komponenten und deployed App regressionstesten.
+
+## C03 Erweiterung 1.1.0 (2026-10-25)
+`disabled:boolean` sperrt Antworten und Freitext ohne Arbeitsstatus. `busy:boolean` bezeichnet ausschließlich eine laufende Anfrage. Ein Budgetblock setzt disabled, nicht busy; bestehender Text bleibt lesbar. Beide Properties verhindern Submit-Ereignisse bei Sperre. Manifest, Demo und gezielter Komponenten-Regressionstest sind aktualisiert.

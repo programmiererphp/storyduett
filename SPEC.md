@@ -76,3 +76,16 @@ D1-Zwischenbericht: [SD-D1-REVIEW-01](reports/reviews/2026-10-17-c4521a6.md). Co
 
 ## D1 Schlüsseldiagnose – Fortsetzung 2026-10-19
 Die Nutzung vorhandener Projektschlüssel und Veröffentlichung nach bestandenen Tests sind autorisiert. Gespeicherter Projektschlüssel tatsächlich getestet: Google meldet API_KEY_INVALID. Keine erfolgreiche echte Generierung/10-Runden-Abnahme; D1 weiterhin IN PROGRESS, öffentlich D0. Sichere Diagnosekorrekturen implementiert, Lockdatei erhalten. [Aktueller Bericht SD-D1-REVIEW-02](reports/reviews/2026-10-18-d1-key-diagnosis.md).
+
+### Diagnoseversuch mit dediziertem Serverschlüssel (SD_GEMINI_API_KEY) & Monatliches Kostenlimit – 2026-10-25
+- Der Nutzer hat einen neuen Serverschlüssel im bestehenden Projekt genehmigt, welcher als privates Secret `SD_GEMINI_API_KEY` hinterlegt wurde.
+- Zentraler, ausschließlich serverseitiger Schlüssel-Resolver priorisiert nicht-leeres `SD_GEMINI_API_KEY`, sonst Fallback auf `GEMINI_API_KEY`. Er wird sowohl beim Gemini-Provider als auch bei Readiness/`/api/play-config` verwendet; niemals im Frontend referenzieren.
+- Neue Nutzer-Kostenvorgabe: Höchstens 2 EUR zusätzliche Kosten pro Monat.
+- Wichtige Einschränkung: Der aktuelle instanzlokale Tageszähler (In-Memory-Ledger) garantiert diese monatliche Obergrenze über Serverneustarts und Monatszeiträume hinweg nicht; es wird kein globales 2EUR-Limit behauptet.
+- Die öffentliche D1-Veröffentlichung bleibt bis zu einer passenden Kostenabsicherung und erfolgreicher echter 10-Runden-Endabnahme strikt gesperrt. D1 bleibt IN PROGRESS, öffentlich weiterhin D0.
+
+### Echter Browsernachweis & Zuverlässigkeitskorrekturen – 2026-10-25
+- **Browsernachweis erbracht:** Start + 5 echte Runden mit `gemini-3.5-flash-lite` erfolgreich durchgeführt (inkl. Freitext, lakonischem Kommentar und Append-only-Knoten). Eine konfigurierte 0.01-USD-Sitzung blockiert danach deterministisch VOR dem nächsten Call; Aufrufzähler bleibt exakt bei 6, Geschichte unverändert erhalten.
+- **Punkt 1 (C03 UI-Zustand bei Sperre):** Ergänzung einer unabhängigen `disabled: boolean`-Property auf `sd-choice-panel`. Sperrt Antwortbuttons, Freitext und Submit-Button sowie `submit()`, setzt aber weder `aria-busy` noch den Arbeitsstatus („Die KI schreibt weiter …“). `busy` bleibt rein tatsächlicher Arbeitszustand. React übergibt `busy={busy}` und `disabled={blocked}` getrennt.
+- **Punkt 2 (Logging sd_api_usage):** Strukturierte bereinigte Usage-Ereignisse werden direkt über `process.stdout.write(JSON.stringify(...) + '\n')` ausgegeben, um Fehlklassifizierungen in Cloud Run / AI Studio als Backend-Error zu vermeiden. Echte Providerfehler verbleiben sicher in `console.warn`.
+- **Punkt 3 (Server-Abschalter & Banner):** Notfall-Abschalter `SD_AI_ENABLED=false` im Resolver implementiert (liefert `undefined`, `ready=false`, Standard bleibt aktiv). Technische ErrorInfo-Konstanten werden aus dem normalen Spieler-Banner entfernt; sichere Backend-Metadaten bleiben erhalten. Keine Datenbank/D2.

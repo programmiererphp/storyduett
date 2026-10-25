@@ -11,17 +11,22 @@ export class ChoicePanel extends HTMLElement {
   
   private value: {id:string;text:string;options:Array<{id:string;text:string;tone:string}>}|null=null;
   private locked=false; private submitted=false; private custom=true; private draft='';
+  private _disabled=false;
+  get disabled(): boolean { return this._disabled; }
+  set disabled(value: boolean) { this._disabled = Boolean(value); this.render(); }
+  get busy(): boolean { return this.locked; }
+  set busy(value: boolean) { this.locked = Boolean(value); if (!value) this.submitted = false; this.render(); }
   set question(value:typeof this.value){if(value?.id!==this.value?.id){this.submitted=false;this.draft='';}this.value=value;this.render();}
-  set busy(value:boolean){this.locked=Boolean(value);if(!value)this.submitted=false;this.render();}
   set allowCustom(value:boolean){this.custom=Boolean(value);this.render();}
-  private submit(detail:Record<string,string>){if(this.locked||this.submitted||!this.value)return;this.submitted=true;this.render();this.emit('sd:answer-submit',{questionId:this.value.id,...detail});}
+  private submit(detail:Record<string,string>){if(this.locked||this.submitted||this._disabled||!this.value)return;this.submitted=true;this.render();this.emit('sd:answer-submit',{questionId:this.value.id,...detail});}
   private render(){this.root.innerHTML=style;
     const q=this.value;
     if(!q||q.options.length!==3||q.options.filter(o=>o.tone==='serious').length!==2||q.options.filter(o=>o.tone==='ironic').length!==1){this.root.append(this.element('p',this.text('empty')));return;}
     const section=this.element('section');section.setAttribute('aria-busy',String(this.locked));const heading=this.element('h2',q.text);heading.id='question';section.setAttribute('aria-labelledby','question');section.append(heading);
     const list=this.element('div');list.className='stack';
-    for(const [index,option] of q.options.entries()){const button=this.element('button');button.type='button';button.disabled=this.locked||this.submitted;button.dataset.optionId=option.id;const tone=this.element('small',String.fromCharCode(65+index)+' · '+this.text(option.tone));tone.className='tone';button.append(tone,this.element('span',option.text));button.addEventListener('click',()=>this.submit({selectedOptionId:option.id}));list.append(button);}section.append(list);
-    if(this.custom){const form=this.element('form');const label=this.element('label',this.text('custom'));label.htmlFor='answer';const input=this.element('textarea');input.id='answer';input.maxLength=600;input.value=this.draft;input.disabled=this.locked||this.submitted;input.required=true;input.addEventListener('input',()=>{this.draft=input.value;});const hint=this.element('small',this.text('hint'));const send=this.element('button',this.text('send'));send.type='submit';send.disabled=this.locked||this.submitted;form.append(label,input,hint,send);form.addEventListener('submit',e=>{e.preventDefault();if(this.draft.trim())this.submit({customAnswer:this.draft});});section.append(form);}
+    const isLocked = this.locked || this.submitted || this._disabled;
+    for(const [index,option] of q.options.entries()){const button=this.element('button');button.type='button';button.disabled=isLocked;button.dataset.optionId=option.id;const tone=this.element('small',String.fromCharCode(65+index)+' · '+this.text(option.tone));tone.className='tone';button.append(tone,this.element('span',option.text));button.addEventListener('click',()=>this.submit({selectedOptionId:option.id}));list.append(button);}section.append(list);
+    if(this.custom){const form=this.element('form');const label=this.element('label',this.text('custom'));label.htmlFor='answer';const input=this.element('textarea');input.id='answer';input.maxLength=600;input.value=this.draft;input.disabled=isLocked;input.required=true;input.addEventListener('input',()=>{this.draft=input.value;});const hint=this.element('small',this.text('hint'));const send=this.element('button',this.text('send'));send.type='submit';send.disabled=isLocked;form.append(label,input,hint,send);form.addEventListener('submit',e=>{e.preventDefault();if(!isLocked&&this.draft.trim())this.submit({customAnswer:this.draft});});section.append(form);}
     if(this.locked||this.submitted){const status=this.element('p',this.text('busy'));status.setAttribute('role','status');section.append(status);}this.root.append(section);
   }
 

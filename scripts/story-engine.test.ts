@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {StoryEngine,StoryError,LIMITS,geminiProvider,parseKnownErrorInfoReason,KNOWN_ERROR_INFO_REASONS} from '../server/story-engine';
+import {StoryEngine,StoryError,LIMITS,geminiProvider,parseKnownErrorInfoReason,KNOWN_ERROR_INFO_REASONS,resolveServerApiKey} from '../server/story-engine';
 const fixture=(teacher=false)=>({opening:'The door opened.',contribution:'I opened a window.',bridge:'A breeze entered.',comment:{kind:teacher?'correction':'ironic',text:'A fresh idea.'},nextQuestion:{text:'Where next?',options:[{text:'Garden',tone:'serious'},{text:'Library',tone:'serious'},{text:'Ask the window',tone:'ironic'}]}});
 const response=(raw:any=fixture())=>({modelVersion:'test-fixture',responseId:'synthetic',usageMetadata:{promptTokenCount:100,candidatesTokenCount:100,thoughtsTokenCount:2,totalTokenCount:202},candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(raw)}]}}]});
 const start=()=>({useCaseId:'fiction',locale:'de',idempotencyKey:randomUUID()});
@@ -29,7 +29,7 @@ test('pre-call and session and daily reservations block provider calls; concurre
 });
 test('transport classifies provider failures without leaking bodies or keys',async()=>{
  for(const status of [429,403,500]){const provider=geminiProvider('private-fixture',async()=>new Response('private provider details',{status}) as any);await assert.rejects(provider({}),e=>e instanceof StoryError&&!e.message.includes('private'));}
- const provider=geminiProvider(undefined);if(!process.env.GEMINI_API_KEY)await assert.rejects(provider({}),/provider_unavailable/);
+ const provider=geminiProvider(undefined);if(!resolveServerApiKey())await assert.rejects(provider({}),/provider_unavailable/);
 });
 
 test('real transport abort signal stops a stalled provider request',async()=>{
@@ -72,4 +72,110 @@ test('geminiProvider attaches allowed errorInfoReason to StoryError on Google AP
   }
  }),{status:400,headers:{'Content-Type':'application/json'}})) as typeof fetch);
  await assert.rejects(provider({}),e=>e instanceof StoryError&&e.code==='provider_unavailable'&&e.errorInfoReason==='API_KEY_INVALID');
+});
+
+test('resolveServerApiKey prioritizes SD_GEMINI_API_KEY and falls back on empty or whitespace values with synthetic inputs', () => {
+ // 1. Prioritizes SD_GEMINI_API_KEY when both keys are defined
+ assert.equal(
+  resolveServerApiKey({
+   SD_GEMINI_API_KEY: 'synthetic-sd-key-12345',
+   GEMINI_API_KEY: 'synthetic-standard-key-67890'
+  }),
+  'synthetic-sd-key-12345'
+ );
+
+ // 2. Falls back to GEMINI_API_KEY when SD_GEMINI_API_KEY is empty string
+ assert.equal(
+  resolveServerApiKey({
+   SD_GEMINI_API_KEY: '',
+   GEMINI_API_KEY: 'synthetic-standard-key-67890'
+  }),
+  'synthetic-standard-key-67890'
+ );
+
+ // 3. Falls back to GEMINI_API_KEY when SD_GEMINI_API_KEY is whitespace
+ assert.equal(
+  resolveServerApiKey({
+   SD_GEMINI_API_KEY: '   \t  \n ',
+   GEMINI_API_KEY: 'synthetic-standard-key-67890'
+  }),
+  'synthetic-standard-key-67890'
+ );
+
+ // 4. Falls back to GEMINI_API_KEY when SD_GEMINI_API_KEY is undefined
+ assert.equal(
+  resolveServerApiKey({
+   SD_GEMINI_API_KEY: undefined,
+   GEMINI_API_KEY: 'synthetic-standard-key-67890'
+  }),
+  'synthetic-standard-key-67890'
+ );
+
+ // 5. Returns SD_GEMINI_API_KEY when GEMINI_API_KEY is absent
+ assert.equal(
+  resolveServerApiKey({
+   SD_GEMINI_API_KEY: 'synthetic-sd-key-12345'
+  }),
+  'synthetic-sd-key-12345'
+ );
+
+ // 6. Returns undefined when both are empty, whitespace or absent
+ assert.equal(
+  resolveServerApiKey({
+   SD_GEMINI_API_KEY: '',
+   GEMINI_API_KEY: ''
+  }),
+  undefined
+ );
+ assert.equal(
+  resolveServerApiKey({
+   SD_GEMINI_API_KEY: '   ',
+   GEMINI_API_KEY: '   '
+  }),
+  undefined
+ );
+ assert.equal(
+  resolveServerApiKey({}),
+  undefined
+ );
+
+ // 7. SD_AI_ENABLED=false acts as killswitch: returns undefined regardless of keys
+ assert.equal(
+  resolveServerApiKey({
+   SD_AI_ENABLED: 'false',
+   SD_GEMINI_API_KEY: 'synthetic-sd-key-12345',
+   GEMINI_API_KEY: 'synthetic-standard-key-67890'
+  }),
+  undefined
+ );
+ assert.equal(
+  resolveServerApiKey({
+   SD_AI_ENABLED: 'False',
+   SD_GEMINI_API_KEY: 'synthetic-sd-key-12345'
+  }),
+  undefined
+ );
+ assert.equal(
+  resolveServerApiKey({
+   SD_AI_ENABLED: '  false  ',
+   GEMINI_API_KEY: 'synthetic-standard-key-67890'
+  }),
+  undefined
+ );
+
+ // 8. Default is enabled when SD_AI_ENABLED is undefined or 'true'
+ assert.equal(
+  resolveServerApiKey({
+   SD_AI_ENABLED: 'true',
+   SD_GEMINI_API_KEY: 'synthetic-sd-key-12345'
+  }),
+  'synthetic-sd-key-12345'
+ );
+ assert.equal(
+  resolveServerApiKey({
+   SD_AI_ENABLED: undefined,
+   SD_GEMINI_API_KEY: 'synthetic-sd-key-12345'
+  }),
+  'synthetic-sd-key-12345'
+ );
 });

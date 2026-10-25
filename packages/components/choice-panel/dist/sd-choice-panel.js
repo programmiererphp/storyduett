@@ -13,14 +13,18 @@ export class ChoicePanel extends HTMLElement {
     submitted = false;
     custom = true;
     draft = '';
+    _disabled = false;
+    get disabled() { return this._disabled; }
+    set disabled(value) { this._disabled = Boolean(value); this.render(); }
+    get busy() { return this.locked; }
+    set busy(value) { this.locked = Boolean(value); if (!value)
+        this.submitted = false; this.render(); }
     set question(value) { if (value?.id !== this.value?.id) {
         this.submitted = false;
         this.draft = '';
     } this.value = value; this.render(); }
-    set busy(value) { this.locked = Boolean(value); if (!value)
-        this.submitted = false; this.render(); }
     set allowCustom(value) { this.custom = Boolean(value); this.render(); }
-    submit(detail) { if (this.locked || this.submitted || !this.value)
+    submit(detail) { if (this.locked || this.submitted || this._disabled || !this.value)
         return; this.submitted = true; this.render(); this.emit('sd:answer-submit', { questionId: this.value.id, ...detail }); }
     render() {
         this.root.innerHTML = style;
@@ -37,10 +41,11 @@ export class ChoicePanel extends HTMLElement {
         section.append(heading);
         const list = this.element('div');
         list.className = 'stack';
+        const isLocked = this.locked || this.submitted || this._disabled;
         for (const [index, option] of q.options.entries()) {
             const button = this.element('button');
             button.type = 'button';
-            button.disabled = this.locked || this.submitted;
+            button.disabled = isLocked;
             button.dataset.optionId = option.id;
             const tone = this.element('small', String.fromCharCode(65 + index) + ' · ' + this.text(option.tone));
             tone.className = 'tone';
@@ -57,15 +62,15 @@ export class ChoicePanel extends HTMLElement {
             input.id = 'answer';
             input.maxLength = 600;
             input.value = this.draft;
-            input.disabled = this.locked || this.submitted;
+            input.disabled = isLocked;
             input.required = true;
             input.addEventListener('input', () => { this.draft = input.value; });
             const hint = this.element('small', this.text('hint'));
             const send = this.element('button', this.text('send'));
             send.type = 'submit';
-            send.disabled = this.locked || this.submitted;
+            send.disabled = isLocked;
             form.append(label, input, hint, send);
-            form.addEventListener('submit', e => { e.preventDefault(); if (this.draft.trim())
+            form.addEventListener('submit', e => { e.preventDefault(); if (!isLocked && this.draft.trim())
                 this.submit({ customAnswer: this.draft }); });
             section.append(form);
         }

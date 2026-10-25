@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "id": "C03",
   "tagName": "sd-choice-panel",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "implemented",
   "entry": "src/index.ts",
   "bundle": "dist/sd-choice-panel.js",
@@ -10,6 +10,7 @@
   "properties": {
     "question": "QuestionV1|null",
     "busy": "boolean",
+    "disabled": "boolean",
     "allowCustom": "boolean",
     "i18n": "Record<string,string>"
   },
@@ -32,6 +33,7 @@
     "input-contract",
     "keyboard",
     "double-submit",
-    "empty-state"
+    "empty-state",
+    "disabled-without-busy"
   ]
 }

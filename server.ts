@@ -1,6 +1,6 @@
 import express from 'express';
 import {randomBytes} from 'node:crypto';
-import {StoryEngine,StoryError,MODEL,LIMITS} from './server/story-engine';
+import {StoryEngine,StoryError,MODEL,LIMITS,resolveServerApiKey} from './server/story-engine';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -56,7 +56,7 @@ export function createApi(loadCatalog = getPublicCatalog, engine = new StoryEngi
     if(req.headers['sec-fetch-site']==='cross-site'){res.status(403).json({error:'forbidden'});return;}
     next();
   });
-  app.get('/api/play-config',(_req,res)=>{owner(_req,res);res.json({model:MODEL,limits:{callUsd:LIMITS.call,sessionUsd:LIMITS.session,maxTurns:LIMITS.turns},ready:Boolean(process.env.GEMINI_API_KEY),sessionTtlHours:2});});
+  app.get('/api/play-config',(_req,res)=>{owner(_req,res);res.json({model:MODEL,limits:{callUsd:LIMITS.call,sessionUsd:LIMITS.session,maxTurns:LIMITS.turns},ready:Boolean(resolveServerApiKey()),sessionTtlHours:2});});
   const route=(fn:(req:express.Request,res:express.Response)=>Promise<void>|void)=>(req:express.Request,res:express.Response,next:express.NextFunction)=>{Promise.resolve().then(()=>fn(req,res)).catch(next);};
   app.post('/api/sessions',route(async(req,res)=>{res.json(await engine.start(owner(req,res),req.body));}));
   app.get('/api/sessions/:id',route((req,res)=>{res.json({state:engine.read(String(req.params.id),owner(req,res),String(req.headers['x-sd-session']??''))});}));

@@ -30,6 +30,7 @@ export function run(folder,tag){
   const old=root.querySelector('button');old.click();old.click();assert.equal(events.length,1);assert.equal(events[0].detail.selectedOptionId,'a');assert(events[0].bubbles&&events[0].composed);assert([...root.querySelectorAll('button')].every(b=>b.disabled));
   e.busy=false;const input=root.querySelector('textarea');input.value='I has a plan';input.dispatchEvent(new w.Event('input'));root.querySelector('form').dispatchEvent(new w.Event('submit',{cancelable:true}));assert.equal(events.length,2);assert.equal(events[1].detail.customAnswer,'I has a plan');
   e.busy=true;e.busy=false;assert.equal(root.querySelector('textarea').value,'I has a plan');
+  e.disabled=true;assert.equal(root.querySelector('section').getAttribute('aria-busy'),'false');assert.equal(root.querySelector('[role=status]'),null);assert([...root.querySelectorAll('button')].every(b=>b.disabled));e.disabled=false;assert(![...root.querySelectorAll('button')].every(b=>b.disabled));
   e.question={...question,id:'q2'};assert.equal(root.querySelector('textarea').value,'');
   e.question={...question,options:[...question.options,question.options[0]]};assert.equal(root.querySelector('button'),null);
  }else{

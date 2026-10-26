@@ -158,8 +158,7 @@ export function italianA1SchemaFor(start: boolean) {
 }
 
 function sentence(words:string[]):string {
-  // A tuple represents one sentence. Prevent hidden additional sentence boundaries.
-  if(words.slice(0,-1).some(word=>/[.!?…]/u.test(word)))throw new A1ValidationError('sentence_boundary');
+  // Canonicalize the delimiter; verify actual sentence counts after joining arrays.
   const text=words.join(' ').trim();
   return /[.!?…][»"”)]*$/u.test(text)?text:text.replace(/[,;:]+$/u,'')+'.';
 }
@@ -197,7 +196,8 @@ export function validateAndNormalizeItalianA1(raw: any, start: boolean): Normali
     }
     const sentences: string[] = [];
     for (const sentArr of raw.contribution) {
-      const sentWords = validateWordArray(sentArr, 1, 4);
+      // A bundled array may contain multiple short sentences; final semantic bounds are authoritative.
+      const sentWords = validateWordArray(sentArr, 1, 12);
       sentences.push(sentence(sentWords));
     }
     contributionStr = sentences.join(' ').trim();

@@ -282,7 +282,9 @@ test('Italian A1: sentence tuples stay separate even if the provider omits punct
  const normalized=validateAndNormalizeItalianA1(raw,false);
  assert.equal(normalized.contribution,'Io entro nel museo. La guida arriva ora.');
  assert.equal(normalized.bridge,'Tutti sono molto gentili.');
- assert.throws(()=>validateAndNormalizeItalianA1({...raw,contribution:[['Io','entro.','La','guida.']]},false),/invalid_response/);
+ assert.equal(validateAndNormalizeItalianA1({...raw,contribution:[['Io','entro.','La','guida.']]},false).contribution,'Io entro. La guida.');
+ assert.equal(validateAndNormalizeItalianA1({...raw,contribution:[['Costa dieci euro.','Pago con la carta.']]},false).contribution,'Costa dieci euro. Pago con la carta.');
+ assert.throws(()=>validateAndNormalizeItalianA1({...raw,contribution:[['Uno.','Due.','Tre.','Quattro.']]},false),/invalid_response/);
  assert.throws(()=>validateAndNormalizeItalianA1({...raw,contribution:[['Io,entro','nel','museo']]},false),/invalid_response/);
 });
 
@@ -487,7 +489,7 @@ test('Italian A1: StoryEngine start and turn execute successfully with A1 word-a
   assert.equal(turnRes.segments[2].text, 'La guida arriva.');
   assert.equal(turnRes.nodes[1].comment?.kind, 'correction');
   assert.equal(turnRes.nodes[1].comment?.text.includes('en-tro su-bi-to'), true);
-  assert.equal(turnRes.nodes[1].promptVersionIds.start, 'italian-a1:v8:start');
+  assert.equal(turnRes.nodes[1].promptVersionIds.start, 'italian-a1:v9:start');
 });
 
 test('Italian A1: invalid A1 response does NOT commit story state and properly accounts usage cost', async () => {
@@ -579,7 +581,7 @@ test('Italian A1: invalid A1 response does NOT commit story state and properly a
   const failedUsage = stateAfter.usage[1];
   assert.equal(failedUsage.status, 'error');
   assert.equal(failedUsage.errorCode, 'invalid_response');
-  assert.equal(failedUsage.validationCode, 'word_count');
+  assert.equal(failedUsage.validationCode, 'sentence_count');
   assert.equal(failedUsage.model,'gemini-3.8-flash');
   assert.equal(failedUsage.estimatedCostUsd,(150*.75+85*3.75)/1e6);
   assert.equal(failedUsage.chargedUsd > 0, true);

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
-  "updatedAt": "2026-10-17",
+  "updatedAt": "2026-10-26",
   "currency": "USD",
-  "note": "D1 text prices verified 2026-10-17 against https://ai.google.dev/gemini-api/docs/pricing . TTS disabled and prices unset. Runtime source: server/story-engine.ts. USD estimates, no claim of actual invoice.",
+  "note": "Text prices checked against official Gemini pricing 2026-10-26. Flash 3.8 rates valid through 2026-12-31; runtime price guard expires 2026-11-17. A1 uses Flash 3.8 LOW/1024 max output; other D1 scenarios use Flash-Lite 3.5 MINIMAL/1600. Output rates include thinking. TTS disabled. Estimates, not invoices.",
   "models": {
     "gemini-3.5-flash-lite": {
       "inputPerMillionUsd": 0.3,
@@ -10,8 +10,9 @@
       "thinkingIncludedInOutputPrice": true
     },
     "gemini-3.8-flash": {
-      "inputPerMillionUsd": null,
-      "outputPerMillionUsd": null
+      "inputPerMillionUsd": 0.75,
+      "outputPerMillionUsd": 3.75,
+      "thinkingIncludedInOutputPrice": true
     },
     "gemini-3.8-flash-tts": {
       "inputPerMillionUsd": null,

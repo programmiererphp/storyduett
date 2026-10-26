@@ -42,7 +42,7 @@ Bisher stellte C02 `sd-story-reader` jeden Storybeitrag als separate "Chatkarte"
   - Versionserhöhung: `italian-a1` von v3 auf v4; alle anderen neun Use Cases von v2 auf v3.
 - **Sichere öffentliche Katalogprojektion (`GET /api/use-cases`):**
   - Rückgabeobjekt pro Use Case strikt auf Whitelist beschränkt:
-    `['id', 'name', 'version', 'language', 'presentation', 'integratePrompt', 'enabled']`.
+    `['id', 'name', 'version', 'language', 'presentation', 'integratePrompt', 'textModel', 'enabled']`.
   - `integratePrompt` spiegelt den echten Text aus `prompts.integrate`.
   - Die drei internen Prompts (`start`, `question`, `comment`), Systemanweisungen und Server-Secrets verbleiben intern.
 - **Transparenz in der Web-App:**
@@ -54,3 +54,5 @@ Review: Die Legende ist eine beschriftete Gruppe, kein Navigationsmenü. Dauerha
 Neue Geschichten beginnen im Präsens. Fortsetzungen bewahren die tatsächlich etablierte Erzählperspektive und Zeitform; Rückblicke, direkte Rede und historische Fakten dürfen sachgerecht Vergangenheitsformen enthalten. Alle zehn Integrationsprompts entsprechend präzisiert, Katalogversionen jetztv4 beziehungsweisev5(italian-a1). Kein rückwirkendes Umschreiben und kein zusätzlicher Modellcall.
 
 A1-Nachprüfung: Aktueller italienischer Katalogv6 mit natürlicher Wortstellung und phasenbezogenem Provider-Schema; siehe A1_WIREFORMAT.md. Erzählfälle bleibenv4. Darstellung und C02 bleiben unverändert.
+
+Aktuelle ausdrücklich öffentliche Modellmetadaten: textModel je Szenario; Kopfzeile zeigt die gewählte Modell-ID. A1v7 testet3.8Flash, andere Szenarienv4 bleiben3.5Flash-Lite. Keine Veröffentlichung von Credentials oder weiteren internen Promptteilen.

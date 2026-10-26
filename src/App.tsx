@@ -32,7 +32,7 @@ export default function App(){
   <header className="masthead"><a href="#" className="brand" aria-label="StoryDuett"><BookOpen aria-hidden="true"/><span>StoryDuett<small>{g.badge}</small></span></a><nav aria-label={t.nav.languageAria}>{(['de','en','ru'] as Locale[]).map(l=><button key={l} className="locale" aria-pressed={locale===l} onClick={()=>setLocale(l)}>{l.toUpperCase()}</button>)}</nav></header>
   <main>
    <div className="eyebrow">{g.eyebrow}</div><h1>{state?(t.cases[state.useCaseId as keyof typeof t.cases]?.name??g.story):g.title}</h1><p className="intro">{state?g.playIntro:g.intro}</p>
-   <div className="service"><span className={health?'dot':'dot offline'}/><span>{health?g.online:g.connecting}</span><span>{g.model}: {config?.model??'—'}</span><button className="icon-button" onClick={()=>void load()} aria-label={t.health.refreshAria}><RefreshCw size={16}/></button></div>
+   <div className="service"><span className={health?'dot':'dot offline'}/><span>{health?g.online:g.connecting}</span><span>{g.model}: {activeCase?.textModel??config?.model??'—'}</span><button className="icon-button" onClick={()=>void load()} aria-label={t.health.refreshAria}><RefreshCw size={16}/></button></div>
    {catalogFailed&&<div className="notice error" role="alert">{t.catalog.loadError} <button onClick={()=>void load()}>{t.catalog.retry}</button></div>}
    {config&&!config.ready&&<div className="notice error" role="alert">{g.errors.provider_unavailable}</div>}
    {error&&<div className="notice error" role="alert"><strong>{g.errorTitle}</strong><p>{g.errors[error as keyof typeof g.errors]??g.errors.provider_error}</p>{pending&&!blocked&&<button disabled={busy} onClick={()=>void perform(pending)}>{g.retry}</button>}</div>}

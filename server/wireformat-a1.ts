@@ -132,7 +132,7 @@ export interface NormalizedGeneration {
 // Never mutate the shared base schema between concurrent start/turn requests.
 export function italianA1SchemaFor(start: boolean) {
   const p = italianA1Schema.properties;
-  return {...italianA1Schema, properties: {...p,
+  const schema = {...italianA1Schema, properties: {...p,
     opening: {...p.opening, minItems: start ? 1 : 0, maxItems: start ? 4 : 0},
     contribution: {...p.contribution, minItems: start ? 0 : 1, maxItems: start ? 0 : 3,
       items: {...p.contribution.items, minItems: 1}},
@@ -140,6 +140,8 @@ export function italianA1SchemaFor(start: boolean) {
     comment: {...p.comment, properties: {...p.comment.properties,
       kind: {type: 'string', enum: [start ? 'neutral' : 'correction']}}}
   }};
+  // Descriptions are redundant with the bounded system instructions; keep validation keywords.
+  return JSON.parse(JSON.stringify(schema,(key,value)=>key==='description'?undefined:value)) as typeof schema;
 }
 
 function sentence(words:string[]):string {

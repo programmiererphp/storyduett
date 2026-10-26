@@ -79,12 +79,12 @@
     {
       "id": "italian-a1",
       "name": "Italienisch A1",
-      "version": 6,
+      "version": 7,
       "enabled": true,
       "language": "it",
       "presentation": "language",
       "commentStyle": "teacher",
-      "textModel": "gemini-3.5-flash-lite",
+      "textModel": "gemini-3.8-flash",
       "tts": {
         "model": "gemini-3.8-flash-tts",
         "voiceId": "auto",
@@ -95,7 +95,7 @@
         "start": "Starte im Präsens mit höchstens vier italienischen Wörtern. Alltagsszene: Öffnungszeiten, Straßenschilder, Museum oder Wochentage.",
         "question": "Stelle abwechslungsreiche, natürliche und grammatisch korrekte italienische Folgefragen mit maximal vier Wörtern, z.B. 'Che giorno è oggi?', 'A che ora apre?' oder 'Quanto costa il biglietto?'. Zwei sachliche und eine lustige Antwort, alle in korrektem Italienisch mit höchstens vier Wörtern; ironisch heißt nicht grammatisch falsch. Wiederhole keine frühere Frage.",
         "comment": "Korrigiere nur einen tatsächlich vorhandenen Fehler ohne erfundene Regelerklärungen: korrigierter Satz, deutsche Bedeutung und einfache Aussprachehilfe für den korrigierten Satz. Bei fehlerfreier Eingabe bestätige kurz.",
-        "integrate": "Schreibe die Szene in sehr kurzen italienischen Sätzen fort; jede Satz-, Frage- und Optionseinheit muss strikt maximal vier Wörter umfassen. Behalte Erzählperspektive, Zeitform und Figurenidentität bei. Früherer Wortlaut bleibt unverändert. Keine Meta-Floskeln wie 'Du hast gewählt'. Die richtige Form wird direkt und lebendig in der Szene verwendet; jegliche grammatische Erklärung gehört ausschließlich in das Kommentarfeld."
+        "integrate": "Integriere die tatsächliche Antwort in die neue italienische Szene: Konkrete Uhrzeiten, Zahlen, Orte, Vorlieben und Verneinungen müssen sinngemäß erhalten bleiben. Ersetze die Antwort niemals bloß durch die nächste Handlung. Beispiel: 'Apre alle nove.' wird zu 'Apre alle nove.', nicht nur 'Entro nel museo.'. Korrigiere nötige Grammatik und teile längere Bedeutungen in kurze Sätze mit jeweils höchstens vier Wörtern. Bewahre Erzählperspektive, Zeitform und Figurenidentität. Früherer Wortlaut bleibt unverändert; Korrekturerklärung ausschließlich im Kommentarfeld."
       }
     },
     {

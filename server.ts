@@ -17,7 +17,7 @@ export function getPublicCatalog() {
   const useCases = catalog.useCases.filter((u: any) => u.enabled === true).map((u: any) => {
     if (typeof u.id !== 'string' || !u.id || ids.has(u.id) || typeof u.name !== 'string' ||
         typeof u.language !== 'string' || !Number.isInteger(u.version) ||
-        !validPresentations.has(u.presentation) || typeof u.prompts?.integrate !== 'string') throw new Error('Invalid entry');
+        !validPresentations.has(u.presentation) || typeof u.textModel !== 'string' || typeof u.prompts?.integrate !== 'string') throw new Error('Invalid entry');
     ids.add(u.id);
     return {
       id: u.id,
@@ -25,6 +25,7 @@ export function getPublicCatalog() {
       version: u.version,
       language: u.language,
       presentation: u.presentation,
+      textModel: u.textModel,
       integratePrompt: u.prompts.integrate,
       enabled: true
     };

@@ -439,11 +439,14 @@ test('Italian A1: StoryEngine start and turn execute successfully with A1 word-a
   };
 
   let callCount = 0;
-  const a1Provider = async () => {
+  const a1Provider = async (body:any) => {
+    assert.equal(body.model,'gemini-3.8-flash');
+    assert.equal(body.generationConfig.maxOutputTokens,1024);
+    assert.equal(body.generationConfig.thinkingConfig.thinkingLevel,'LOW');
     callCount++;
     const payload = callCount === 1 ? a1StartFixture : a1TurnFixture;
     return {
-      modelVersion: 'gemini-3.5-flash-lite',
+      modelVersion: 'gemini-3.8-flash',
       responseId: 'synth-a1-' + callCount,
       usageMetadata: { promptTokenCount: 150, candidatesTokenCount: 80, thoughtsTokenCount: 5, totalTokenCount: 235 },
       candidates: [{ finishReason: 'STOP', content: { parts: [{ text: JSON.stringify(payload) }] } }]
@@ -480,7 +483,7 @@ test('Italian A1: StoryEngine start and turn execute successfully with A1 word-a
   assert.equal(turnRes.segments[2].text, 'La guida arriva.');
   assert.equal(turnRes.nodes[1].comment?.kind, 'correction');
   assert.equal(turnRes.nodes[1].comment?.text.includes('en-tro su-bi-to'), true);
-  assert.equal(turnRes.nodes[1].promptVersionIds.start, 'italian-a1:v6:start');
+  assert.equal(turnRes.nodes[1].promptVersionIds.start, 'italian-a1:v7:start');
 });
 
 test('Italian A1: invalid A1 response does NOT commit story state and properly accounts usage cost', async () => {
@@ -518,11 +521,14 @@ test('Italian A1: invalid A1 response does NOT commit story state and properly a
   };
 
   let callCount = 0;
-  const a1Provider = async () => {
+  const a1Provider = async (body:any) => {
+    assert.equal(body.model,'gemini-3.8-flash');
+    assert.equal(body.generationConfig.maxOutputTokens,1024);
+    assert.equal(body.generationConfig.thinkingConfig.thinkingLevel,'LOW');
     callCount++;
     const payload = callCount === 1 ? a1StartFixture : a1InvalidTurnFixture;
     return {
-      modelVersion: 'gemini-3.5-flash-lite',
+      modelVersion: 'gemini-3.8-flash',
       responseId: 'synth-a1-' + callCount,
       usageMetadata: { promptTokenCount: 150, candidatesTokenCount: 80, thoughtsTokenCount: 5, totalTokenCount: 235 },
       candidates: [{ finishReason: 'STOP', content: { parts: [{ text: JSON.stringify(payload) }] } }]
@@ -570,6 +576,8 @@ test('Italian A1: invalid A1 response does NOT commit story state and properly a
   assert.equal(failedUsage.status, 'error');
   assert.equal(failedUsage.errorCode, 'invalid_response');
   assert.equal(failedUsage.validationCode, 'word_count');
+  assert.equal(failedUsage.model,'gemini-3.8-flash');
+  assert.equal(failedUsage.estimatedCostUsd,(150*.75+85*3.75)/1e6);
   assert.equal(failedUsage.chargedUsd > 0, true);
   assert.equal(stateAfter.spentUsd > stateBefore.spentUsd, true);
 });

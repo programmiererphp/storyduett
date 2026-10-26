@@ -6,6 +6,7 @@ export interface SafeUseCase {
   language: string;
   presentation: 'prose' | 'language' | 'learning';
   integratePrompt: string;
+  textModel: string;
 }
 
 export interface CatalogResponse {

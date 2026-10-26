@@ -187,6 +187,8 @@
       "content_blocked": "Die Antwort konnte nicht verarbeitet werden. Wähle eine andere Fortsetzung.",
       "capacity": "Der Server ist ausgelastet. Bitte später erneut versuchen."
     },
-    "selected": "Gewähltes Szenario"
+    "selected": "Gewähltes Szenario",
+    "howIntegrated": "Wie dein Beitrag eingewoben wird",
+    "catalogVersion": "Katalogversion"
   }
 }

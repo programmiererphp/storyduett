@@ -480,7 +480,7 @@ test('Italian A1: StoryEngine start and turn execute successfully with A1 word-a
   assert.equal(turnRes.segments[2].text, 'La guida arriva.');
   assert.equal(turnRes.nodes[1].comment?.kind, 'correction');
   assert.equal(turnRes.nodes[1].comment?.text.includes('en-tro su-bi-to'), true);
-  assert.equal(turnRes.nodes[1].promptVersionIds.start, 'italian-a1:v3:start');
+  assert.equal(turnRes.nodes[1].promptVersionIds.start, 'italian-a1:v4:start');
 });
 
 test('Italian A1: invalid A1 response does NOT commit story state and properly accounts usage cost', async () => {

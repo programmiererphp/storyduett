@@ -1,1 +1,137 @@
-<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>C02 standalone demo</title><body style="max-width:720px;margin:40px auto;padding:16px;font:18px system-ui;background:#faf7ee"><h1>C02 isolated component</h1><p>Local synthetic fixtures only, no network or provider requests.</p><sd-story-reader></sd-story-reader><pre id="events" aria-live="polite"></pre><script type="module">import '../dist/sd-story-reader.js';const e=document.querySelector('sd-story-reader');e.i18n={"search": "Search scenarios", "empty": "Nothing to show", "you": "You", "ai": "StoryDuett AI", "serious": "Serious", "ironic": "Ironic", "custom": "Your own answer", "hint": "Up to 600 characters. Use the submit button.", "send": "Continue", "busy": "Generating\u2026", "original": "Original answer", "correction": "Language feedback", "coaching": "Coaching", "neutral": "Comment"};e.segments=[{id:'s1',turnId:'n1',text:'An old door opens.',kind:'opening',actorId:'ai'},{id:'s2',turnId:'n2',text:'You enter the garden.',kind:'user-contribution',actorId:'solo'}];e.activeNodeId='n2';for(const name of ["sd:segment-select"])e.addEventListener(name,event=>{document.querySelector('#events').textContent=JSON.stringify(event.detail);});</script></body></html>
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C02 sd-story-reader v1.1.0 Standalone Demo</title>
+  <style>
+    body {
+      max-width: 820px;
+      margin: 40px auto;
+      padding: 20px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #faf7ee;
+      color: #30382c;
+    }
+    h1 { margin-top: 0; }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+      padding: 14px;
+      background: #f1ecdc;
+      border-radius: 8px;
+    }
+    button {
+      font: inherit;
+      padding: 8px 14px;
+      border: 1px solid #c9c3b4;
+      border-radius: 6px;
+      background: #fffdf9;
+      cursor: pointer;
+    }
+    button.active {
+      background: #58714b;
+      color: #fff;
+      border-color: #58714b;
+    }
+    .reader-box {
+      background: #ffffff;
+      padding: 28px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    pre {
+      background: #24292e;
+      color: #f6f8fa;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>C02 sd-story-reader v1.1.0 – Kontinuierliche Lesefläche</h1>
+  <p>Vollständig isolierte Shadow-DOM-Komponente ohne Backend-Aufrufe. Drei Darstellungsmodi, stabile Autorenfarben bei Umsortierung und gemeinsame Legende.</p>
+
+  <div class="controls">
+    <div>
+      <strong>Darstellungsmodus:</strong>
+      <button id="btn-prose" class="active">prose (Standard)</button>
+      <button id="btn-language">language (Dialog-Absätze)</button>
+      <button id="btn-learning">learning (Lern-Absätze)</button>
+    </div>
+    <div style="margin-top: 8px; width: 100%;">
+      <strong>Farbstabilität & Dynamik:</strong>
+      <button id="btn-reverse">Reihenfolge umkehren (Prüfung Farbkonsistenz)</button>
+      <button id="btn-empty">Leerer Zustand</button>
+      <button id="btn-reset">Beispieldaten zurücksetzen</button>
+    </div>
+  </div>
+
+  <div class="reader-box">
+    <sd-story-reader id="reader"></sd-story-reader>
+  </div>
+
+  <h3>Letztes Event:</h3>
+  <pre id="events" aria-live="polite">Kein Segment ausgewählt.</pre>
+
+  <script type="module">
+    import '../dist/sd-story-reader.js';
+
+    const reader = document.querySelector('#reader');
+    const eventsPre = document.querySelector('#events');
+
+    const sampleSegments = [
+      { id: 's1', turnId: 't0', kind: 'opening', actorId: 'ai', text: 'Ein schweres Holztor öffnet sich knarrend zu einem alten Innenhof.' },
+      { id: 's2', turnId: 't1', kind: 'user-contribution', actorId: 'solo', text: 'Ich trete vorsichtig ein und leuchte mit meiner Taschenlampe an die feuchte Steinmauer.' },
+      { id: 's3', turnId: 't1', kind: 'ai-bridge', actorId: 'ai', text: 'Im Lichtkegel tanzen Staubkörner, und ein rostiger Schlüsselbund wird sichtbar.' },
+      { id: 's4', turnId: 't2', kind: 'user-contribution', actorId: 'player2', text: 'Greif schnell nach dem Schlüsselbund, bevor uns jemand bemerkt!' },
+      { id: 's5', turnId: 't2', kind: 'ai-bridge', actorId: 'ai', text: 'Aus den oberen Stockwerken hallen bereits gedämpfte Schritte.' }
+    ];
+
+    reader.i18n = {
+      empty: 'Noch keine Geschichte begonnen.',
+      you: 'Du (Solo)',
+      ai: 'StoryDuett Erzähler',
+      authors: 'Beteiligte Autoren'
+    };
+
+    reader.actorLabels = {
+      solo: 'Du (Solo)',
+      player2: 'Mitspielerin Elena'
+    };
+
+    reader.segments = [...sampleSegments];
+    reader.presentation = 'prose';
+    reader.activeNodeId = 't2';
+
+    reader.addEventListener('sd:segment-select', e => {
+      eventsPre.textContent = JSON.stringify(e.detail, null, 2);
+    });
+
+    const modes = ['prose', 'language', 'learning'];
+    modes.forEach(mode => {
+      document.querySelector(`#btn-${mode}`).addEventListener('click', () => {
+        modes.forEach(m => document.querySelector(`#btn-${m}`).classList.remove('active'));
+        document.querySelector(`#btn-${mode}`).classList.add('active');
+        reader.presentation = mode;
+      });
+    });
+
+    document.querySelector('#btn-reverse').addEventListener('click', () => {
+      reader.segments = [...reader.segments].reverse();
+    });
+
+    document.querySelector('#btn-empty').addEventListener('click', () => {
+      reader.segments = [];
+    });
+
+    document.querySelector('#btn-reset').addEventListener('click', () => {
+      reader.segments = [...sampleSegments];
+    });
+  </script>
+</body>
+</html>

@@ -4,7 +4,7 @@ Jede Komponente: eigenes `component.manifest.json`, `src/index.ts`, `dist/*.js`,
 | ID | Custom Element | Eingaben | Ereignis | Delivery |
 |---|---|---|---|---|
 | C01 | sd-usecase-picker | useCases, selectedId | sd:usecase-select | D1 |
-| C02 | sd-story-reader | segments, activeNodeId | sd:segment-select | D1 |
+| C02 | sd-story-reader | segments, activeNodeId, presentation, actorLabels | sd:segment-select | D1 |
 | C03 | sd-choice-panel | question, busy, disabled, allowCustom | sd:answer-submit | D1 |
 | C04 | sd-ai-comment | comment, context | sd:comment-expand | D1 |
 | C05 | sd-story-timeline | nodes, currentNodeId, allowBranch | sd:navigate, sd:branch-request | D2 |
@@ -33,3 +33,5 @@ Jede Komponente: eigenes `component.manifest.json`, `src/index.ts`, `dist/*.js`,
 
 ## C03 Erweiterung 1.1.0 (2026-10-25)
 `disabled:boolean` sperrt Antworten und Freitext ohne Arbeitsstatus. `busy:boolean` bezeichnet ausschließlich eine laufende Anfrage. Ein Budgetblock setzt disabled, nicht busy; bestehender Text bleibt lesbar. Beide Properties verhindern Submit-Ereignisse bei Sperre. Manifest, Demo und gezielter Komponenten-Regressionstest sind aktualisiert.
+
+D1-Lesefassung (2026-10-26): C02v1.1.0 rendert prose inline, language/learning mit Absätzen je turnId. Gemeinsame Legende und stabile actorId-Tönungen, keine Chatkarten. Details: [SD-D1-READ-01](READING_PRESENTATION.md), eigenständige Demo und Tests im Komponentenpaket. C04 bleibt separater Kommentar-/Korrekturbereich.

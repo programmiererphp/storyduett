@@ -13,9 +13,10 @@
     {
       "id": "fiction",
       "name": "Fiktion & Abenteuer",
-      "version": 2,
+      "version": 3,
       "enabled": true,
       "language": "de",
+      "presentation": "prose",
       "commentStyle": "playful",
       "textModel": "gemini-3.5-flash-lite",
       "tts": {
@@ -28,15 +29,16 @@
         "start": "Beginne eine bildhafte, spannende und zugängliche Geschichte mit einem starken ersten Satz und einer offenen Situation.",
         "question": "Stelle eine konkrete Frage zur nächsten Szene. Genau drei Optionen, zwei plausible ernsthafte und eine witzig-ironische. Freitext bleibt erlaubt.",
         "comment": "Reagiere nach jedem Zug in höchstens 18 Wörtern trocken, freundlich und überraschend ironisch, ohne Figuren zu verspotten.",
-        "integrate": "Integriere die Entscheidung als natürlich anschließende neue Prosa. Schreibe keinen bestehenden Text um; ordne menschliche Initiative dem richtigen Akteur zu."
+        "integrate": "Setze die Szene mit neuer, bildhafter Prosa nahtlos fort. Verändere niemals früheren Wortlaut und verwende keine Floskeln wie 'Du hast gewählt' oder Antwortlabels. Behalte den Sinn und die handelnde Person der Entscheidung vollständig bei und gestalte die unmittelbare Folge als atmosphärische, kohärente Handlung."
       }
     },
     {
       "id": "madagascar-azubi",
       "name": "Auszubildende aus Madagaskar",
-      "version": 2,
+      "version": 3,
       "enabled": true,
       "language": "de",
+      "presentation": "prose",
       "commentStyle": "ironic",
       "textModel": "gemini-3.5-flash-lite",
       "tts": {
@@ -49,15 +51,16 @@
         "start": "Eröffne eine humorvolle, respektvolle Geschichte über eine junge erwachsene Auszubildende aus Madagaskar im deutschen Berufsalltag. Beobachtungswitz statt Klischees.",
         "question": "Frage nach der nächsten beruflichen oder kulturellen Alltagssituation; zwei plausible Wege und eine charmant absurde Lösung.",
         "comment": "Kommentiere kurz, trocken und intelligent wie eine zurückhaltend ironische Erzählerstimme.",
-        "integrate": "Baue die Idee nahtlos als Handlung der Azubine oder Situation im Betrieb ein, ohne die Vergangenheit zu ersetzen."
+        "integrate": "Schreibe die respektvolle und humorvolle Szene im Ausbildungsbetrieb direkt in neuer Prosa fort. Früherer Text bleibt unberührt. Keine Meta-Formulierungen wie 'Du hast gewählt' oder Antwortlabels. Die getroffene Entscheidung wird als authentische Initiative der Azubine oder Reaktion der Kollegen im deutschen Arbeitsalltag wirksam."
       }
     },
     {
       "id": "german-b2",
       "name": "Deutsch lernen B2",
-      "version": 2,
+      "version": 3,
       "enabled": true,
       "language": "de",
+      "presentation": "language",
       "commentStyle": "teacher",
       "textModel": "gemini-3.5-flash-lite",
       "tts": {
@@ -70,15 +73,16 @@
         "start": "Beginne eine kleine realistische Gesprächsszene auf Deutsch B2, z.B. Café, Behörde, Uni, Rezeption.",
         "question": "Stelle eine einfache alltagsnahe Frage mit zwei grammatisch passenden und einer humorvollen Option; ergänze eine freie Eingabe.",
         "comment": "Korrigiere Fehler des Nutzers freundlich, konkret und sehr kurz. Zeige bevorzugt die korrigierte Form mit einem Satz Erklärung.",
-        "integrate": "Führe den Dialog natürlich in korrektem B2-Deutsch weiter. Originalbeitrag bleibt unverändert archiviert."
+        "integrate": "Führe den Dialog in korrektem B2-Deutsch als neue organische Szene mit natürlicher direkter Rede fort. Kein Umschreiben früherer Sätze und keine Einleitungen wie 'Du hast gewählt' oder Antwortlabels. Korrekte grammatische Formen werden organisch in der Handlung oder kurzen Gegenrede verwendet; Fehlerkorrekturen gehören ausschließlich in das Kommentarfeld."
       }
     },
     {
       "id": "italian-a1",
       "name": "Italienisch A1",
-      "version": 3,
+      "version": 4,
       "enabled": true,
       "language": "it",
+      "presentation": "language",
       "commentStyle": "teacher",
       "textModel": "gemini-3.5-flash-lite",
       "tts": {
@@ -91,15 +95,16 @@
         "start": "Starte mit höchstens vier italienischen Wörtern. Alltagsszene: Öffnungszeiten, Straßenschilder, Museum oder Wochentage.",
         "question": "Formuliere eine sehr kurze Folgefrage und drei leicht verständliche Antworten, zwei sachliche und eine lustige.",
         "comment": "Korrigiere nur einen tatsächlich vorhandenen Fehler ohne erfundene Regelerklärungen: korrigierter Satz, deutsche Bedeutung und einfache Aussprachehilfe für den korrigierten Satz. Bei fehlerfreier Eingabe bestätige kurz.",
-        "integrate": "Schreibe die Szene in sehr kurzen italienischen Sätzen fort und halte jeden Einzelsatz bei maximal vier Wörtern."
+        "integrate": "Schreibe die Szene in sehr kurzen italienischen Sätzen fort; jede Satz-, Frage- und Optionseinheit muss strikt maximal vier Wörter umfassen. Früherer Wortlaut bleibt unverändert. Keine Meta-Floskeln wie 'Du hast gewählt'. Die richtige Form wird direkt und lebendig in der Szene verwendet; jegliche grammatische Erklärung gehört ausschließlich in das Kommentarfeld."
       }
     },
     {
       "id": "smalltalk",
       "name": "Smalltalk & Schlagfertigkeit",
-      "version": 2,
+      "version": 3,
       "enabled": true,
       "language": "de",
+      "presentation": "prose",
       "commentStyle": "coaching",
       "textModel": "gemini-3.5-flash-lite",
       "tts": {
@@ -112,15 +117,16 @@
         "start": "Beginne eine plausible kleine Gesprächssituation zwischen Fremden in Alltag, Kurs oder Veranstaltung.",
         "question": "Frage nach einer möglichen lockeren Reaktion; zwei sympathische und eine sanft ironische Option.",
         "comment": "Gib ein kurzes, praxisnahes Feedback auf Wärme, Neugier und Gesprächsfluss ohne moralische Belehrung.",
-        "integrate": "Führe den Dialog realistisch fort, zeige eine gute Reaktion der anderen Person und die nächste Gelegenheit zum Antworten."
+        "integrate": "Führe das Gespräch als neue, flüssige Prosa mit natürlicher wörtlicher Rede fort. Früherer Wortlaut wird niemals verändert. Verzichte auf Phrasen wie 'Du hast gewählt', 'Nutzer sagt' oder Antwortlabels. Binde die Intention der Antwort als unmittelbare, sympathische Reaktion im Erzählfluss ein und schaffe die nächste lockere Gesprächssituation."
       }
     },
     {
       "id": "getting-to-know",
       "name": "Gemeinsamkeiten entdecken",
-      "version": 2,
+      "version": 3,
       "enabled": true,
       "language": "de",
+      "presentation": "prose",
       "commentStyle": "warm",
       "textModel": "gemini-3.5-flash-lite",
       "tts": {
@@ -133,15 +139,16 @@
         "start": "Beginne eine kooperative, leichte Szene für zwei erwachsene Mitspieler, z.B. gemeinsamer Ausflug oder Mini-Abenteuer.",
         "question": "Frage nach einer gemeinsam zu treffenden Entscheidung, die Interessen und humorvolle Perspektiven sichtbar macht; zwei ernsthafte und eine ironische.",
         "comment": "Kommentiere knapp, scherzhaft und verbindend; stelle keine aufdringlichen privaten Diagnosen.",
-        "integrate": "Integriere den Beitrag des aktuellen Spielers, lasse auch dem zweiten Spieler relevante Handlungsmöglichkeiten."
+        "integrate": "Entwickle die gemeinsame Solo-Szene mit einer fiktiven zweiten Figur in lebendiger neuer Prosa weiter. Früherer Text bleibt unverändert. Keine Floskeln wie 'Du hast gewählt' oder Aufzählungen. Der Beitrag des Spielers bestimmt das Handeln seiner Figur, während die fiktive Begleitperson darauf eingeht und neue Berührungspunkte eröffnet."
       }
     },
     {
       "id": "reflection",
       "name": "Perspektivwechsel & Reflexion",
-      "version": 2,
+      "version": 3,
       "enabled": true,
       "language": "de",
+      "presentation": "prose",
       "commentStyle": "supportive",
       "textModel": "gemini-3.5-flash-lite",
       "tts": {
@@ -154,15 +161,16 @@
         "start": "Beginne eine sanfte, ermutigende Alltagssituation über Wünsche, Herausforderungen oder kleine Zukunftsideen.",
         "question": "Stelle eine offene, leicht zu beantwortende Frage mit zwei ernsthaften und einer leichten humorvollen Option.",
         "comment": "Antworte unterstützend und reflektierend, ohne Diagnosen oder unangemessen ironische Bemerkungen.",
-        "integrate": "Führe die symbolische Szene kohärent fort und bewahre die Entscheidung der Person ohne Umdeutung."
+        "integrate": "Führe die Situation in einfühlsamer, neuer Prosa ruhig fort, ohne früheren Wortlaut zu verändern. Keine Meta-Kommentare wie 'Du hast gewählt' und keinerlei psychologische Umdeutungen oder Diagnosen. Die persönliche Entscheidung bleibt in ihrer ursprünglichen Bedeutung voll gewahrt und entfaltet eine greifbare, nachvollziehbare Wirkung."
       }
     },
     {
       "id": "work",
       "name": "Bewerbung & Beruf",
-      "version": 2,
+      "version": 3,
       "enabled": true,
       "language": "de",
+      "presentation": "prose",
       "commentStyle": "coaching",
       "textModel": "gemini-3.5-flash-lite",
       "tts": {
@@ -175,15 +183,16 @@
         "start": "Eröffne ein realistisches Vorstellungsgespräch, einen Hotel-Rezeptionstag oder eine berufliche Kommunikationssituation.",
         "question": "Frage nach dem nächsten Satz oder der Entscheidung; zwei beruflich sinnvolle Wege und eine offensichtlich humorvolle Option.",
         "comment": "Erkläre in maximal zwei Sätzen, warum die Antwort kommunikativ hilfreich oder verbesserbar ist.",
-        "integrate": "Führe die Berufssimulation plausibel und lehrreich fort, ohne die ursprüngliche Nutzerantwort zu überschreiben."
+        "integrate": "Setze die berufliche Simulation mit natürlicher Rede und professioneller Handlung im Erzähltext fort. Früherer Wortlaut wird niemals geändert. Vermeide Aufzählungen oder Einleitungen wie 'Du hast gewählt'. Die gewählte Vorgehensweise fließt unmittelbar in die Reaktion von Kunden, Vorgesetzten oder Kollegen ein."
       }
     },
     {
       "id": "learning",
       "name": "Interaktive Lerntexte",
-      "version": 2,
+      "version": 3,
       "enabled": true,
       "language": "de",
+      "presentation": "learning",
       "commentStyle": "didactic",
       "textModel": "gemini-3.5-flash-lite",
       "tts": {
@@ -196,15 +205,16 @@
         "start": "Beginne einen kurzen sachlich korrekten Lerntext über ein Thema aus Geschichte, Wissenschaft oder Gesellschaft.",
         "question": "Stelle eine Wissens-/Transferfrage mit genau drei Antworten; zwei fachlich sinnvolle, eine harmlose ironische.",
         "comment": "Gib kurzes verständliches Feedback und berichtige Faktenfehler klar.",
-        "integrate": "Ergänze einen erklärenden Absatz in einfachem Lehrbuchstil. Fakten müssen verlässlich sein; Unsicherheit kennzeichnen."
+        "integrate": "Ergänze einen sachlichen, gut verständlichen erklärenden Absatz im Lehrbuchstil. Frühere Absätze bleiben unverändert. Keine Formulierungen wie 'Du hast gewählt' oder Antwortlabels. Ungeprüfte Nutzerbehauptungen dürfen nicht als Tatsachen übernommen werden; vermittle verlässliches Wissen und ordne die gewählte Antwort sachlich ein."
       }
     },
     {
       "id": "community",
       "name": "Gemeinschaft & Zukunft",
-      "version": 2,
+      "version": 3,
       "enabled": true,
       "language": "de",
+      "presentation": "prose",
       "commentStyle": "visionary",
       "textModel": "gemini-3.5-flash-lite",
       "tts": {
@@ -217,7 +227,7 @@
         "start": "Eröffne die Geschichte einer kleinen selbstorganisierten Gemeinschaft mit gemeinschaftlicher Küche, Reparatur, Garten und mehr freier Zeit.",
         "question": "Frage nach einer konkreten gemeinsam zu entscheidenden Maßnahme, zwei ernsthaften und einer witzigen Option.",
         "comment": "Kommentiere kurz, klug und leicht ironisch; betone praktische Zusammenarbeit und Entdeckerfreude.",
-        "integrate": "Schreibe weiter, wie die Gemeinschaft den Vorschlag praktisch testet und welche sozialen oder ökologischen Folgen sichtbar werden."
+        "integrate": "Schreibe weiter, wie die Gemeinschaft den Vorschlag ganz konkret in neuer Prosa erprobt. Früherer Text bleibt unberührt. Keine Formeln wie 'Du hast gewählt' oder Aufzählungen. Mache die direkten handwerklichen, sozialen oder ökologischen Folgen des gemeinsamen Handelns plastisch und lebendig spürbar."
       }
     }
   ]

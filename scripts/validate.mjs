@@ -13,8 +13,11 @@ for (const u of cat.useCases) {
   assert(!ids.has(u.id), 'Duplicate use case '+u.id); ids.add(u.id);
   for (const p of ['start','question','comment','integrate']) assert(typeof u.prompts[p]==='string' && u.prompts[p].length>25, u.id+' missing '+p);
   assert(u.tts?.model && u.textModel, u.id+' models missing');
+  assert(['prose','language','learning'].includes(u.presentation), u.id+' invalid presentation');
 }
 for(const folder of ['usecase-picker','story-reader','choice-panel','ai-comment']){const manifest=JSON.parse(read(`packages/components/${folder}/component.manifest.json`));assert(manifest.status==='implemented'&&/^1\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(manifest.version));for(const path of [manifest.entry,manifest.bundle,'demo/index.html','README.md','tests/component.test.mjs'])assert(existsSync(new URL(`../packages/components/${folder}/${path}`,import.meta.url)));}
+const sr=JSON.parse(read('packages/components/story-reader/component.manifest.json'));
+assert(sr.version==='1.1.0'&&sr.properties.presentation&&sr.properties.actorLabels);
 const m=JSON.parse(read('packages/components/choice-panel/component.manifest.json'));
 assert(m.tagName === 'sd-choice-panel' && m.events['sd:answer-submit']?.composed===true);
 assert(m.properties.busy==='boolean' && m.properties.disabled==='boolean');

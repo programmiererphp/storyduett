@@ -4,6 +4,8 @@ export interface SafeUseCase {
   version: number;
   enabled: boolean;
   language: string;
+  presentation: 'prose' | 'language' | 'learning';
+  integratePrompt: string;
 }
 
 export interface CatalogResponse {

@@ -37,8 +37,10 @@ try {
   assert.equal(h.catalogUseCasesCount, c.useCases.length);
   const ids = new Set();
   for (const item of c.useCases) {
-    assert.deepEqual(Object.keys(item).sort(), ['enabled','id','language','name','version']);
+    assert.deepEqual(Object.keys(item).sort(), ['enabled','id','integratePrompt','language','name','presentation','version']);
     assert.ok(item.id && item.name && item.language);
+    assert.ok(['prose','language','learning'].includes(item.presentation));
+    assert.ok(typeof item.integratePrompt === 'string' && item.integratePrompt.length > 25);
     assert.equal(item.enabled, true);
     assert.ok(!ids.has(item.id)); ids.add(item.id);
   }

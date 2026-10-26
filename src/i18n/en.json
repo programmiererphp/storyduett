@@ -187,6 +187,8 @@
       "content_blocked": "The response could not be processed. Choose another continuation.",
       "capacity": "The server is at capacity. Try again later."
     },
-    "selected": "Selected scenario"
+    "selected": "Selected scenario",
+    "howIntegrated": "How your contribution is integrated",
+    "catalogVersion": "Catalog version"
   }
 }

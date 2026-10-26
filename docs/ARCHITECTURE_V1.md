@@ -34,3 +34,5 @@ Harte Cap pro API-Call, Session, Feature (Text, Audio, Cartoon, Chat), pro Nutze
 
 ## Sicherheitsgrenzen
 Authentifizierung/Autorisierung auf dem Server, API-Keys nur AI Studio Secrets/Backend; Datenschutz, Impressum, Datenlöschung/Export vor öffentlichem Start; Matching ohne exakten öffentlichen Standort, Nutzerblockierung. Keine privaten Produktionslogs im öffentlichen Git.
+
+D1-Darstellungsprojektion (2026-10-26, SD-D1-READ-01): Unveränderliche StorySegmentV1 bleiben unabhängig vom C02-Lesemodus. GET/api/use-cases projiziert nur Metadaten plus presentation und den ausdrücklich öffentlichen integratePrompt. Andere Promptbereiche, Systemanweisungen und Providerkonfiguration bleiben intern. Dieselbe versionierte Integrationsanweisung wird im vorhandenen kombinierten serverseitigen Modellcall verwendet; keine neuen KI-Aufrufe und keine D2-Persistenz.

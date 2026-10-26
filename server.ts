@@ -7,16 +7,27 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 
-// Explicit projection: public responses never include provider config or prompts.
+// Explicit projection: public responses include only metadata, presentation mode and integratePrompt.
+// start/question/comment prompts, provider config and secrets strictly remain internal.
 export function getPublicCatalog() {
   const catalog = JSON.parse(readFileSync(join(root, 'prompts/catalog.json'), 'utf8'));
   if (catalog.schemaVersion !== '1.0' || !Array.isArray(catalog.useCases)) throw new Error('Invalid catalog');
   const ids = new Set<string>();
+  const validPresentations = new Set(['prose', 'language', 'learning']);
   const useCases = catalog.useCases.filter((u: any) => u.enabled === true).map((u: any) => {
     if (typeof u.id !== 'string' || !u.id || ids.has(u.id) || typeof u.name !== 'string' ||
-        typeof u.language !== 'string' || !Number.isInteger(u.version)) throw new Error('Invalid entry');
+        typeof u.language !== 'string' || !Number.isInteger(u.version) ||
+        !validPresentations.has(u.presentation) || typeof u.prompts?.integrate !== 'string') throw new Error('Invalid entry');
     ids.add(u.id);
-    return { id: u.id, name: u.name, version: u.version, language: u.language, enabled: true };
+    return {
+      id: u.id,
+      name: u.name,
+      version: u.version,
+      language: u.language,
+      presentation: u.presentation,
+      integratePrompt: u.prompts.integrate,
+      enabled: true
+    };
   });
   return { schemaVersion: '1.0', delivery: 'D1', useCases };
 }

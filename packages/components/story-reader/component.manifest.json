@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "id": "C02",
   "tagName": "sd-story-reader",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "implemented",
   "entry": "src/index.ts",
   "bundle": "dist/sd-story-reader.js",
@@ -10,6 +10,8 @@
   "properties": {
     "segments": "StorySegmentV1[]",
     "activeNodeId": "string",
+    "presentation": "'prose' | 'language' | 'learning'",
+    "actorLabels": "Record<string,string>",
     "i18n": "Record<string,string>"
   },
   "events": {
@@ -24,13 +26,16 @@
     "keyboard",
     "aria",
     "visible-focus",
-    "author-labels"
+    "author-labels",
+    "continuous-reading"
   ],
   "tests": [
     "standalone-demo",
     "input-contract",
     "keyboard",
     "double-submit",
-    "empty-state"
+    "empty-state",
+    "presentation-modes",
+    "actor-colors"
   ]
 }

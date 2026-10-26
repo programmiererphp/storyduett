@@ -1,24 +1,269 @@
-type Labels = Record<string,string>;
-const style = "<style>:host{display:block;color:inherit;font:inherit;min-width:0}*{box-sizing:border-box}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{cursor:wait;opacity:.55}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #a25b20;outline-offset:3px}button{border:1px solid #d8d3c5;border-radius:12px;background:#fffdf7;color:#30382c;padding:14px;text-align:left;overflow-wrap:anywhere}h2,h3,p{margin:0 0 12px}small{display:block;color:#62685e}input,textarea{width:100%;padding:12px;border:1px solid #aaa;border-radius:10px}textarea{min-height:100px;resize:vertical}label{display:block;margin:12px 0 6px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}.stack{display:grid;gap:10px}.muted{color:#62685e}.chosen{border-color:#58714b;background:#eef3e8}.user{background:#e4ecd9;border-left:4px solid #627947}.segment{padding:16px;border-radius:10px;margin:12px 0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.75}.comment{padding:18px;background:#f2eadb;border-radius:14px;overflow-wrap:anywhere}.tone{font-size:.8rem;margin-bottom:5px}details{margin-top:8px}summary{cursor:pointer}button.wide{width:100%}</style>";
+type Labels = Record<string, string>;
+
+type PresentationMode = 'prose' | 'language' | 'learning';
+
+type SegmentItem = { id: string; turnId: string; text: string; kind: string; actorId: string };
+
+const PALETTE = ['#e4ece6', '#f2ece1', '#eae6f2', '#f5e7e4', '#e2ecf5'];
+
+function getActorColor(actorId: string): string {
+  if (!actorId || actorId === 'ai') return 'transparent';
+  if (actorId === 'solo') return '#eceef0';
+  let hash = 0;
+  for (let i = 0; i < actorId.length; i++) {
+    hash = (hash * 31 + actorId.charCodeAt(i)) >>> 0;
+  }
+  return PALETTE[hash % PALETTE.length];
+}
+
+const style = `<style>
+:host {
+  display: block;
+  color: #24292e;
+  font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  font-size: 1.125rem;
+  line-height: 1.85;
+  min-width: 0;
+}
+* { box-sizing: border-box; }
+.reader-container {
+  max-width: 72ch;
+  margin: 0 auto;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  padding: 4px 0 12px 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.825rem;
+  color: #62685e;
+  border-bottom: 1px solid #e5e2d8;
+  margin-bottom: 18px;
+}
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+.surface {
+  margin: 0 0 18px 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.segment {
+  display: inline;
+  padding: 0;
+  border-radius: 3px;
+  cursor: pointer;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition: outline 0.15s ease;
+}
+.segment:focus-visible {
+  outline: 2px solid #58714b;
+  outline-offset: 2px;
+}
+.segment.user { padding: 0 .08em; }
+.empty {
+  color: #62685e;
+  font-style: italic;
+  margin: 0;
+}
+</style>`;
+
 export class StoryReader extends HTMLElement {
   private labels: Labels = {};
-  private root = this.attachShadow({mode:'open'});
-  connectedCallback(){ this.render(); }
-  set i18n(value: Labels){ this.labels = value ?? {}; this.render(); }
-  private text(key:string){ return this.labels[key] ?? ''; }
-  private element<K extends keyof HTMLElementTagNameMap>(tag:K,text?:string){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;return el;}
-  private emit(name:string,detail:unknown){this.dispatchEvent(new CustomEvent(name,{detail,bubbles:true,composed:true}));}
-  
-  private items: Array<{id:string;turnId:string;text:string;kind:string;actorId:string}> = [];
-  private active='';
-  set segments(value:typeof this.items){this.items=value ?? [];this.render();}
-  set activeNodeId(value:string){this.active=value;this.render();}
-  private render(){this.root.innerHTML=style;
-    if(!this.items.length)this.root.append(this.element('p',this.text('empty')));
-    for(const segment of this.items){const article=this.element('article');article.className='segment '+(segment.kind==='user-contribution'?'user':'');article.dataset.segmentId=segment.id;article.tabIndex=0;article.setAttribute('role','button');article.addEventListener('click',()=>this.emit('sd:segment-select',{segmentId:segment.id}));article.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();this.emit('sd:segment-select',{segmentId:segment.id});}});article.setAttribute('aria-current',String(segment.turnId===this.active));
-      article.append(this.element('small',segment.kind==='user-contribution'?this.text('you'):this.text('ai')),this.element('p',segment.text));
-      this.root.append(article);}
+  private actorLabelsMap: Record<string, string> = {};
+  private currentPresentation: PresentationMode = 'prose';
+  private items: SegmentItem[] = [];
+  private active = '';
+  private root = this.attachShadow({ mode: 'open' });
+
+  connectedCallback() {
+    this.render();
   }
 
+  set i18n(value: Labels) {
+    this.labels = value ?? {};
+    this.render();
+  }
+
+  set presentation(value: PresentationMode) {
+    this.currentPresentation = (value === 'language' || value === 'learning') ? value : 'prose';
+    this.render();
+  }
+
+  get presentation(): PresentationMode {
+    return this.currentPresentation;
+  }
+
+  set actorLabels(value: Record<string, string>) {
+    this.actorLabelsMap = value ?? {};
+    this.render();
+  }
+
+  get actorLabels(): Record<string, string> {
+    return this.actorLabelsMap;
+  }
+
+  set segments(value: SegmentItem[]) {
+    this.items = value ?? [];
+    this.render();
+  }
+
+  get segments() {
+    return this.items;
+  }
+
+  set activeNodeId(value: string) {
+    this.active = value ?? '';
+    this.render();
+  }
+
+  get activeNodeId() {
+    return this.active;
+  }
+
+  private text(key: string) {
+    return this.labels[key] ?? '';
+  }
+
+  private getActorName(actorId: string): string {
+    if (actorId === 'ai') return this.text('ai') || actorId;
+    if (typeof this.actorLabelsMap[actorId] === 'string' && this.actorLabelsMap[actorId]) return this.actorLabelsMap[actorId];
+    if (actorId === 'solo') return this.text('you') || actorId;
+    return actorId;
+  }
+
+  private element<K extends keyof HTMLElementTagNameMap>(tag: K, text?: string) {
+    const el = document.createElement(tag);
+    if (text !== undefined) el.textContent = text;
+    return el;
+  }
+
+  private emit(name: string, detail: unknown) {
+    this.dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true }));
+  }
+
+  private createSegmentSpan(segment: SegmentItem): HTMLSpanElement {
+    const span = this.element('span');
+    span.className = 'segment' + (segment.turnId === this.active ? ' active' : '');
+    if (segment.actorId !== 'ai') span.classList.add('user');
+    span.dataset.segmentId = segment.id;
+    span.dataset.actorId = segment.actorId;
+    span.tabIndex = 0;
+    span.setAttribute('role', 'button');
+    span.setAttribute('aria-current', String(segment.turnId === this.active));
+
+    const author = this.getActorName(segment.actorId);
+    span.title = author;
+    span.setAttribute('aria-label', `${author}: ${segment.text}`);
+
+    const bg = getActorColor(segment.actorId);
+    if (bg !== 'transparent') {
+      span.style.backgroundColor = bg;
+    }
+
+    span.textContent = segment.text;
+
+    span.addEventListener('click', () => this.emit('sd:segment-select', { segmentId: segment.id }));
+    span.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.emit('sd:segment-select', { segmentId: segment.id });
+      }
+    });
+
+    return span;
+  }
+
+  private render() {
+    this.root.innerHTML = style;
+    const container = this.element('div');
+    container.className = 'reader-container';
+
+    if (!this.items.length) {
+      container.append(this.element('p', this.text('empty')));
+      this.root.append(container);
+      return;
+    }
+
+    // Shared author legend
+    const uniqueActors: string[] = [];
+    for (const seg of this.items) {
+      if (!uniqueActors.includes(seg.actorId)) {
+        uniqueActors.push(seg.actorId);
+      }
+    }
+
+    const legend = this.element('div');
+    legend.className = 'legend';
+    legend.setAttribute('role', 'group');
+    legend.setAttribute('aria-label', this.text('authors'));
+
+    for (const actorId of uniqueActors) {
+      const item = this.element('span');
+      item.className = 'legend-item';
+
+      const swatch = this.element('span');
+      swatch.className = 'swatch';
+      const color = getActorColor(actorId);
+      swatch.style.backgroundColor = color === 'transparent' ? '#ffffff' : color;
+
+      const name = this.element('span', this.getActorName(actorId));
+
+      item.append(swatch, name);
+      legend.append(item);
+    }
+    container.append(legend);
+
+    // Render segments according to presentation mode
+    if (this.currentPresentation === 'prose') {
+      const p = this.element('p');
+      p.className = 'surface prose-surface';
+      for (let i = 0; i < this.items.length; i++) {
+        if (i > 0) p.append(document.createTextNode(' '));
+        p.append(this.createSegmentSpan(this.items[i]));
+      }
+      container.append(p);
+    } else {
+      // 'language' or 'learning': group by turnId into coherent paragraphs
+      const turns: Array<{ turnId: string; segments: SegmentItem[] }> = [];
+      for (const seg of this.items) {
+        const lastTurn = turns[turns.length - 1];
+        if (lastTurn && lastTurn.turnId === seg.turnId) {
+          lastTurn.segments.push(seg);
+        } else {
+          turns.push({ turnId: seg.turnId, segments: [seg] });
+        }
+      }
+
+      for (const turn of turns) {
+        const p = this.element('p');
+        p.className = `surface turn-paragraph mode-${this.currentPresentation}`;
+        p.dataset.turnId = turn.turnId;
+        for (let i = 0; i < turn.segments.length; i++) {
+          if (i > 0) p.append(document.createTextNode(' '));
+          p.append(this.createSegmentSpan(turn.segments[i]));
+        }
+        container.append(p);
+      }
+    }
+
+    this.root.append(container);
+  }
 }
-if(!customElements.get('sd-story-reader')) customElements.define('sd-story-reader',StoryReader);
+
+if (!customElements.get('sd-story-reader')) {
+  customElements.define('sd-story-reader', StoryReader);
+}

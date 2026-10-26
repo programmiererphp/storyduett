@@ -1,5 +1,5 @@
 # StoryDuett – verbindliche Produktspezifikation V1.0
-**Referenz:** SD-SPEC-01 | **Stand:** 2026-10-17 | **Status:** D0 DONE; D1 IN PROGRESS (Auftrag 2026-10-17).
+**Referenz:** SD-SPEC-01 | **Stand:** 2026-10-26 | **Status:** D0 DONE; D1 IN PROGRESS (Auftrag 2026-10-17).
 
 ## Ziel / Unterschied zu gewöhnlichen Story-Generatoren
 Zwei Menschen (oder ein Mensch mit KI) bauen **inkrementell und gemeinsam** eine Geschichte, Lernübung oder einen Simulationstext. KI kommentiert jeden Beitrag lakonisch, stellt spielerische Folgefragen und erzeugt jeweils **genau drei Antworten: zwei ernsthafte und eine ironische**. Freitext ist immer möglich. Die App unterstützt später sozialem Kennenlernen nahe Wohnorten durch Matching und privaten Chat.
@@ -9,7 +9,7 @@ Use Case auswählen → KI erzeugt Anfangssatz und erste Frage → Nutzer wählt
 
 ## Regeln
 - Jeder menschliche Beitrag bleibt als Rohantwort unverändert gespeichert; die KI darf ihn für die organische Erzählform umformulieren, niemals frühere Segmente rückwirkend überschreiben.
-- Unterschiedliche ruhige Autorenfarben und Autorennamen (nicht nur Farbe); KI-Brückentext neutral. Auch 2 lokale/remote Spieler.
+- Zusammenhängende Lesefassung mit dezenten Autorenfarben, gemeinsamer Namenslegende und zugänglichem Autorennamen je Passage (nicht nur Farbe); KI-Brückentext neutral. Zwei lokale/remote Spieler folgen später, D1 bleibt Solo.
 - UI: aktuell lesen, wählen/diktieren/schreiben, fortsetzen. Einfache Navigation. Chronologischer Replay mit Pfeilen; Solo darf von einem historischen Punkt abzweigen; Remote-Duo nur per gemeinsamem Branch.
 - Historische Fragen, Kommentare, Antworten, Promptversionen und Textsegmente unveränderlich speichern.
 - Ein einzelner strukturierter Gemini-Call **kann** P3 Kommentar, P4 Integration und P2 Folgefrage gemeinsam abarbeiten; vier editierbare Promptbereiche bleiben unabhängig.
@@ -116,3 +116,32 @@ Der echte Zehn-Runden-Test besteht, aber die Plattform markiert auch stdout-Usag
 
 
 Details und Schnittstellen: [SD-D1-A1-01](docs/A1_WIREFORMAT.md). Nach dem Review zusätzlich interne Mehrwort-Verbindungen, fehlende Satztrennung und Unicode-Kombinationszeichen abgesichert.
+
+### SD-D1-READ-01: Kontinuierliche Lesefläche (C02 v1.1.0) & Darstellungsprojektion – 2026-10-26
+- **Zusammenhängende Lesefläche statt Chat-Karten:**
+  - `sd-story-reader` (C02) wechselt von separaten Beitragskarten/Chatblasen zu einer typografisch einheitlichen Lesefläche.
+  - Keine Autorenüberschriften oder Chat-Metadaten pro Einzelsegment im Textfluss.
+  - Typografie: Ruhige Serifenschrift, Zeilenlänge ca. 65–75ch, Zeilenhöhe ca. 1.85.
+- **Darstellungsmodi (`presentation: 'prose' | 'language' | 'learning'`):**
+  - `'prose'` (Standard): Ein einziger fortlaufender Fließtextabsatz mit Inline-`<span>`-Elementen für Segmente, getrennt durch natürliche Leerzeichen.
+  - `'language'`: Kurze zusammenhängende Absätze je Spielrunde (`turnId`). Nutzerbeitrag und optionale KI-Brücke derselben Runde erscheinen gemeinsam im selben Absatz.
+  - `'learning'`: Sachlich erklärende Absätze je Runde (`turnId`).
+- **Autoren-Kennzeichnung & Farbzuordnung:**
+  - Menschlicher Text wird ausschließlich über dezente Inline-Hintergrundmarkierungen hervorgehoben (`box-decoration-break: clone; -webkit-box-decoration-break: clone`), ohne linke Kanten oder Karten-Padding.
+  - `solo` (Hauptspieler): Ruhiges, helles Neutralgrau.
+  - Weitere `actorId`s erhalten deterministisch reproduzierbare, sanfte Tönungen (unabhängig von der Reihenfolge im Storyverlauf).
+  - KI-Segmente bleiben ungetönt im natürlichen Fließtext.
+  - Gemeinsame kompakte Autorenlegende über der Lesefläche. Jedes Segment besitzt barrierefreie `title`- und `aria-label`-Attribute mit sprechendem Autorennamen.
+  - Optionale DOM-Property `actorLabels: Record<string, string>`.
+- **Sicherheit & Barrierefreiheit:**
+  - Alle Textausgaben erfolgen strikt über `textContent` (kein fremdes HTML).
+  - Event `sd:segment-select` via Klick, `Enter` und `Space` bleibt vollständig erhalten, inklusive sichtbarem Tastaturfokus.
+  - Unveränderte Beibehaltung von Segment-IDs, `turnId`, Rohantworten und des Leeren Zustands (`empty`).
+- **Katalog & Sichere Projektion:**
+  - Alle zehn Use Cases erhalten die Eigenschaft `presentation` (`'language'` für `german-b2` und `italian-a1`, `'learning'` für `learning`, `'prose'` für die restlichen sieben).
+  - Spezifisch formulierte `prompts.integrate`-Instruktionen für alle zehn Szenarien (nur neue Prosa, kein Umschreiben der Vergangenheit, kein "Du hast gewählt", rollengerechte Einbettung).
+  - Versionserhöhung im Katalog: `italian-a1` v3 → v4; alle anderen neun Use Cases v2 → v3.
+  - Öffentliche API-Whitelist (`/api/use-cases`) wird strikt um `presentation` und `integratePrompt` (aus `prompts.integrate`) erweitert. Alle anderen drei Prompts, Systeminstruktionen und Server-Secrets verbleiben intern.
+- **Transparenz in der Web-App:**
+  - Vor Spielstart sowie während der Runde zeigt die Benutzeroberfläche eine kompakte, aufklappbare Sektion „Wie dein Beitrag eingewoben wird“ mit dem echten Katalogtext (`integratePrompt`) und der Versionsnummer.
+

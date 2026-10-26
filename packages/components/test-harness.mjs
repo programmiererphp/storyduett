@@ -6,7 +6,7 @@ export function run(folder,tag){
  const manifest=JSON.parse(readFileSync(new URL(`./${folder}/component.manifest.json`,import.meta.url),'utf8'));
  const code=readFileSync(new URL(`./${folder}/${manifest.bundle}`,import.meta.url),'utf8').replace('export class','class');
  w.eval(code);const e=w.document.createElement(tag);w.document.body.append(e);
- const labels={search:'Search',empty:'Empty',ai:'AI',you:'You',serious:'Serious',ironic:'Ironic',custom:'Custom',send:'Send',hint:'600 characters',busy:'Working',original:'Original',correction:'Correction'};
+ const labels={search:'Search',empty:'Empty',ai:'AI',you:'You',serious:'Serious',ironic:'Ironic',custom:'Custom',send:'Send',hint:'600 characters',busy:'Working',original:'Original',correction:'Correction',authors:'Authors'};
  e.i18n=labels;const root=e.shadowRoot;
  assert(root,'Open shadow root');assert.equal(manifest.backendCalls,false);
  assert(!code.includes('fetch('));assert(!code.includes('localStorage'));
@@ -19,9 +19,51 @@ export function run(folder,tag){
   e.busy=false;const search=root.querySelector('input');search.value='italian';search.dispatchEvent(new w.Event('input'));assert.equal(root.querySelectorAll('button').length,1);
   search.value='no-match';search.dispatchEvent(new w.Event('input'));assert(root.textContent.includes('Empty'));
  }else if(folder==='story-reader'){
-  const segments=[{id:'a',turnId:'n',text:'<script>secret</script>',kind:'opening',actorId:'ai'},{id:'b',turnId:'n2',text:'Continue',kind:'user-contribution',actorId:'solo'}];
-  e.segments=segments;e.activeNodeId='n2';assert.equal(root.querySelectorAll('article').length,2);let selected;e.addEventListener('sd:segment-select',ev=>selected=ev);root.querySelector('article').dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter'}));assert.equal(selected.detail.segmentId,'a');assert(selected.composed&&selected.bubbles);assert(root.querySelector('.user').textContent.includes('You'));assert.equal(root.querySelectorAll('script').length,0);
-  e.segments=[...segments,{...segments[1],id:'c',text:'Next'}];assert.deepEqual(segments.map(s=>s.text),['<script>secret</script>','Continue']);assert.equal(root.querySelectorAll('article').length,3);
+  const segments=[{id:'a',turnId:'n',text:'<script>secret</script>',kind:'opening',actorId:'ai'},{id:'b',turnId:'n2',text:'Continue',kind:'user-contribution',actorId:'solo'},{id:'c',turnId:'n2',text:'Bridge',kind:'ai-bridge',actorId:'ai'},{id:'d',turnId:'n3',text:'Player Two says hello',kind:'user-contribution',actorId:'player2'}];
+  e.segments=segments;e.activeNodeId='n2';e.presentation='prose';e.actorLabels={solo:'Du (Solo)',player2:'Mitspielerin'};
+  // Unified reading document: in prose mode, exactly 1 surface paragraph with inline spans, no article cards or repeated author headings
+  assert.equal(root.querySelectorAll('article').length,0);
+  assert.equal(root.querySelectorAll('.prose-surface').length,1);
+  const segSpans=root.querySelectorAll('.segment');assert.equal(segSpans.length,4);
+  assert.equal(root.querySelectorAll('.legend').length,1);
+  assert.equal(root.querySelectorAll('.legend-item').length,3); // ai, solo, player2
+  // Textsicherheit
+  assert.equal(root.querySelectorAll('script').length,0);
+  // Stabile Farben
+  const soloBg=root.querySelector('[data-actor-id=solo]').style.backgroundColor;
+  const p2Bg=root.querySelector('[data-actor-id=player2]').style.backgroundColor;
+  assert.equal(soloBg,'#eceef0');
+  assert.ok(p2Bg&&p2Bg!=='transparent'&&p2Bg!==soloBg);
+  // Farbzuordnung nach Umsortierung unverändert
+  e.segments=[...segments].reverse();
+  assert.equal(root.querySelector('[data-actor-id=solo]').style.backgroundColor,soloBg);
+  assert.equal(root.querySelector('[data-actor-id=player2]').style.backgroundColor,p2Bg);
+  e.segments=segments;
+  // Events via Keyboard (Enter) and Space and Click
+  let selected;e.addEventListener('sd:segment-select',ev=>selected=ev);
+  root.querySelector('[data-segment-id=a]').dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter'}));
+  assert.equal(selected.detail.segmentId,'a');assert(selected.composed&&selected.bubbles);
+  selected=null;root.querySelector('[data-segment-id=b]').dispatchEvent(new w.KeyboardEvent('keydown',{key:' '}));
+  assert.equal(selected.detail.segmentId,'b');
+  // Presentation modes: language and learning group by turnId
+  e.presentation='language';
+  const langParagraphs=root.querySelectorAll('.turn-paragraph');
+  assert.equal(langParagraphs.length,3); // turn n, turn n2, turn n3
+  // turn n2 contains both user-contribution 'b' and ai-bridge 'c' in the same paragraph
+  const n2Para=root.querySelector('[data-turn-id=n2]');
+  assert.ok(n2Para);
+  assert.equal(n2Para.querySelectorAll('.segment').length,2);
+  e.presentation='learning';assert.equal(root.querySelectorAll('.mode-learning').length,3);
+  e.presentation='invalid';assert.equal(root.querySelectorAll('.prose-surface').length,1);
+  assert.equal(root.querySelector('.legend').getAttribute('role'),'group');
+  assert.equal(root.querySelector('.legend').getAttribute('aria-label'),'Authors');
+  assert.equal(root.querySelectorAll('.surface small').length,0);
+  assert.equal(root.querySelector('[data-segment-id=b]').getAttribute('title'),'Du (Solo)');
+  assert.equal(root.querySelector('[data-segment-id=b]').getAttribute('aria-label'),'Du (Solo): Continue');
+  root.querySelector('[data-segment-id=d]').click();assert.equal(selected.detail.segmentId,'d');
+  // Unveränderte Eingaben
+  assert.deepEqual(segments.map(s=>s.text),['<script>secret</script>','Continue','Bridge','Player Two says hello']);
+  // Leerer Zustand
   e.segments=[];assert(root.textContent.includes('Empty'));
  }else if(folder==='choice-panel'){
   const question={id:'q1',text:'Choose',options:[{id:'a',text:'First',tone:'serious'},{id:'b',text:'Second',tone:'serious'},{id:'c',text:'Funny',tone:'ironic'}]};

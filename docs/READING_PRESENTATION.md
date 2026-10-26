@@ -49,3 +49,6 @@ Bisher stellte C02 `sd-story-reader` jeden Storybeitrag als separate "Chatkarte"
   - Vor Spielstart und während des Spiels bietet die App eine kompakte, aufklappbare Sektion „Wie dein Beitrag eingewoben wird“ (`<details>`), die den tatsächlichen `integratePrompt` und die Versionsnummer anzeigt.
 
 Review: Die Legende ist eine beschriftete Gruppe, kein Navigationsmenü. Dauerhafte Rahmen um aktive Passagen entfallen; nur Tastaturfokus erhält eine Kontur. KI-Passagen haben kein zusätzliches Padding. Beschriftungen kommen aus i18n; fehlen Autorenlabels, dient die actorId als Fallback. Die endliche Farbpalette kann bei weiteren Autoren kollidieren; Namen bleiben die verbindliche Zuordnung. D1 verwendet ausschließlich solo.
+
+## Zeitform-Nachprüfung (SD-D1-BUG-06)
+Neue Geschichten beginnen im Präsens. Fortsetzungen bewahren die tatsächlich etablierte Erzählperspektive und Zeitform; Rückblicke, direkte Rede und historische Fakten dürfen sachgerecht Vergangenheitsformen enthalten. Alle zehn Integrationsprompts entsprechend präzisiert, Katalogversionen jetztv4 beziehungsweisev5(italian-a1). Kein rückwirkendes Umschreiben und kein zusätzlicher Modellcall.

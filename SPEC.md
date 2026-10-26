@@ -145,3 +145,15 @@ Details und Schnittstellen: [SD-D1-A1-01](docs/A1_WIREFORMAT.md). Nach dem Revie
 - **Transparenz in der Web-App:**
   - Vor Spielstart sowie während der Runde zeigt die Benutzeroberfläche eine kompakte, aufklappbare Sektion „Wie dein Beitrag eingewoben wird“ mit dem echten Katalogtext (`integratePrompt`) und der Versionsnummer.
 
+### SD-D1-BUG-06: Konsistenter Präsens-Erzählrahmen & Zeitform-/Perspektiventreue – 2026-10-26
+- **Befund aus realem Fiction-Browser-Test:**
+  - Eröffnungsszene (`opening`) wurde in der Vergangenheitsform (Präteritum) generiert („Der schwere Regen trommelte ... während ... das Radio ... gab“), während der anschließende menschliche Beitrag (`contribution`) im Präsens eingewoben wurde („Entschlossen öffnest du ... trittst ...“).
+  - In der zusammenhängenden C02-Lesefassung erzeugt dieser Tempusbruch einen spürbaren Bruch im Lesefluss der einheitlichen Erzählung.
+- **Vorgaben zur Behebung:**
+  - **Präsens-Vorgabe für Szenenrahmen (`prompts.start`):** Alle zehn Use Cases erhalten in `prompts.start` eine explizite Anweisung für die Gegenwartsform (Präsens) im Erzähl- und Szenenrahmen. Natürliche Vergangenheitsbezüge oder Rückblenden in direkter Rede bleiben selbstverständlich erlaubt.
+  - **Konsistenzvorgabe bei Fortsetzungen (`prompts.integrate`):** Alle zehn Use Cases erhalten in `prompts.integrate` eine ausdrückliche Anweisung, die bisherige Erzählperspektive, Zeitform und Figurenidentität konsistent beizubehalten, ohne früheren Wortlaut zu verändern oder Meta-Floskeln („Du hast gewählt“) zu verwenden.
+  - **Serverseitige Systeminstruktionen:** Sowohl die Standard-Generierungsinstruktion als auch die A1-Instruktion (`server/story-engine.ts`) werden geschärft: Neue Geschichten im Präsens beginnen; Fortsetzungen erhalten die bereits etablierte Erzählperspektive, Zeitform und Figurenidentität (auch wenn die bestehende Geschichte eine andere Zeitform nutzt), ohne frühere Segmente umzuschreiben.
+  - **Katalogversionierung:** Neun Use Cases steigen von v3 auf v4; `italian-a1` steigt von v4 auf v5.
+  - **Invarianzen:** Bestehende Use-Case-Inhalte, striktes A1-Wireformat (max. 4 Wörter je Einheit), Ein-Call-Architektur pro Spielrunde und Budget-/Kostenstrukturen bleiben unverändert.
+
+

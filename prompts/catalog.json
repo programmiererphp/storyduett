@@ -13,7 +13,7 @@
     {
       "id": "fiction",
       "name": "Fiktion & Abenteuer",
-      "version": 3,
+      "version": 4,
       "enabled": true,
       "language": "de",
       "presentation": "prose",
@@ -26,16 +26,16 @@
         "speed": 1
       },
       "prompts": {
-        "start": "Beginne eine bildhafte, spannende und zugängliche Geschichte mit einem starken ersten Satz und einer offenen Situation.",
+        "start": "Beginne eine bildhafte, spannende und zugängliche Geschichte im Präsens (Gegenwart) mit einem starken ersten Satz und einer offenen Situation. Natürliche Rückblenden oder Vorzeitigkeit in direkter Rede bleiben erlaubt.",
         "question": "Stelle eine konkrete Frage zur nächsten Szene. Genau drei Optionen, zwei plausible ernsthafte und eine witzig-ironische. Freitext bleibt erlaubt.",
         "comment": "Reagiere nach jedem Zug in höchstens 18 Wörtern trocken, freundlich und überraschend ironisch, ohne Figuren zu verspotten.",
-        "integrate": "Setze die Szene mit neuer, bildhafter Prosa nahtlos fort. Verändere niemals früheren Wortlaut und verwende keine Floskeln wie 'Du hast gewählt' oder Antwortlabels. Behalte den Sinn und die handelnde Person der Entscheidung vollständig bei und gestalte die unmittelbare Folge als atmosphärische, kohärente Handlung."
+        "integrate": "Setze die Szene mit neuer, bildhafter Prosa nahtlos fort. Behalte die bisherige Erzählperspektive, Zeitform und Figurenidentität strikt bei. Verändere niemals früheren Wortlaut und verwende keine Floskeln wie 'Du hast gewählt' oder Antwortlabels. Behalte den Sinn und die handelnde Person der Entscheidung vollständig bei und gestalte die unmittelbare Folge als atmosphärische, kohärente Handlung."
       }
     },
     {
       "id": "madagascar-azubi",
       "name": "Auszubildende aus Madagaskar",
-      "version": 3,
+      "version": 4,
       "enabled": true,
       "language": "de",
       "presentation": "prose",
@@ -48,16 +48,16 @@
         "speed": 1
       },
       "prompts": {
-        "start": "Eröffne eine humorvolle, respektvolle Geschichte über eine junge erwachsene Auszubildende aus Madagaskar im deutschen Berufsalltag. Beobachtungswitz statt Klischees.",
+        "start": "Eröffne eine humorvolle, respektvolle Geschichte im Präsens (Gegenwart) über eine junge erwachsene Auszubildende aus Madagaskar im deutschen Berufsalltag. Beobachtungswitz statt Klischees. Natürliche vergangene Ereignisse in direkter Rede sind erlaubt.",
         "question": "Frage nach der nächsten beruflichen oder kulturellen Alltagssituation; zwei plausible Wege und eine charmant absurde Lösung.",
         "comment": "Kommentiere kurz, trocken und intelligent wie eine zurückhaltend ironische Erzählerstimme.",
-        "integrate": "Schreibe die respektvolle und humorvolle Szene im Ausbildungsbetrieb direkt in neuer Prosa fort. Früherer Text bleibt unberührt. Keine Meta-Formulierungen wie 'Du hast gewählt' oder Antwortlabels. Die getroffene Entscheidung wird als authentische Initiative der Azubine oder Reaktion der Kollegen im deutschen Arbeitsalltag wirksam."
+        "integrate": "Schreibe die respektvolle und humorvolle Szene im Ausbildungsbetrieb direkt in neuer Prosa fort. Behalte die bisherige Erzählperspektive, Zeitform und Figurenidentität konsistent bei. Früherer Text bleibt unberührt. Keine Meta-Formulierungen wie 'Du hast gewählt' oder Antwortlabels. Die getroffene Entscheidung wird als authentische Initiative der Azubine oder Reaktion der Kollegen im deutschen Arbeitsalltag wirksam."
       }
     },
     {
       "id": "german-b2",
       "name": "Deutsch lernen B2",
-      "version": 3,
+      "version": 4,
       "enabled": true,
       "language": "de",
       "presentation": "language",
@@ -70,16 +70,16 @@
         "speed": 1
       },
       "prompts": {
-        "start": "Beginne eine kleine realistische Gesprächsszene auf Deutsch B2, z.B. Café, Behörde, Uni, Rezeption.",
+        "start": "Beginne eine kleine realistische Gesprächsszene im Präsens (Gegenwart) auf Deutsch B2, z.B. Café, Behörde, Uni, Rezeption. Natürliche Vergangenheitsformen in direkter Rede sind erlaubt.",
         "question": "Stelle eine einfache alltagsnahe Frage mit zwei grammatisch passenden und einer humorvollen Option; ergänze eine freie Eingabe.",
         "comment": "Korrigiere Fehler des Nutzers freundlich, konkret und sehr kurz. Zeige bevorzugt die korrigierte Form mit einem Satz Erklärung.",
-        "integrate": "Führe den Dialog in korrektem B2-Deutsch als neue organische Szene mit natürlicher direkter Rede fort. Kein Umschreiben früherer Sätze und keine Einleitungen wie 'Du hast gewählt' oder Antwortlabels. Korrekte grammatische Formen werden organisch in der Handlung oder kurzen Gegenrede verwendet; Fehlerkorrekturen gehören ausschließlich in das Kommentarfeld."
+        "integrate": "Führe den Dialog in korrektem B2-Deutsch als neue organische Szene mit natürlicher direkter Rede fort. Behalte die etablierte Erzählperspektive, Zeitform und Figurenidentität genau bei. Kein Umschreiben früherer Sätze und keine Einleitungen wie 'Du hast gewählt' oder Antwortlabels. Korrekte grammatische Formen werden organisch in der Handlung oder kurzen Gegenrede verwendet; Fehlerkorrekturen gehören ausschließlich in das Kommentarfeld."
       }
     },
     {
       "id": "italian-a1",
       "name": "Italienisch A1",
-      "version": 4,
+      "version": 5,
       "enabled": true,
       "language": "it",
       "presentation": "language",
@@ -92,16 +92,16 @@
         "speed": 1
       },
       "prompts": {
-        "start": "Starte mit höchstens vier italienischen Wörtern. Alltagsszene: Öffnungszeiten, Straßenschilder, Museum oder Wochentage.",
+        "start": "Starte im Präsens mit höchstens vier italienischen Wörtern. Alltagsszene: Öffnungszeiten, Straßenschilder, Museum oder Wochentage.",
         "question": "Formuliere eine sehr kurze Folgefrage und drei leicht verständliche Antworten, zwei sachliche und eine lustige.",
         "comment": "Korrigiere nur einen tatsächlich vorhandenen Fehler ohne erfundene Regelerklärungen: korrigierter Satz, deutsche Bedeutung und einfache Aussprachehilfe für den korrigierten Satz. Bei fehlerfreier Eingabe bestätige kurz.",
-        "integrate": "Schreibe die Szene in sehr kurzen italienischen Sätzen fort; jede Satz-, Frage- und Optionseinheit muss strikt maximal vier Wörter umfassen. Früherer Wortlaut bleibt unverändert. Keine Meta-Floskeln wie 'Du hast gewählt'. Die richtige Form wird direkt und lebendig in der Szene verwendet; jegliche grammatische Erklärung gehört ausschließlich in das Kommentarfeld."
+        "integrate": "Schreibe die Szene in sehr kurzen italienischen Sätzen fort; jede Satz-, Frage- und Optionseinheit muss strikt maximal vier Wörter umfassen. Behalte Erzählperspektive, Zeitform und Figurenidentität bei. Früherer Wortlaut bleibt unverändert. Keine Meta-Floskeln wie 'Du hast gewählt'. Die richtige Form wird direkt und lebendig in der Szene verwendet; jegliche grammatische Erklärung gehört ausschließlich in das Kommentarfeld."
       }
     },
     {
       "id": "smalltalk",
       "name": "Smalltalk & Schlagfertigkeit",
-      "version": 3,
+      "version": 4,
       "enabled": true,
       "language": "de",
       "presentation": "prose",
@@ -114,16 +114,16 @@
         "speed": 1
       },
       "prompts": {
-        "start": "Beginne eine plausible kleine Gesprächssituation zwischen Fremden in Alltag, Kurs oder Veranstaltung.",
+        "start": "Beginne eine plausible kleine Gesprächssituation im Präsens (Gegenwart) zwischen Fremden in Alltag, Kurs oder Veranstaltung. Natürliche Vergangenheitsbezüge in direkter Rede bleiben erlaubt.",
         "question": "Frage nach einer möglichen lockeren Reaktion; zwei sympathische und eine sanft ironische Option.",
         "comment": "Gib ein kurzes, praxisnahes Feedback auf Wärme, Neugier und Gesprächsfluss ohne moralische Belehrung.",
-        "integrate": "Führe das Gespräch als neue, flüssige Prosa mit natürlicher wörtlicher Rede fort. Früherer Wortlaut wird niemals verändert. Verzichte auf Phrasen wie 'Du hast gewählt', 'Nutzer sagt' oder Antwortlabels. Binde die Intention der Antwort als unmittelbare, sympathische Reaktion im Erzählfluss ein und schaffe die nächste lockere Gesprächssituation."
+        "integrate": "Führe das Gespräch als neue, flüssige Prosa mit natürlicher wörtlicher Rede fort. Behalte bisherige Erzählperspektive, Zeitform und Figurenidentität konsistent bei. Früherer Wortlaut wird niemals verändert. Verzichte auf Phrasen wie 'Du hast gewählt', 'Nutzer sagt' oder Antwortlabels. Binde die Intention der Antwort als unmittelbare, sympathische Reaktion im Erzählfluss ein und schaffe die nächste lockere Gesprächssituation."
       }
     },
     {
       "id": "getting-to-know",
       "name": "Gemeinsamkeiten entdecken",
-      "version": 3,
+      "version": 4,
       "enabled": true,
       "language": "de",
       "presentation": "prose",
@@ -136,16 +136,16 @@
         "speed": 1
       },
       "prompts": {
-        "start": "Beginne eine kooperative, leichte Szene für zwei erwachsene Mitspieler, z.B. gemeinsamer Ausflug oder Mini-Abenteuer.",
+        "start": "Beginne eine kooperative, leichte Szene im Präsens (Gegenwart) für zwei erwachsene Mitspieler, z.B. gemeinsamer Ausflug oder Mini-Abenteuer. Natürliche Bezüge auf Vergangenes in direkter Rede sind erlaubt.",
         "question": "Frage nach einer gemeinsam zu treffenden Entscheidung, die Interessen und humorvolle Perspektiven sichtbar macht; zwei ernsthafte und eine ironische.",
         "comment": "Kommentiere knapp, scherzhaft und verbindend; stelle keine aufdringlichen privaten Diagnosen.",
-        "integrate": "Entwickle die gemeinsame Solo-Szene mit einer fiktiven zweiten Figur in lebendiger neuer Prosa weiter. Früherer Text bleibt unverändert. Keine Floskeln wie 'Du hast gewählt' oder Aufzählungen. Der Beitrag des Spielers bestimmt das Handeln seiner Figur, während die fiktive Begleitperson darauf eingeht und neue Berührungspunkte eröffnet."
+        "integrate": "Entwickle die gemeinsame Solo-Szene mit einer fiktiven zweiten Figur in lebendiger neuer Prosa weiter. Behalte die etablierte Erzählperspektive, Zeitform und Figurenidentität konsistent bei. Früherer Text bleibt unverändert. Keine Floskeln wie 'Du hast gewählt' oder Aufzählungen. Der Beitrag des Spielers bestimmt das Handeln seiner Figur, während die fiktive Begleitperson darauf eingeht und neue Berührungspunkte eröffnet."
       }
     },
     {
       "id": "reflection",
       "name": "Perspektivwechsel & Reflexion",
-      "version": 3,
+      "version": 4,
       "enabled": true,
       "language": "de",
       "presentation": "prose",
@@ -158,16 +158,16 @@
         "speed": 1
       },
       "prompts": {
-        "start": "Beginne eine sanfte, ermutigende Alltagssituation über Wünsche, Herausforderungen oder kleine Zukunftsideen.",
+        "start": "Beginne eine sanfte, ermutigende Alltagssituation im Präsens (Gegenwart) über Wünsche, Herausforderungen oder kleine Zukunftsideen. Natürliche Vergangenheitsbezüge in direkter Rede bleiben erlaubt.",
         "question": "Stelle eine offene, leicht zu beantwortende Frage mit zwei ernsthaften und einer leichten humorvollen Option.",
         "comment": "Antworte unterstützend und reflektierend, ohne Diagnosen oder unangemessen ironische Bemerkungen.",
-        "integrate": "Führe die Situation in einfühlsamer, neuer Prosa ruhig fort, ohne früheren Wortlaut zu verändern. Keine Meta-Kommentare wie 'Du hast gewählt' und keinerlei psychologische Umdeutungen oder Diagnosen. Die persönliche Entscheidung bleibt in ihrer ursprünglichen Bedeutung voll gewahrt und entfaltet eine greifbare, nachvollziehbare Wirkung."
+        "integrate": "Führe die Situation in einfühlsamer, neuer Prosa ruhig fort, ohne früheren Wortlaut zu verändern. Behalte die etablierte Erzählperspektive, Zeitform und Figurenidentität verlässlich bei. Keine Meta-Kommentare wie 'Du hast gewählt' und keinerlei psychologische Umdeutungen oder Diagnosen. Die persönliche Entscheidung bleibt in ihrer ursprünglichen Bedeutung voll gewahrt und entfaltet eine greifbare, nachvollziehbare Wirkung."
       }
     },
     {
       "id": "work",
       "name": "Bewerbung & Beruf",
-      "version": 3,
+      "version": 4,
       "enabled": true,
       "language": "de",
       "presentation": "prose",
@@ -180,16 +180,16 @@
         "speed": 1
       },
       "prompts": {
-        "start": "Eröffne ein realistisches Vorstellungsgespräch, einen Hotel-Rezeptionstag oder eine berufliche Kommunikationssituation.",
+        "start": "Eröffne ein realistisches Vorstellungsgespräch, einen Hotel-Rezeptionstag oder eine berufliche Kommunikationssituation im Präsens (Gegenwart). Natürliche Vergangenheitsbezüge in direkter Rede sind erlaubt.",
         "question": "Frage nach dem nächsten Satz oder der Entscheidung; zwei beruflich sinnvolle Wege und eine offensichtlich humorvolle Option.",
         "comment": "Erkläre in maximal zwei Sätzen, warum die Antwort kommunikativ hilfreich oder verbesserbar ist.",
-        "integrate": "Setze die berufliche Simulation mit natürlicher Rede und professioneller Handlung im Erzähltext fort. Früherer Wortlaut wird niemals geändert. Vermeide Aufzählungen oder Einleitungen wie 'Du hast gewählt'. Die gewählte Vorgehensweise fließt unmittelbar in die Reaktion von Kunden, Vorgesetzten oder Kollegen ein."
+        "integrate": "Setze die berufliche Simulation mit natürlicher Rede und professioneller Handlung im Erzähltext fort. Behalte die bisherige Erzählperspektive, Zeitform und Figurenidentität konsistent bei. Früherer Wortlaut wird niemals geändert. Vermeide Aufzählungen oder Einleitungen wie 'Du hast gewählt'. Die gewählte Vorgehensweise fließt unmittelbar in die Reaktion von Kunden, Vorgesetzten oder Kollegen ein."
       }
     },
     {
       "id": "learning",
       "name": "Interaktive Lerntexte",
-      "version": 3,
+      "version": 4,
       "enabled": true,
       "language": "de",
       "presentation": "learning",
@@ -202,16 +202,16 @@
         "speed": 1
       },
       "prompts": {
-        "start": "Beginne einen kurzen sachlich korrekten Lerntext über ein Thema aus Geschichte, Wissenschaft oder Gesellschaft.",
+        "start": "Beginne einen kurzen sachlich korrekten Lerntext im Präsens (Gegenwart) über ein Thema aus Geschichte, Wissenschaft oder Gesellschaft. Historische Vergangenheitsformen bei historischen Ereignissen bleiben sachgerecht erlaubt.",
         "question": "Stelle eine Wissens-/Transferfrage mit genau drei Antworten; zwei fachlich sinnvolle, eine harmlose ironische.",
         "comment": "Gib kurzes verständliches Feedback und berichtige Faktenfehler klar.",
-        "integrate": "Ergänze einen sachlichen, gut verständlichen erklärenden Absatz im Lehrbuchstil. Frühere Absätze bleiben unverändert. Keine Formulierungen wie 'Du hast gewählt' oder Antwortlabels. Ungeprüfte Nutzerbehauptungen dürfen nicht als Tatsachen übernommen werden; vermittle verlässliches Wissen und ordne die gewählte Antwort sachlich ein."
+        "integrate": "Ergänze einen sachlichen, gut verständlichen erklärenden Absatz im Lehrbuchstil. Behalte die etablierte Perspektive, den sachlichen Ton und die Zeitform konsistent bei. Frühere Absätze bleiben unverändert. Keine Formulierungen wie 'Du hast gewählt' oder Antwortlabels. Ungeprüfte Nutzerbehauptungen dürfen nicht als Tatsachen übernommen werden; vermittle verlässliches Wissen und ordne die gewählte Antwort sachlich ein."
       }
     },
     {
       "id": "community",
       "name": "Gemeinschaft & Zukunft",
-      "version": 3,
+      "version": 4,
       "enabled": true,
       "language": "de",
       "presentation": "prose",
@@ -224,10 +224,10 @@
         "speed": 1
       },
       "prompts": {
-        "start": "Eröffne die Geschichte einer kleinen selbstorganisierten Gemeinschaft mit gemeinschaftlicher Küche, Reparatur, Garten und mehr freier Zeit.",
+        "start": "Eröffne im Präsens (Gegenwart) die Geschichte einer kleinen selbstorganisierten Gemeinschaft mit gemeinschaftlicher Küche, Reparatur, Garten und mehr freier Zeit. Natürliche Vergangenheitsbezüge in direkter Rede sind erlaubt.",
         "question": "Frage nach einer konkreten gemeinsam zu entscheidenden Maßnahme, zwei ernsthaften und einer witzigen Option.",
         "comment": "Kommentiere kurz, klug und leicht ironisch; betone praktische Zusammenarbeit und Entdeckerfreude.",
-        "integrate": "Schreibe weiter, wie die Gemeinschaft den Vorschlag ganz konkret in neuer Prosa erprobt. Früherer Text bleibt unberührt. Keine Formeln wie 'Du hast gewählt' oder Aufzählungen. Mache die direkten handwerklichen, sozialen oder ökologischen Folgen des gemeinsamen Handelns plastisch und lebendig spürbar."
+        "integrate": "Schreibe weiter, wie die Gemeinschaft den Vorschlag ganz konkret in neuer Prosa erprobt. Behalte die etablierte Erzählperspektive, Zeitform und Figurenidentität lückenlos bei. Früherer Text bleibt unberührt. Keine Formeln wie 'Du hast gewählt' oder Aufzählungen. Mache die direkten handwerklichen, sozialen oder ökologischen Folgen des gemeinsamen Handelns plastisch und lebendig spürbar."
       }
     }
   ]

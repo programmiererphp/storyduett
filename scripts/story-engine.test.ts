@@ -317,14 +317,18 @@ test('Italian A1: strict error enforcement for multi-word items, word counts, em
     }
   });
 
-  // 1. Multi-word item bypass attempt
+  // 1. Harmless whitespace packing preserves words; actual word-count bypass is rejected
   const multiWordStart = baseStart();
   multiWordStart.opening = ['Il', 'museo è', 'aperto.'];
-  assert.throws(() => validateAndNormalizeItalianA1(multiWordStart, true), /invalid_response/);
+  assert.equal(validateAndNormalizeItalianA1(multiWordStart,true).opening,'Il museo è aperto.');
+  multiWordStart.opening=['Il grande museo è aperto.'];
+  assert.throws(()=>validateAndNormalizeItalianA1(multiWordStart,true),/invalid_response/);
 
   const multiWordTurn = baseTurn();
   multiWordTurn.contribution[0] = ['Entro', 'nel museo'];
-  assert.throws(() => validateAndNormalizeItalianA1(multiWordTurn, false), /invalid_response/);
+  assert.equal(validateAndNormalizeItalianA1(multiWordTurn,false).contribution,'Entro nel museo.');
+  multiWordTurn.contribution=[['Vado al bar molto velocemente.']];
+  assert.throws(()=>validateAndNormalizeItalianA1(multiWordTurn,false),/invalid_response/);
 
   // 2. Exceeding word limit in start opening (5 words)
   const tooManyWordsOpening = baseStart();
@@ -483,7 +487,7 @@ test('Italian A1: StoryEngine start and turn execute successfully with A1 word-a
   assert.equal(turnRes.segments[2].text, 'La guida arriva.');
   assert.equal(turnRes.nodes[1].comment?.kind, 'correction');
   assert.equal(turnRes.nodes[1].comment?.text.includes('en-tro su-bi-to'), true);
-  assert.equal(turnRes.nodes[1].promptVersionIds.start, 'italian-a1:v7:start');
+  assert.equal(turnRes.nodes[1].promptVersionIds.start, 'italian-a1:v8:start');
 });
 
 test('Italian A1: invalid A1 response does NOT commit story state and properly accounts usage cost', async () => {
@@ -594,5 +598,7 @@ test('A1 phase schemas constrain inactive fields and feedback without sharing mu
  assert.equal(turnSchema.properties.contribution.minItems,1);
  assert.deepEqual(turnSchema.properties.comment.properties.kind.enum,['correction']);
  assert.equal(italianA1SchemaFor(true).properties.opening.maxItems,4);
- assert.throws(()=>validateWordArray(['two words'],1,4),(e:any)=>e instanceof A1ValidationError&&e.validationCode==='word_token'&&e.code==='invalid_response');
+ assert.deepEqual(validateWordArray(['two words'],1,4),['two','words']);
+ assert.deepEqual(validateWordArray(['«','Ciao','!','»'],1,4),['«Ciao!»']);
+ assert.throws(()=>validateWordArray(['ciao,mondo'],1,4),(e:any)=>e instanceof A1ValidationError&&e.validationCode==='word_token'&&e.code==='invalid_response');
 });

@@ -1,12 +1,12 @@
 import { StoryError } from './errors';
 
-export type A1ValidationCode = 'root' | 'word_array' | 'word_count' | 'word_token' | 'sentence_boundary' | 'sentence_count' | 'inactive_field' | 'contribution' | 'comment' | 'question' | 'options' | 'option_tones' | 'option_duplicate';
+export type A1ValidationCode = 'root' | 'word_array' | 'word_count' | 'word_token' | 'word_currency' | 'word_symbol' | 'word_punctuation' | 'sentence_boundary' | 'sentence_count' | 'inactive_field' | 'contribution' | 'comment' | 'question' | 'options' | 'option_tones' | 'option_duplicate';
 export class A1ValidationError extends StoryError {
   constructor(public validationCode: A1ValidationCode) { super('invalid_response', 502); }
 }
 
 // Punctuation can surround a word, but cannot join several words in one slot.
-const SINGLE_WORD_REGEX = /^[«"“(]*(?:[\p{L}\p{N}][\p{L}\p{M}\p{N}]*(?:['’\-][\p{L}\p{N}][\p{L}\p{M}\p{N}]*)*|[0-9]{1,2}:[0-9]{2})[.,!?:;»"”)…]*$/u;
+const SINGLE_WORD_REGEX = /^[«"'“‘(]*(?:[\p{L}\p{N}][\p{L}\p{M}\p{N}]*(?:['’\-][\p{L}\p{N}][\p{L}\p{M}\p{N}]*)*|[0-9]{1,2}:[0-9]{2})[.,!?:;»"'”’)…]*$/u;
 
 export function isSingleItalianWord(item: unknown): item is string {
   return typeof item === 'string' &&
@@ -14,6 +14,10 @@ export function isSingleItalianWord(item: unknown): item is string {
     !/\s/.test(item) &&
     /[\p{L}\p{N}]/u.test(item) &&
     SINGLE_WORD_REGEX.test(item);
+}
+
+function invalidWord(word: string): A1ValidationError {
+  return new A1ValidationError(/[€$£]/u.test(word) ? 'word_currency' : /^\p{P}+$/u.test(word) ? 'word_punctuation' : /[^\p{L}\p{M}\p{N}\p{P}]/u.test(word) ? 'word_symbol' : 'word_token');
 }
 
 export function validateWordArray(
@@ -27,19 +31,28 @@ export function validateWordArray(
   if (arr.length < minWords || arr.length > maxWords) {
     throw new A1ValidationError('word_count');
   }
+  // Canonicalize layout only: preserve every word and punctuation mark.
+  // The four-word bound applies to actual words, even if a provider bundles them.
+  const words: string[] = [];
+  let prefix = '';
   for (const item of arr) {
-    if (!isSingleItalianWord(item)) {
-      throw new A1ValidationError('word_token');
+    if (typeof item !== 'string' || !item.trim()) throw new A1ValidationError('word_token');
+    for (const token of item.trim().split(/\s+/u)) {
+      if (/^[«“‘(]+$/u.test(token) || (/^["']+$/u.test(token) && words.length === 0)) { prefix += token; continue; }
+      if (/^[.,!?:;»"'”’)…]+$/u.test(token) && words.length) {
+        words[words.length - 1] += token;
+        continue;
+      }
+      const word = prefix + token;
+      prefix = '';
+      if (!isSingleItalianWord(word)) throw invalidWord(word);
+      words.push(word);
     }
   }
-  if (arr.length > 0) {
-    const joined = (arr as string[]).join(' ').trim();
-    const words = joined.split(/\s+/).filter(Boolean);
-    if (words.length < minWords || words.length > maxWords) {
-      throw new A1ValidationError('word_count');
-    }
-  }
-  return arr as string[];
+  if (prefix) throw new A1ValidationError('word_punctuation');
+  for (const word of words) if (!isSingleItalianWord(word)) throw invalidWord(word);
+  if (words.length < minWords || words.length > maxWords) throw new A1ValidationError('word_count');
+  return words;
 }
 
 export const italianA1Schema = {

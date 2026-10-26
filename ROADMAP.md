@@ -71,3 +71,6 @@ Die Nutzung vorhandener Projektschlüssel und Veröffentlichung nach bestandenen
 
 
 
+
+### D1 A1-Robustheit und ehrliche Fehleranzeige – 2026-10-26 (SD-D1-BUG-07)
+Im echten A1-Test wurde eine bezahlte Modellantwort als invalid_response verworfen; Geschichte/Runde blieben korrekt unverändert. Exaktes verletztes Feld bisher unbekannt, keine Rohantwort in Logs. Die Vorschau zeigte irreführend provider_unavailable. Vorgabe vor Fix: A1-Schema nach Start/Turn einschränken (inaktive Arrays leer, Kommentar neutral/correction verbindlich), natürliche italienische Wortstellung explizit verlangen, datensparsame Diagnosecodes statt Modellinhalt protokollieren. Clientseitig erwartete ungültige Generierung als HTTP422/JSON übergeben, interner Upstreamfehler bleibt502. Vorherige Fragen im bestehenden kombinierten Modellkontext helfen gegen Wiederholungen. Kein zusätzlicher Call, keine automatischen Retries, kein Ersatztext und keine Lockerung der Vierwortregel. Katalog nur A1v5→v6. Echter vollständiger Nachtest erforderlich.

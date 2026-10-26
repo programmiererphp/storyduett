@@ -19,3 +19,14 @@ test('HTTP ownership, CSRF, strict inputs and zero-budget block before provider'
   assert.equal((await fetch(base+'/api/sessions/missing',{headers})).status,404);
  }finally{await new Promise<void>(r=>server.close(()=>r()));}
 });
+
+test('invalid AI generation remains JSON 422 for preview proxies',async()=>{
+ const engine=new StoryEngine(async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'not JSON'}]}}]}));
+ const server=createApi(undefined,engine).listen(0,'127.0.0.1');await new Promise<void>(r=>server.once('listening',r));
+ const address=server.address();assert(address&&typeof address==='object');const base=`http://127.0.0.1:${address.port}`;
+ try{
+  const config=await fetch(base+'/api/play-config');const cookie=config.headers.get('set-cookie')!.split(';')[0];
+  const res=await fetch(base+'/api/sessions',{method:'POST',headers:{'Content-Type':'application/json','x-sd-request':'1',cookie},body:JSON.stringify({useCaseId:'fiction',locale:'de',limitUsd:.1,idempotencyKey:randomUUID()})});
+  assert.equal(res.status,422);assert.match(res.headers.get('content-type')!,/application\/json/);assert.deepEqual(await res.json(),{error:'invalid_response'});
+ }finally{await new Promise<void>(r=>server.close(()=>r()));}
+});

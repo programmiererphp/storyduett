@@ -79,7 +79,7 @@
     {
       "id": "italian-a1",
       "name": "Italienisch A1",
-      "version": 5,
+      "version": 6,
       "enabled": true,
       "language": "it",
       "presentation": "language",
@@ -93,7 +93,7 @@
       },
       "prompts": {
         "start": "Starte im Präsens mit höchstens vier italienischen Wörtern. Alltagsszene: Öffnungszeiten, Straßenschilder, Museum oder Wochentage.",
-        "question": "Formuliere eine sehr kurze Folgefrage und drei leicht verständliche Antworten, zwei sachliche und eine lustige.",
+        "question": "Stelle abwechslungsreiche, natürliche und grammatisch korrekte italienische Folgefragen mit maximal vier Wörtern, z.B. 'Che giorno è oggi?', 'A che ora apre?' oder 'Quanto costa il biglietto?'. Zwei sachliche und eine lustige Antwort, alle in korrektem Italienisch mit höchstens vier Wörtern; ironisch heißt nicht grammatisch falsch. Wiederhole keine frühere Frage.",
         "comment": "Korrigiere nur einen tatsächlich vorhandenen Fehler ohne erfundene Regelerklärungen: korrigierter Satz, deutsche Bedeutung und einfache Aussprachehilfe für den korrigierten Satz. Bei fehlerfreier Eingabe bestätige kurz.",
         "integrate": "Schreibe die Szene in sehr kurzen italienischen Sätzen fort; jede Satz-, Frage- und Optionseinheit muss strikt maximal vier Wörter umfassen. Behalte Erzählperspektive, Zeitform und Figurenidentität bei. Früherer Wortlaut bleibt unverändert. Keine Meta-Floskeln wie 'Du hast gewählt'. Die richtige Form wird direkt und lebendig in der Szene verwendet; jegliche grammatische Erklärung gehört ausschließlich in das Kommentarfeld."
       }

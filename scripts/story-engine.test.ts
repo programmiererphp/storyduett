@@ -480,7 +480,7 @@ test('Italian A1: StoryEngine start and turn execute successfully with A1 word-a
   assert.equal(turnRes.segments[2].text, 'La guida arriva.');
   assert.equal(turnRes.nodes[1].comment?.kind, 'correction');
   assert.equal(turnRes.nodes[1].comment?.text.includes('en-tro su-bi-to'), true);
-  assert.equal(turnRes.nodes[1].promptVersionIds.start, 'italian-a1:v5:start');
+  assert.equal(turnRes.nodes[1].promptVersionIds.start, 'italian-a1:v6:start');
 });
 
 test('Italian A1: invalid A1 response does NOT commit story state and properly accounts usage cost', async () => {
@@ -569,7 +569,22 @@ test('Italian A1: invalid A1 response does NOT commit story state and properly a
   const failedUsage = stateAfter.usage[1];
   assert.equal(failedUsage.status, 'error');
   assert.equal(failedUsage.errorCode, 'invalid_response');
+  assert.equal(failedUsage.validationCode, 'word_count');
   assert.equal(failedUsage.chargedUsd > 0, true);
   assert.equal(stateAfter.spentUsd > stateBefore.spentUsd, true);
 });
 
+
+// Fixtures exercise the provider contract; final gameplay is tested separately with real Gemini.
+test('A1 phase schemas constrain inactive fields and feedback without sharing mutations', async()=>{
+ const {italianA1SchemaFor,A1ValidationError,validateWordArray}=await import('../server/wireformat-a1');
+ const startSchema=italianA1SchemaFor(true),turnSchema=italianA1SchemaFor(false);
+ assert.equal(startSchema.properties.contribution.maxItems,0);
+ assert.equal(startSchema.properties.bridge.maxItems,0);
+ assert.deepEqual(startSchema.properties.comment.properties.kind.enum,['neutral']);
+ assert.equal(turnSchema.properties.opening.maxItems,0);
+ assert.equal(turnSchema.properties.contribution.minItems,1);
+ assert.deepEqual(turnSchema.properties.comment.properties.kind.enum,['correction']);
+ assert.equal(italianA1SchemaFor(true).properties.opening.maxItems,4);
+ assert.throws(()=>validateWordArray(['two words'],1,4),(e:any)=>e instanceof A1ValidationError&&e.validationCode==='word_token'&&e.code==='invalid_response');
+});

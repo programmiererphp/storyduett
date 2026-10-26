@@ -73,7 +73,7 @@ export function createApi(loadCatalog = getPublicCatalog, engine = new StoryEngi
   app.get('/api/sessions/:id',route((req,res)=>{res.json({state:engine.read(String(req.params.id),owner(req,res),String(req.headers['x-sd-session']??''))});}));
   app.post('/api/sessions/:id/turns',route(async(req,res)=>{res.json({state:await engine.turn(String(req.params.id),owner(req,res),String(req.headers['x-sd-session']??''),req.body)});}));
   app.delete('/api/sessions/:id',route((req,res)=>{engine.remove(String(req.params.id),owner(req,res),String(req.headers['x-sd-session']??''));res.status(204).end();}));
-  app.use('/api',(error:any,_req:express.Request,res:express.Response,_next:express.NextFunction)=>{const known=error instanceof StoryError;res.status(known?error.status:error.type==='entity.too.large'?413:400).json({error:known?error.code:'invalid_input',...(known&&error.errorInfoReason?{reason:error.errorInfoReason}:{})});});
+  app.use('/api',(error:any,_req:express.Request,res:express.Response,_next:express.NextFunction)=>{const known=error instanceof StoryError;res.status(known?(error.code==='invalid_response'?422:error.status):error.type==='entity.too.large'?413:400).json({error:known?error.code:'invalid_input',...(known&&error.errorInfoReason?{reason:error.errorInfoReason}:{})});});
   app.all(['/api', '/api/*'], (_req, res) => { res.status(404).json({ error: 'Endpoint not found' }); });
   return app;
 }

@@ -1,5 +1,10 @@
 import { StoryError } from './errors';
 
+export type A1ValidationCode = 'root' | 'word_array' | 'word_count' | 'word_token' | 'sentence_boundary' | 'sentence_count' | 'inactive_field' | 'contribution' | 'comment' | 'question' | 'options' | 'option_tones' | 'option_duplicate';
+export class A1ValidationError extends StoryError {
+  constructor(public validationCode: A1ValidationCode) { super('invalid_response', 502); }
+}
+
 // Punctuation can surround a word, but cannot join several words in one slot.
 const SINGLE_WORD_REGEX = /^[«"“(]*(?:[\p{L}\p{N}][\p{L}\p{M}\p{N}]*(?:['’\-][\p{L}\p{N}][\p{L}\p{M}\p{N}]*)*|[0-9]{1,2}:[0-9]{2})[.,!?:;»"”)…]*$/u;
 
@@ -17,21 +22,21 @@ export function validateWordArray(
   maxWords: number
 ): string[] {
   if (!Array.isArray(arr)) {
-    throw new StoryError('invalid_response', 502);
+    throw new A1ValidationError('word_array');
   }
   if (arr.length < minWords || arr.length > maxWords) {
-    throw new StoryError('invalid_response', 502);
+    throw new A1ValidationError('word_count');
   }
   for (const item of arr) {
     if (!isSingleItalianWord(item)) {
-      throw new StoryError('invalid_response', 502);
+      throw new A1ValidationError('word_token');
     }
   }
   if (arr.length > 0) {
     const joined = (arr as string[]).join(' ').trim();
     const words = joined.split(/\s+/).filter(Boolean);
     if (words.length < minWords || words.length > maxWords) {
-      throw new StoryError('invalid_response', 502);
+      throw new A1ValidationError('word_count');
     }
   }
   return arr as string[];
@@ -123,21 +128,35 @@ export interface NormalizedGeneration {
   };
 }
 
+// Supported enum and array bounds constrain provider output before semantic validation.
+// Never mutate the shared base schema between concurrent start/turn requests.
+export function italianA1SchemaFor(start: boolean) {
+  const p = italianA1Schema.properties;
+  return {...italianA1Schema, properties: {...p,
+    opening: {...p.opening, minItems: start ? 1 : 0, maxItems: start ? 4 : 0},
+    contribution: {...p.contribution, minItems: start ? 0 : 1, maxItems: start ? 0 : 3,
+      items: {...p.contribution.items, minItems: 1}},
+    bridge: {...p.bridge, maxItems: start ? 0 : 4},
+    comment: {...p.comment, properties: {...p.comment.properties,
+      kind: {type: 'string', enum: [start ? 'neutral' : 'correction']}}}
+  }};
+}
+
 function sentence(words:string[]):string {
   // A tuple represents one sentence. Prevent hidden additional sentence boundaries.
-  if(words.slice(0,-1).some(word=>/[.!?…]/u.test(word)))throw new StoryError('invalid_response',502);
+  if(words.slice(0,-1).some(word=>/[.!?…]/u.test(word)))throw new A1ValidationError('sentence_boundary');
   const text=words.join(' ').trim();
   return /[.!?…][»"”)]*$/u.test(text)?text:text.replace(/[,;:]+$/u,'')+'.';
 }
 
 function verifySentences(text:string,maxSentences:number):void {
   const sentences=text.split(/[.!?…]+/u).map(s=>s.trim()).filter(s=>/[\p{L}\p{N}]/u.test(s));
-  if(sentences.length>maxSentences||sentences.some(s=>s.split(/\s+/u).filter(word=>/[\p{L}\p{N}]/u.test(word)).length>4))throw new StoryError('invalid_response',502);
+  if(sentences.length>maxSentences||sentences.some(s=>s.split(/\s+/u).filter(word=>/[\p{L}\p{N}]/u.test(word)).length>4))throw new A1ValidationError('sentence_count');
 }
 
 export function validateAndNormalizeItalianA1(raw: any, start: boolean): NormalizedGeneration {
   if (!raw || typeof raw !== 'object') {
-    throw new StoryError('invalid_response', 502);
+    throw new A1ValidationError('root');
   }
 
   // 1. opening
@@ -147,7 +166,7 @@ export function validateAndNormalizeItalianA1(raw: any, start: boolean): Normali
     openingStr = sentence(words);
   } else {
     if (!Array.isArray(raw.opening) || raw.opening.length !== 0) {
-      throw new StoryError('invalid_response', 502);
+      throw new A1ValidationError('inactive_field');
     }
   }
 
@@ -155,11 +174,11 @@ export function validateAndNormalizeItalianA1(raw: any, start: boolean): Normali
   let contributionStr = '';
   if (start) {
     if (!Array.isArray(raw.contribution) || raw.contribution.length !== 0) {
-      throw new StoryError('invalid_response', 502);
+      throw new A1ValidationError('contribution');
     }
   } else {
     if (!Array.isArray(raw.contribution) || raw.contribution.length < 1 || raw.contribution.length > 3) {
-      throw new StoryError('invalid_response', 502);
+      throw new A1ValidationError('contribution');
     }
     const sentences: string[] = [];
     for (const sentArr of raw.contribution) {
@@ -168,7 +187,7 @@ export function validateAndNormalizeItalianA1(raw: any, start: boolean): Normali
     }
     contributionStr = sentences.join(' ').trim();
     if (!contributionStr) {
-      throw new StoryError('invalid_response', 502);
+      throw new A1ValidationError('contribution');
     }
   }
 
@@ -176,11 +195,11 @@ export function validateAndNormalizeItalianA1(raw: any, start: boolean): Normali
   let bridgeStr = '';
   if (start) {
     if (!Array.isArray(raw.bridge) || raw.bridge.length !== 0) {
-      throw new StoryError('invalid_response', 502);
+      throw new A1ValidationError('inactive_field');
     }
   } else {
     if (!Array.isArray(raw.bridge) || raw.bridge.length > 4) {
-      throw new StoryError('invalid_response', 502);
+      throw new A1ValidationError('inactive_field');
     }
     if (raw.bridge.length > 0) {
       const bridgeWords = validateWordArray(raw.bridge, 1, 4);
@@ -191,11 +210,11 @@ export function validateAndNormalizeItalianA1(raw: any, start: boolean): Normali
   // 4. comment
   const comment = raw.comment;
   if (!comment || typeof comment !== 'object') {
-    throw new StoryError('invalid_response', 502);
+    throw new A1ValidationError('comment');
   }
   if (start) {
     if (typeof comment.text !== 'string' || comment.text.length > 500) {
-      throw new StoryError('invalid_response', 502);
+      throw new A1ValidationError('comment');
     }
   } else {
     if (
@@ -204,20 +223,20 @@ export function validateAndNormalizeItalianA1(raw: any, start: boolean): Normali
       comment.text.trim().length === 0 ||
       comment.text.length > 500
     ) {
-      throw new StoryError('invalid_response', 502);
+      throw new A1ValidationError('comment');
     }
   }
 
   // 5. nextQuestion
   const q = raw.nextQuestion;
   if (!q || typeof q !== 'object') {
-    throw new StoryError('invalid_response', 502);
+    throw new A1ValidationError('question');
   }
   const qWords = validateWordArray(q.text, 1, 4);
   const qText = qWords.join(' ').trim();
 
   if (!Array.isArray(q.options) || q.options.length !== 3) {
-    throw new StoryError('invalid_response', 502);
+    throw new A1ValidationError('options');
   }
 
   const normalizedOptions: Array<{ text: string; tone: 'serious' | 'ironic' }> = [];
@@ -226,14 +245,14 @@ export function validateAndNormalizeItalianA1(raw: any, start: boolean): Normali
 
   for (const opt of q.options) {
     if (!opt || typeof opt !== 'object') {
-      throw new StoryError('invalid_response', 502);
+      throw new A1ValidationError('options');
     }
     if (opt.tone === 'serious') {
       seriousCount++;
     } else if (opt.tone === 'ironic') {
       ironicCount++;
     } else {
-      throw new StoryError('invalid_response', 502);
+      throw new A1ValidationError('option_tones');
     }
     const optWords = validateWordArray(opt.text, 1, 4);
     const optText = optWords.join(' ').trim();
@@ -241,12 +260,12 @@ export function validateAndNormalizeItalianA1(raw: any, start: boolean): Normali
   }
 
   if (seriousCount !== 2 || ironicCount !== 1) {
-    throw new StoryError('invalid_response', 502);
+    throw new A1ValidationError('option_tones');
   }
 
   const uniqueTexts = new Set(normalizedOptions.map(o => o.text));
   if (uniqueTexts.size !== 3) {
-    throw new StoryError('invalid_response', 502);
+    throw new A1ValidationError('option_duplicate');
   }
 
   verifySentences(openingStr,1);

@@ -52,3 +52,5 @@ Review: Die Legende ist eine beschriftete Gruppe, kein Navigationsmenü. Dauerha
 
 ## Zeitform-Nachprüfung (SD-D1-BUG-06)
 Neue Geschichten beginnen im Präsens. Fortsetzungen bewahren die tatsächlich etablierte Erzählperspektive und Zeitform; Rückblicke, direkte Rede und historische Fakten dürfen sachgerecht Vergangenheitsformen enthalten. Alle zehn Integrationsprompts entsprechend präzisiert, Katalogversionen jetztv4 beziehungsweisev5(italian-a1). Kein rückwirkendes Umschreiben und kein zusätzlicher Modellcall.
+
+A1-Nachprüfung: Aktueller italienischer Katalogv6 mit natürlicher Wortstellung und phasenbezogenem Provider-Schema; siehe A1_WIREFORMAT.md. Erzählfälle bleibenv4. Darstellung und C02 bleiben unverändert.
